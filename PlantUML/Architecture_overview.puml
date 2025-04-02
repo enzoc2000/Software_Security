@@ -8,12 +8,10 @@ title System Context Diagram for Sustainable Food Supply Chain
 
 System(certification_body, "Certification Body", "Entity responsible for certifying carbon credits and emissions")
 Person(user, "User", "Stakeholders in the food supply chain (eg, Az.Agricola, Az.Trasportatrice, Az.DiTrasformazione, Venditori)")
-Person(buyer, "Acquirente", "Final users responsible for seeing and trusting the information of a product's carbon emissions")
 
 System(system, "Sustainable Food Supply Chain system", "Manages carbon credits, NFTs, and tracks supply chain activities")
 
 Rel(user, system, "Interacts with")
-Rel(buyer, system, "Reads information from")
 Rel(certification_body, system, "Certifies carbon credits and emissions")
 
 ' === Container Level ===
@@ -35,18 +33,12 @@ Rel(blockchain, externaldata, "Receives external data from")
 ' === Component Level ===
 title Component Diagram for Back-End Service
 
-Component(api_gateway, "API gateway", "Python/JavaScript", "Handles incoming requests from the front-end and routes them to the appropriate service")
 Component(carbon_service, "Carbon Credit service", "Python/JavaScript", "Manages carbon credit minting, trading, and balancing")
 Component(token_service, "Token service", "Python/JavaScript", "Manages the emission and transfer of FTs and NFTs")
 Component(supply_chain_service, "Supply Chain service", "Python/JavaScript", "Tracks goods and emissions across the supply chain")
 Component(user_service, "User service", "Python/JavaScript", "Manages user roles, permissions, and authentication")
 Component(data_service, "Data service", "Python/JavaScript", "Fetches and validates external data for the blockchain")
 
-Rel(api_gateway, carbon_service, "Routes requests to")
-Rel(api_gateway, token_service, "Routes requests to")
-Rel(api_gateway, supply_chain_service, "Routes requests to")
-Rel(api_gateway, user_service, "Routes requests to")
-Rel(api_gateway, data_service, "Routes requests to")
 Rel(carbon_service, blockchain, "Interacts with smart contracts")
 Rel(token_service, blockchain, "Interacts with smart contracts")
 Rel(supply_chain_service, database, "Reads/Writes data to")
