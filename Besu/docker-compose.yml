@@ -1,0 +1,53 @@
+services:
+  besu:
+    build: .
+    container_name: ledger-besu
+    ports:
+      - "8545:8545"
+      - "8546:8546"
+      - "8547:8547"
+      - "9545:9545"
+      - "30303:30303"
+      - "30303:30303/udp"
+    command: >
+      besu
+      --network=dev
+      --metrics-enabled
+      --metrics-host=0.0.0.0
+      --metrics-port=9545
+      --rpc-http-enabled
+      --rpc-http-host=0.0.0.0
+      --rpc-http-port=8545
+      --rpc-ws-enabled
+      --rpc-ws-host=0.0.0.0
+      --rpc-ws-port=8546
+      --graphql-http-enabled
+      --graphql-http-host=0.0.0.0
+      --graphql-http-port=8547
+    networks:
+      - besu_net
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - besu_net
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - besu_net
+
+# 👇 Add this section to define the network
+networks:
+  besu_net:
+    driver: bridge
