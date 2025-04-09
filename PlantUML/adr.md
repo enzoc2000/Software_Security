@@ -19,6 +19,51 @@ V 0.1
 - JavaScript (Frontend/Backend)
 - Solidity (Chiamate alla BlockChain)
 
-# Use Case
-- 
+# Prerequisiti
+- Docker compose con i servizi da avviare in contemporanea
+- avvio della rete
 
+
+# Use Case per UserService
+- log utente
+- chiamata user service 
+- utente preregistrato accede
+
+
+# Use Case per DataService
+- input dei dati dall'utente da frontend
+- verifica dei dati da parte del servizio
+- se dati validi => ritorna ok all'utente("Richiesta inviata con successo") 
+-                   chiamata al TokenService
+- se dati non validi => ritorna Not-ok all'utente("Richiesta non inviata-errore")
+
+
+# Use Case per TokenService
+- log utente
+- chiamata user service 
+- utente preregistrato accede
+
+
+# Use Case per CarbonCreditService
+- log utente
+- chiamata user service 
+- utente preregistrato accede
+
+
+# Use Case per SupplyChainService
+- log utente
+- chiamata user service 
+- utente preregistrato accede
+
+
+# Database
+- Utente
+- Wallet/crediti
+- transazioni
+
+# Suddivisione Compiti
+- Matte: Use Case
+- Nicco: Use Case
+- Ema: Smart Contract
+- Yassir: Creazione Chiavi/Wallet
+- Enzo: Frontend
