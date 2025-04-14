@@ -25,6 +25,8 @@ npx hardhat node --hostname 127.0.0.1 --port 8545 // to run Hardhat Network on s
 npm install --save-dev ts-node typescript
 npm install --save-dev chai@4 @types/node @types/mocha @types/chai@4
 
+npm install --global hardhat-shorthand // 'hardhat' command can be used with 'hh' does not work on windows
+
 ```
 
 
