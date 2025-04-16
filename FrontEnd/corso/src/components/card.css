@@ -1,0 +1,33 @@
+.stile-card{
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 8px;
+    margin: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: goldenrod;
+    
+    
+}
+.stile-card-vuota{
+    display:inline-block;
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 8px;
+    margin: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color:whitesmoke;
+    
+    
+}
+
+.flex{
+    display: flex;
+    margin: 8px;
+    padding: 2px;
+}
+.card-h2 {
+    margin: 0 0 8px;
+}
+.card-p {
+    margin: 0;
+}
