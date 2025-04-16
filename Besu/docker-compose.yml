@@ -1,7 +1,9 @@
 services:
   besu:
-    build: .
+    image: hyperledger/besu:latest
     container_name: ledger-besu
+    volumes:
+      - ./config:/config
     ports:
       - "8545:8545"
       - "8546:8546"
@@ -10,8 +12,8 @@ services:
       - "30303:30303"
       - "30303:30303/udp"
     command: >
-      besu
-      --network=dev
+      --genesis-file=/config/genesis.json
+      --network-id=1337
       --metrics-enabled
       --metrics-host=0.0.0.0
       --metrics-port=9545
@@ -24,6 +26,9 @@ services:
       --graphql-http-enabled
       --graphql-http-host=0.0.0.0
       --graphql-http-port=8547
+      --miner-enabled
+      --miner-coinbase=0x0000000000000000000000000000000000000000
+      --rpc-http-cors-origins="all"
     networks:
       - besu_net
 
