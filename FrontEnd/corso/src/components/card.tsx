@@ -1,24 +1,20 @@
-import "./card.css"
-function Card({title, img, isUsed, children}:{title: string, img: string, isUsed: boolean, children: React.ReactNode}) {
-    return (
+
+function Card(){
+    return(
         <>
-            <div className="stile-card">
-                <img style={{width:"50px"}} src={img} alt="NotFound" className="card-image" />
-                <div >
-                    <h1 style={{ color:"red", fontSize:"20px"}}>{title}</h1>
-                    <p>{children}</p>
-                    <p>
-                    {isUsed && <span>Checked</span>}
-                    {!isUsed && <span>NOT Checked</span>}
-
-                    </p>
-
-                </div>
-                
+            <div className=" border-2 border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
+                <h1>
+                    Attore1
+                </h1>
+                <p>
+                    Crediti :
+                </p>
+                <h2>
+                    CO2 Emesse:
+                </h2>
 
             </div>
         </>
-    );
+    )
 }
-
-export default Card;
+export default Card

@@ -1,113 +1,97 @@
 import { useState} from 'react';
-import './card.css'
+import '../newIndex.css'
 
-function CardForm({aggiungiSoftware}) {
-    const [formData, setFormData] = useState({
-        title: "",
-        description: "",
-        img: "",
-        isUsed: false
+//const NO_SYMBOL = [",", ".", "?", "|", "\"", "'", "=", "&"]
+
+function UserOK(user:{username:string, password:string, chiavePrivata:string}){
+    /* const _reduced = (f,g) => (arg:{username:string, password:string, chiavePrivata:string}) => (g(f(arg)))
+    const pipe = (...fns) => fns.reduce(_reduced)
+    const userok = pipe(checkUsername, checkPassword, checkChiavePrivata)(user) */
+    if((user.username.includes("")) ){
+        return false
+    }
+    else
+        return true
+}
+
+
+function CardForm() {
+    const [users, setUser] = useState({
+        username: "",
+        password: "",
+        chiavePrivata: ""
     });
 
-    
+     
     const handleInputChange = (e)=> {
-        const {name, value, type, checked} = e.target;
-        const inputValue = type === "checkbox" ? checked : value;
-        setFormData({
-            ...formData,
+        const {name, value} = e.target;
+        const inputValue =  value;
+        setUser({
+            ...users,
             [name]: inputValue
         });
-    }
-
-
-
+    } 
+    
 
     const handleSubmit = (e) => {
-        // Prevent the default form submission behavior
-        e.preventDefault();
-        const software = {
-            id: Math.random(),
-            title: formData.title,
-            description: formData.description,
-            img: formData.img,
-            isUsed: formData.isUsed
-        }
-        setFormData ({
-            title: "",
-            description: "",
-            img: "",
-            isUsed: false
+        e.preventDefault();  
+        setUser({
+            username: "",
+            password: "",
+            chiavePrivata: ""
         });
-        aggiungiSoftware(software)
+        if(UserOK(users)){
+            return(
+                alert("AUTENTICAZIONE RIUSCITA CHIAMATA AL BACKEND")
+            )
+        }
+        else{
+            return(
+                alert("AUTENTICAZIONE FALLITA")
+            )
+        }
+
     } 
 
     return (
         <>
-            <form onSubmit={handleSubmit} className='stile-card-vuota' >
-                <div className="flex">
-                    <label>Titolo</label>
-                    <input 
-                    type="text" 
-                    name="title" 
-                    value={formData.title} 
-                    onChange={handleInputChange}></input>
-                </div>
-                <div className="flex">
-                    <label>Descrizione</label>
-                    <textarea 
-                    name="description" 
-                    value={formData.description}
-                    onChange={handleInputChange}></textarea>
-                </div>
-                <div className="flex ">
-                    <label>Immagine</label>
-                    <input 
-                    type="text" 
-                    name="img" 
-                    value={formData.img}
-                    onChange={handleInputChange}></input>
-                </div>
-                <div className="flex">
-                    <label>Usato?</label>
-                    <input 
-                    type="checkbox" 
-                    name="isUsed" 
-                    checked={formData.isUsed}
-                    onChange={handleInputChange}></input>
-                </div>
-                <button className='stile-card-vuota' 
-                type="submit"
-                >Aggiungi Card</button>
-            </form>
-            <form className='stile-card-vuota'
+            <form className=' border-2 border-blue-800 rounded-lg p-4 m-4 '
                 onSubmit={handleSubmit}>
-                <div className="flex">
+                <div >
                     <input 
+                    className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
                     type="text" 
-                    name="Username" 
-                    placeholder='Username'
-                    value={formData.title} 
-                    onChange={handleInputChange}></input>
+                    name="username" 
+                    placeholder='username'
+                    value={users.username}
+                    onChange={handleInputChange}
+                    ></input>
                 </div>
-                <div className="flex">
+                <div >
                     <input 
-                    type="text" 
-                    name="Password" 
-                    placeholder='Password'
-                    value={formData.description} 
-                    onChange={handleInputChange}></input>
+                    className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
+                    type="password" 
+                    name="password" 
+                    placeholder='password'
+                    value={users.password}
+                    onChange={handleInputChange}
+                    ></input>
                 </div>
-                <div className="flex">
+                <div >
                     <input 
-                    type="text" 
-                    name="ChiavePrivata" 
-                    placeholder='ChiavePrivata'
-                    value={formData.img} 
-                    onChange={handleInputChange}></input>
+                    className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
+                    type="password" 
+                    name="chiavePrivata" 
+                    placeholder='chiavePrivata'
+                    value={users.chiavePrivata}
+                    onChange={handleInputChange}
+                    ></input>
+                </div >
+                <div className='pl-13 pt-2'>
+                    <button className='text-white border-2 border-black bg-red-800 rounded-lg '
+                    type="submit"
+                    >Login</button>
                 </div>
-                <button className='stile-card-vuota'
-                type="submit"
-                >Login</button>
             </form>
         </>
     );
