@@ -1,10 +1,8 @@
-import supplyChainLogo from './assets/logoSupplyChain.png'
 import reactLogo from './assets/react.svg'
 import './App.css'
-import Card from './components/card'
-import CardForm from './components/CardForm'
 import { useState, useEffect } from 'react'
 import Example from './components/Example'
+import { ProvaContext } from './stores/ProvaContext';
 
 
 /* function handleClick() {
@@ -21,8 +19,8 @@ function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 } */
 
 function App() {
-  /* const [count, setCount] = useState(0);
-  const [items, setItems] = useState([1,2,3,4,5]);
+  const [count, setCount] = useState(0);
+  /*const [items, setItems] = useState([1,2,3,4,5]);
   const [user, setUser] = useState({ name: "Matteo", age: 27 });
   
 
@@ -36,7 +34,7 @@ function App() {
     const updateUser = { ...user, name: "Marco" };
     setUser(updateUser);
   } */
-
+/* 
      const[data, setData] = useState([]);
  
      useEffect(() => {
@@ -75,14 +73,14 @@ function App() {
     }
   ]);
 
-   const addSoftware = (software: {id: number, title: string, img: string, isUsed: boolean, description: string}) => {
+   /* const addSoftware = (software: {id: number, title: string, img: string, isUsed: boolean, description: string}) => {
     setSoftwares([...softwares, software]);
-  }
+  } */ 
 
   return (
-    <>  
+    <ProvaContext.Provider value={{ count , setCount }}>  
       <Example />
-      <CardForm 
+      {/* <CardForm 
       aggiungiSoftware={addSoftware}>
       </CardForm>
       <div className='grid'>
@@ -105,7 +103,7 @@ function App() {
             <p>{item.body}</p>
           </div>
         ))}
-      </div>
+      </div> */}
       {/* <div>
         <button onClick={() => setCount((count) => count + 1)} className='button'>
           count in {count}
@@ -114,7 +112,7 @@ function App() {
           press me
         </button>
       </div> */}
-    </>
+    </ProvaContext.Provider>
   );
 }
 

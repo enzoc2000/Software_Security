@@ -1,21 +1,13 @@
-import{ useEffect, useState } from 'react';
+import{ useContext } from 'react';
+import { ProvaContext } from '../stores/ProvaContext';
 
 function Example() {
-    const[count, setCount] = useState(0);
-    
-    // Update the document title when title or description changes
-    // useEffect is a hook that allows you to perform side effects in function components
-    useEffect(() => {
-        localStorage.setItem("count", count.toString());
-        document.title = 'Conteggio: ' + count;
-        console.log("Title changed to: ", document.title);
-    }, [count]);
-
+    const provaContext = useContext(ProvaContext);
     return (
-        <div>
-            <p>Chiamata api</p>
-            <button onClick={() => setCount((count) => count + 1)} className='button'>
-                count in {count}
+        <div className='flex flex-col items-center justify-center h-screen'>
+            <p>Conteggio : {provaContext.count}</p>
+            <button onClick={() => provaContext.setCount(provaContext.count + 1)} className='button'>
+                Incrementa
             </button>
         </div>
     );

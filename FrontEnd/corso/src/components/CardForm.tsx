@@ -3,7 +3,7 @@ import '../newIndex.css'
 
 //const NO_SYMBOL = [",", ".", "?", "|", "\"", "'", "=", "&"]
 
-function UserOK(user:{username:string, password:string, chiavePrivata:string}){
+function UserOK(user:{username:string, password:string, chiavePrivata:string}): boolean {
     /* const _reduced = (f,g) => (arg:{username:string, password:string, chiavePrivata:string}) => (g(f(arg)))
     const pipe = (...fns) => fns.reduce(_reduced)
     const userok = pipe(checkUsername, checkPassword, checkChiavePrivata)(user) */
@@ -41,6 +41,11 @@ function CardForm() {
             chiavePrivata: ""
         });
         if(UserOK(users)){
+            //Chiamata al backend (UserService) e autenticazione
+            //Passo al backend un oggetto di tipo {username, password, chiavePrivata}
+            //Il backend mi deve restituire un oggetto di tipo utente (JSON) con i dati dell'utente
+            //I dati dell'utente sono: nome, crediti, CO2_emessa, ecc..
+            //Questi dati vengono passati alla First Page
             return(
                 alert("AUTENTICAZIONE RIUSCITA CHIAMATA AL BACKEND")
             )
