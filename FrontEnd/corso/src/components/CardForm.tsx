@@ -1,18 +1,21 @@
 import { useState} from 'react';
 import '../newIndex.css'
+import { Link } from 'react-router-dom';
 
 //const NO_SYMBOL = [",", ".", "?", "|", "\"", "'", "=", "&"]
 
 function UserOK(user:{username:string, password:string, chiavePrivata:string}): boolean {
-    /* const _reduced = (f,g) => (arg:{username:string, password:string, chiavePrivata:string}) => (g(f(arg)))
-    const pipe = (...fns) => fns.reduce(_reduced)
-    const userok = pipe(checkUsername, checkPassword, checkChiavePrivata)(user) */
-    if((user.username.includes("")) ){
+     if((user.username.includes(",") || user.username.includes(".") || user.username.includes("?") || user.username.includes("\"") || user.username.includes("'") || user.username.includes("=") || user.username.includes("&&") || user.username.includes("||") || user.username.includes("||"))) {
         return false
     }
     else
         return true
 }
+
+/* const _reduced = (f,g) => (arg:{username:string, password:string, chiavePrivata:string}) => (g(f(arg)))
+    const pipe = (...fns) => fns.reduce(_reduced)
+    const userok = pipe(checkUsername, checkPassword, checkChiavePrivata)(user) */
+   
 
 
 function CardForm() {
@@ -47,7 +50,9 @@ function CardForm() {
             //I dati dell'utente sono: nome, crediti, CO2_emessa, ecc..
             //Questi dati vengono passati alla First Page
             return(
-                alert("AUTENTICAZIONE RIUSCITA CHIAMATA AL BACKEND")
+                <Link to= {"/firstPage"}  >
+                </Link>
+                // UserService mi ritorna un oggetto di tipo utente (JSON) con i dati dell'utente
             )
         }
         else{

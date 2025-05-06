@@ -1,5 +1,5 @@
 import{ useContext } from 'react';
-import { ProvaContext } from '../stores/ProvaContext';
+import { ProvaContext } from '../redux/ProvaContext';
 
 function Example() {
     const provaContext = useContext(ProvaContext);
