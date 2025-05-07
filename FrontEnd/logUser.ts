@@ -1,1 +1,0 @@
-import {isPalindrome} from '../BackEnd/ServiceCarbonCredit/carbonCreditService';
