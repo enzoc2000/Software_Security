@@ -7,6 +7,7 @@ import App from './App.tsx'
 import Login from './components/Login.tsx'
 import  store  from './redux/store.ts'
 import { Provider } from 'react-redux'
+import ExchangePage from './components/ExchangePage.tsx'
 
 
 const router = createBrowserRouter([
@@ -23,7 +24,7 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "/firstPage/:userId",
+    path: "/exchangePage/:idAttore",
     element: <ExchangePage />,
   }
 ]);
@@ -32,11 +33,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <Provider store={store}>
       <RouterProvider router={router} />
     </Provider>
-    {/* <FirstPage
-      name="Mario Rossi"
-      crediti="1000"
-      CO2="1000">
-    </FirstPage> 
-    <Login></Login> */}
   </React.StrictMode>,
 )

@@ -38,7 +38,7 @@ function FirstPage(){
             </div>
             <div className="flex flex-wrap -mx-2 gap-4">
             {dati_attore.map((item: {id: number, name: string, crediti: string, emissioni: string}) => (
-                <Link to="/login" key={item.id}>
+                <Link to={`/ExchangePage/${item.id}`}key={item.id}>
                     <Card 
                     key={item.id}
                     name= {item.name}
