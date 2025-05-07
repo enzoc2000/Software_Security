@@ -7,11 +7,7 @@ const config: HardhatUserConfig = {
   networks: {
     besu: {
       url: "http://localhost:8545",
-      chainId: 2023,
-      accounts: {
-        count: 10,
-        initialIndex: 0,
-      },
+      chainId: 9999
     },
     hardhat: {
       chainId: 1337,
@@ -19,11 +15,7 @@ const config: HardhatUserConfig = {
         count: 10,
         initialIndex: 0,
       },
-    },
-    goerli: {
-      url: "https://goerli.infura.io/v3/YOUR_INFURA_PROJECT_ID",
-      accounts: ["YOUR_PRIVATE_KEY"],
-    },
+    }
   },
 };
 
