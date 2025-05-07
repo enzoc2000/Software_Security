@@ -12,12 +12,13 @@ V 0.1
 # Technologies
 - Docker (Distribuzione)
 - Github (Repository)
-- VScode (Ambiente)
+- VSCode (Ambiente)
+- Hardhat (development environment for Ethereum software)
 
 # Languages
 - Typescript (Frontend/Backend)
 - JavaScript (Frontend/Backend)
-- Solidity (Chiamate alla BlockChain)
+- Solidity (Smart Contracts)
 
 # Prerequisiti
 - Docker compose con i servizi da avviare in contemporanea
@@ -75,3 +76,10 @@ V 0.1
 - Ema: Smart Contract
 - Yassir: Creazione Chiavi/Wallet
 - Enzo: Frontend
+
+
+# History of choices
+sprint 1: 
+- every project as runnable and independ. DENIED, because it will several open port on the local network which leads to an increase in exposure.
+- Projects are build as libraries. APPROVED, because it is easier for learning TS, speeds development and reduces exposition. Manteinance will be harder on the long run, this is not a requisite.
+- use cases to plan an idea for the GUI and required functions.
