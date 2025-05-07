@@ -1,0 +1,11 @@
+# Ignora la cartella delle dipendenze (node_modules)
+node_modules/
+
+# Ignora la cartella di build (se usi una cartella dist per i file compilati)
+dist/
+
+# Ignora file di ambiente (.env)
+.env
+
+# Ignora file di log
+*.log
