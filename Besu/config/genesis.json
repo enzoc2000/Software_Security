@@ -1,6 +1,7 @@
 {
   "config": {
-    "chainId": 9999,
+    "chainId": 1337,
+    "berlinBlock": 0,
     "homesteadBlock": 0,
     "eip150Block": 0,
     "eip155Block": 0,
@@ -9,9 +10,15 @@
     "constantinopleBlock": 0,
     "petersburgBlock": 0,
     "istanbulBlock": 0,
+    "londonBlock": 0,  
     "ethash": {}
   },
   "difficulty": "0x1",
   "gasLimit": "0x1fffffffffffff",
-  "alloc": {}
+  "alloc": {
+    "0x2B70E2087473622A4DC2aD8E03F4253BFb6Cf79E": {
+    "balance": "10000000000000000000000" 
+    },
+    "0x9c895B655b7340615b953bA7E777455B78550DF6": { "balance": "10000000000000000000000" }
+  }
 }
