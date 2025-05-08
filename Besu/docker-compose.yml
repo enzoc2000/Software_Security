@@ -2,18 +2,20 @@ version: '3.8'
 
 services:
   besu:
-    image: hyperledger/besu:latest
     container_name: ledger-besu
+    image: hyperledger/besu:latest
     volumes:
+      - besu-data:/opt/besu/data
+      - besu-config:/etc/besu
       - ./config:/config
       - ./data:/var/lib/besu
     ports:
-      - "8545:8545"    # HTTP-RPC
-      - "8546:8546"    # WS-RPC
-      - "8547:8547"    # GraphQL
-      - "9545:9545"    # Metrics
-      - "30303:30303"  # P2P TCP
-      - "30303:30303/udp" # P2P UDP
+      - "8545:8545"
+      - "8546:8546"
+      - "8547:8547"
+      - "9545:9545"
+      - "30303:30303"
+      - "30303:30303/udp"
     command: >
       --genesis-file=/config/genesis.json
       --network-id=1337
@@ -30,9 +32,8 @@ services:
       --graphql-http-host=0.0.0.0
       --graphql-http-port=8547
       --miner-enabled
-      --miner-coinbase=0x2B70E2087473622A4DC2aD8E03F4253BFb6Cf79E
-      --rpc-http-cors-origins="*"
-      --host-allowlist="*"
+      --miner-coinbase=0x0000000000000000000000000000000000000000
+      --rpc-http-cors-origins="all"
     networks:
       - besu_net
 
@@ -56,6 +57,7 @@ services:
     networks:
       - besu_net
 
+# 👇 Add this section to define the network
 networks:
   besu_net:
     driver: bridge
