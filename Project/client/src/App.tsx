@@ -1,30 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Exchange from './ExchangeProps';
+import './App.css'
+import Card from './components/Card';
+import Example from './components/Example'
+import Navbar from './components/Navbar';
+import { useSelector } from 'react-redux';
 
 function App() {
+  const users = useSelector((state: any) => state.users.value);
+  const count = useSelector((state: any) => state.counter.value);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-      <main>
-        <Exchange />
-      </main>
-    </div>
+    <>  
+      <Navbar />
+      <Example /> 
+      <div className='grid'>
+        {users.map((item: {id: number, name: string, crediti: string, emissioni: string}) => (
+          <Card 
+            key={item.id}
+            name= {item.name}
+            crediti= {item.crediti}
+            CO2= {item.emissioni}>
+          </Card>
+        ))}
+      </div> 
+    </>
   );
 }
 
-export default App;
+export default App
