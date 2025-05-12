@@ -49,7 +49,7 @@ function CardForm() {
         chiavePrivata: ""
     });
 
-    const handleInputChange = (e)=> {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
         const inputValue =  value;
         setUser({
@@ -59,7 +59,7 @@ function CardForm() {
     } 
     
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();  
         setUser({
             username: "",

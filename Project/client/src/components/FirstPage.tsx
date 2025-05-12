@@ -1,103 +1,62 @@
-import { useState } from "react";
-import logoSupplyChain from "./assets/logoSupplyChain.png"
-import Card from "./Card"
-import { useSelector, useDispatch } from "react-redux"
-import {addUser} from "../redux/usersSlice"
+import React, { useState } from "react";
+import logoSupplyChain from "./assets/logoSupplyChain.png";
+import Card from "./Card";
+import { useSelector, useDispatch } from "react-redux";
+import { addUser } from "../redux/usersSlice";
 import { Link } from "react-router-dom";
-//viene mostrata la pagina iniziale con il logo e il titolo dell'applicazione
-//viene mostrata la card con i dati dell'attore che ha effettuato la chiamata
-function FirstPage(){
-    const dati_attore = useSelector((state: any) => state.users.value);
-    
-    const [users, setUser] = useState({
-        name: ""
-    })
 
-    const dispatch = useDispatch()
-    const handleInputChange = (e)=> {
-        const {name, value} = e.target;
-        const inputValue =  value;
-        setUser({
-            ...users,
-            [name]: inputValue
-        });
-    } 
-
-    return(
-        <>
-            <div className="flex flex-col place-items-center-safe" >
-                <img 
-                    className=""
-                    style={{height : '200px'}}
-                    src={logoSupplyChain}>
-                </img>
-                <h1 className="text-5xl text-red-800 ">
-                    Sustainable Food Supply Chain
-                </h1>
-                
-            </div>
-            <div className="flex flex-wrap -mx-2 gap-4">
-            {dati_attore.map((item: {id: number, name: string, crediti: string, emissioni: string}) => (
-                <Link to={`/ExchangePage/${item.id}`}key={item.id}>
-                    <Card 
-                    key={item.id}
-                    name= {item.name}
-                    crediti= {item.crediti}
-                    CO2= {item.emissioni}
-                    >
-                    </Card>
-                </Link>
-                ))}
-            </div>
-            <div className="flex place-items-center-safe" >
-                <h1 className="text-5xl text-red-800 ">
-                    Welcome: 
-                </h1>
-                <h1 className="text-5xl  ">
-                    {dati_attore[0].name}
-                </h1>
-            </div>
-            <div className="flex place-items-center-safe" >
-                <h1 className="text-5xl text-red-800 ">
-                    Your CO2 emissions are: 
-                </h1>
-                <h1 className="text-5xl  ">
-                    {dati_attore[0].emissioni}
-                </h1>
-            </div>
-            <div className="flex place-items-center-safe" >
-                <h1 className="text-5xl text-red-800 ">
-                    Your credits are: 
-                </h1>
-                <h1 className="text-5xl  ">
-                    {dati_attore[0].crediti}
-                </h1>
-            </div>
-            <div className="flex place-items-center-safe" >
-                <input 
-                    className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
-                    type="text" 
-                    name="name" 
-                    placeholder='actor name'
-                    value={users.name}
-                    onChange={handleInputChange}
-                ></input>
-                <button 
-                    className="border-2 border-red-800 bg-blue-800 text-white font-bold py-2 px-4 rounded"
-                    onClick={() => {
-                        dispatch(addUser(users.name))
-                        setUser({
-                            name: ""
-                        })
-                        console.log(users.name)
-                        console.log(dati_attore)
-                    }
-                    }>
-                    Add User
-                </button>
-            </div>
-        </>
-    )
+interface User {
+  id: number;
+  name: string;
+  crediti: string;
+  emissioni: string;
 }
 
-export default FirstPage
+function FirstPage() {
+  // Assuming the "users" slice returns an array of User objects.
+  const dati_attore: User[] = useSelector((state: any) => state.users.value);
+
+  // Example state for a single User. Adjust initial values as needed.
+  const [user, setUser] = useState<User>({
+    id: 0,
+    name: "",
+    crediti: "",
+    emissioni: "",
+  });
+
+  const dispatch = useDispatch();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUser({
+      ...user,
+      [name]: value,
+    });
+  };
+
+  // Function to store the selected item in sessionStorage.
+  const handleCardClick = (item: User) => {
+    // Store the selected item in sessionStorage.
+    // Could be used to pass data to another page.
+      sessionStorage.setItem("dati_utente", JSON.stringify(item));
+      sessionStorage.setItem("dati_attore", JSON.stringify(item));
+};
+
+  return (
+    <div>
+      <img src={logoSupplyChain} alt="Supply Chain Logo" />
+      {dati_attore.map((item: User) => (
+        <Link
+          to={`/ExchangePage/${item.id}`}
+          key={item.id}
+          onClick={() => handleCardClick(item)}
+        >
+          <Card key={item.id} name={item.name} crediti={item.crediti} CO2={item.emissioni} />
+        </Link>
+      ))}
+      <input type="text" name="name" value={user.name} onChange={handleInputChange} />
+    </div>
+  );
+}
+
+export default FirstPage;

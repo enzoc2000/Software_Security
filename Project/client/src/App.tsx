@@ -1,8 +1,8 @@
 import './App.css'
-import Card from './components/Card';
+import Card from './components/Card'
 import Example from './components/Example'
-import Navbar from './components/Navbar';
-import { useSelector } from 'react-redux';
+import Navbar from './components/Navbar'
+import { useSelector } from 'react-redux'
 
 function App() {
   const users = useSelector((state: any) => state.users.value);

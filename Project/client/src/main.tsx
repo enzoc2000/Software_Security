@@ -2,12 +2,12 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 
-import FirstPage from './components/FirstPage.tsx'
-import App from './App.tsx'
-import Login from './components/Login.tsx'
-import  store  from './redux/store.ts'
+import FirstPage from './components/FirstPage'
+import App from './App'
+import Login from './components/Login'
+import  store  from './redux/store'
 import { Provider } from 'react-redux'
-import ExchangePage from './components/ExchangePage.tsx'
+import ExchangePage from './components/ExchangePage'
 
 
 const router = createBrowserRouter([
