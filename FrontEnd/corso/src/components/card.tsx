@@ -1,36 +1,33 @@
 
-function Card(dati_attore:{name: string, crediti: string, CO2: string}){
+function Card(dati_attore:{name: string, crediti: number, CO2: number}){
     return(
         <>
-            <div className="grid grid-cols-3 m-1 p-1 border-2 rounded-lg border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
+            <div className=" m-1 p-1 border-3 rounded-lg text-black text-2xl border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
                 <div className="flex flex-wrap ">
-                    <h1 className="text-3xl  text-red-800 ">
-                        Attore:
-                    </h1>
-                    <text 
-                    className="text-3xl "
-                    style={{fontFamily: 'sans-serif'}}>
+                    <h2 >
+                        Attore: 
+                    </h2>
+                    <h2 className="text-red-800 ">
                         {dati_attore.name}  
-                    </text>
+                    </h2>
                 </div>
                 <div className="flex flex-wrap ">
-                    <h1 className="text-2xl  text-red-800 ">
+                    <h2>
                         Crediti:
-                    </h1>
-                    <text
-                    className="text-2xl "
-                    style={{fontFamily: 'sans-serif'}}>
+                    </h2>
+                    <h2
+                    className="text-red-800 ">
                         {dati_attore.crediti}
-                    </text>
+                    </h2>
                 </div>
                 <div className="flex flex-wrap ">
-                    <h1 className="text-2xl  text-red-800 ">
+                    <h2>
                         CO2:
-                    </h1>
-                    <text
-                    className="text-2xl ">
+                    </h2>
+                    <h2
+                    className="text-red-800 ">
                         {dati_attore.CO2}
-                    </text>
+                    </h2>
                 </div>
             </div>
         </>

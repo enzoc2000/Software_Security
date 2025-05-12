@@ -7,32 +7,32 @@ export const usersSlice = createSlice({
             {
             id: 0,
             name:  "matteo",
-            crediti: "1000",
-            emissioni: "100",
+            crediti: 1000,
+            emissioni: 100,
             },
             {
             id: 1,
             name: "luca",
-            crediti: "1000",
-            emissioni: "100",
+            crediti: 1000,
+            emissioni: 100,
             },
             {
             id: 2,
             name: "francesco",    
-            crediti: "1000",
-            emissioni: "100",
+            crediti: 1000,
+            emissioni: 100,
             },
             {
             id: 3,
             name: "giovanni",
-            crediti: "1000",
-            emissioni: "100"
+            crediti: 1000,
+            emissioni: 100
             },
             {
             id: 4,
             name: "alessandro",
-            crediti: "1000",
-            emissioni: "100"
+            crediti: 1000,
+            emissioni: 100
             },
         ]
     },
@@ -41,8 +41,8 @@ export const usersSlice = createSlice({
             state.value.push({
                 id: state.value.length,
                 name: action.payload,
-                crediti: '1000',
-                emissioni: '100',
+                crediti: 1000,
+                emissioni: 100,
             });
         },
         removeUser: (state, action) => {
