@@ -1,43 +1,46 @@
 import { useState } from "react";
 import logoSupplyChain from "./assets/logoSupplyChain.png"
-import Card from "./Card"
+import Card from "./card"
 import { useSelector, useDispatch } from "react-redux"
 import {addUser} from "../redux/usersSlice"
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 //viene mostrata la pagina iniziale con il logo e il titolo dell'applicazione
 //viene mostrata la card con i dati dell'attore che ha effettuato la chiamata
 function FirstPage(){
-    const dati_attore = useSelector((state: any) => state.users.value);
+    /* const{ usernameAttore } = useParams();
+
+    const attore = useSelector((state: { user: { value: { id: string; name: string; crediti: number; emissioni: number; }[]; }; }) =>
+        state.user.value.filter((actor) => actor.name == usernameAttore?.toString())
+    ) */
+    const dati_attore = useSelector((state: { users: { value: { id: number; name: string; crediti: number; emissioni: number; }[]; }; }) => state.users.value);
     
     const [users, setUser] = useState({
         name: ""
     })
 
     const dispatch = useDispatch()
-    const handleInputChange = (e)=> {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>)=> {
         const {name, value} = e.target;
-        const inputValue =  value;
         setUser({
             ...users,
-            [name]: inputValue
+            [name]: value
         });
     } 
 
     return(
         <>
             <div className="flex flex-col place-items-center-safe" >
-                <img 
-                    className=""
-                    style={{height : '200px'}}
-                    src={logoSupplyChain}>
-                </img>
                 <h1 className="text-5xl text-red-800 ">
-                    Sustainable Food Supply Chain
+                        Sustainable Food Supply Chain
                 </h1>
-                
+                <img 
+                    className="w-auto"
+                    src={logoSupplyChain}
+                    alt="logo">
+                </img>
             </div>
-            <div className="flex flex-wrap -mx-2 gap-4">
-            {dati_attore.map((item: {id: number, name: string, crediti: string, emissioni: string}) => (
+            <div className="flex flex-wrap place-items-center-safe" >
+            {dati_attore.map((item: {id: number, name: string, crediti: number, emissioni: number}) => (
                 <Link to={`/ExchangePage/${item.id}`}key={item.id}>
                     <Card 
                     key={item.id}
@@ -59,7 +62,7 @@ function FirstPage(){
             </div>
             <div className="flex place-items-center-safe" >
                 <h1 className="text-5xl text-red-800 ">
-                    Your CO2 emissions are: 
+                    Your average CO2 emissions are: 
                 </h1>
                 <h1 className="text-5xl  ">
                     {dati_attore[0].emissioni}

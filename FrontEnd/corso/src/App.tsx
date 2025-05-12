@@ -1,6 +1,4 @@
-import './App.css'
 import Card from './components/Card';
-import Example from './components/Example'
 import Navbar from './components/Navbar';
 import { useSelector } from 'react-redux';
 
@@ -10,9 +8,8 @@ function App() {
   return (
     <>  
       <Navbar />
-      <Example /> 
       <div className='grid'>
-        {users.map((item: {id: number, name: string, crediti: string, emissioni: string}) => (
+        {users.map((item: {id: number, name: string, crediti: number, emissioni: number}) => (
           <Card 
             key={item.id}
             name= {item.name}

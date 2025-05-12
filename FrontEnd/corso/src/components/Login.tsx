@@ -1,15 +1,16 @@
-
 import CardForm from "./CardForm";
 import supplyChainLogo from './assets/logoSupplyChain.png'
 function Login(){
     return(
         <>
-            <div style={{position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}}>
-                <div style={{display: 'flex', justifyContent: 'center'}} >
-                    <img style={{width:"150px" }} src={supplyChainLogo} alt="logo" />
+            <div className="flex flex-col w-screen h-screen place-items-center" >
+                <h1 className="text-center text-blue-800 mt-2 ">
+                    Sustainable Food Supply Chain
+                </h1>
+                <div  >
+                    <img className="w-auto" src={supplyChainLogo} alt="logo" />
                 </div>
-                <CardForm>
-                </CardForm>
+                <CardForm/>
             </div>
         </>
     )

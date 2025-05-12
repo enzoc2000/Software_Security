@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-
+import './index.css'
 import FirstPage from './components/FirstPage.tsx'
 import App from './App.tsx'
 import Login from './components/Login.tsx'
