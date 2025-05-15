@@ -7,7 +7,7 @@ const config: HardhatUserConfig = {
   networks: {
     besu: {
       url: "http://localhost:8545",
-      chainId: 9999
+      chainId: 1337
     },
     hardhat: {
       chainId: 1337,
