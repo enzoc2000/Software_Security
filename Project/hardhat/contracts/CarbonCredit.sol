@@ -9,6 +9,9 @@ contract CarbonCredit is ERC20 {
     uint256 public constant MINING_INTERVAL = 15 days;
 
     constructor() ERC20("CarbonCredit", "CC") {}
+    //     constructor(uint256 initialSupply) ERC20("Carbon Credit", "CO2") {
+    //     _mint(msg.sender, initialSupply * (10 ** decimals()));
+    // }
 
     // assing the carboncredit to the wallet calling this function
     function mine() public returns (bool) {
