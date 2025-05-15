@@ -11,3 +11,13 @@ REPORT_GAS=true npx hardhat test
 npx hardhat node
 npx hardhat ignition deploy ./ignition/modules/Lock.ts
 ```
+
+```shell
+npx hardhat run deploy/deploy.js --network besu
+ 
+# chiave per importare il token dentro metamask (cambia ad ogni reset della rete)
+0x97A75b95acd2D84354c91273A0F2a5D5DebCBe3e
+ 
+# per creazione account
+./generate_keys.sh
+```
