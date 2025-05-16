@@ -44,7 +44,7 @@ export async function loginUser(username: string, password: string, walletAddres
   }
 
   // Verifica la password hashata
-  const isPasswordValid = await verifyPassword(password, user.password);
+  const isPasswordValid = await verifyPassword(password, user.passwordHash);
   if (!isPasswordValid) {
     throw new Error('Password errata');
   }
