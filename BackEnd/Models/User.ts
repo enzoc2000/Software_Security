@@ -4,7 +4,7 @@
 export class User {
     private _id: number;
     private _username: string;
-    private _password: string;
+    private _passwordHash: string;
     //(Azienda trasportatrice, agricola, rivenditore, ecc.)
     private _role: string;
     private _name: string;
@@ -20,7 +20,7 @@ export class User {
         address: string, streetNumber: string, companyLogo: string, walletAddress?: string) {
       this._id = id;
       this._username = username;
-      this._password = password;
+      this._passwordHash = password;
       this._role = role;
       this._name = name;
       this._city = city;
@@ -50,8 +50,8 @@ export class User {
      * Getter password
      * @return Password utente
      */
-	public get password(): string {
-		return this._password;
+	public get passwordHash(): string {
+		return this._passwordHash;
 	}
 
     /**
@@ -130,8 +130,8 @@ export class User {
      * Setter password
      * @param {string} password
      */
-	public set password(password: string) {
-		this._password = password;
+	public set passwordhash(password: string) {
+		this._passwordHash = password;
 	}
 
     /**

@@ -52,7 +52,26 @@ services:
     networks:
       - besu_net
 
+  mysql:
+    image: mysql:8.0
+    container_name: app-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - besu_net
+
 # 👇 Add this section to define the network
 networks:
   besu_net:
     driver: bridge
+
+volumes:
+  - mysql_data:/var/lib/mysql
+  - ./mysql-init:/docker-entrypoint-initdb.d
