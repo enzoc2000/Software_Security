@@ -62,14 +62,19 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+      - mysql_init:../mysql-init:/docker-entrypoint-initdb.d
+
     networks:
       - besu_net
       
+
+volumes:
+  besu-data:
+  besu-config:
+  mysql_data:
+  mysql_init:
+  
 # 👇 Add this section to define the network
 networks:
   besu_net:
     driver: bridge
-
-volumes:
-  - mysql_data:/var/lib/mysql
-  - ./mysql-init:/docker-entrypoint-initdb.d
