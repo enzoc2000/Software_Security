@@ -37,15 +37,21 @@ for (const data of seedUsers) {
  * Effettua il login di un utente verificando username e password.
  * @throws Error se le credenziali non sono valide.
  */
-export async function loginUser(username: string, password: string): Promise<User> {
+export async function loginUser(username: string, password: string, walletAddress: string): Promise<User> {
   const user = await userDAO.findByUsername(username);
   if (!user) {
     throw new Error('Utente non trovato');
   }
 
-  const isPasswordValid = await verifyPassword(password, user.password);
+  // Verifica la password hashata
+  const isPasswordValid = await verifyPassword(password, user.passwordHash);
   if (!isPasswordValid) {
     throw new Error('Password errata');
+  }
+
+  // Verifica l'indirizzo del wallet
+  if (user.walletAddress !== walletAddress) {
+    throw new Error('Indirizzo wallet non valido');
   }
 
   return user;
