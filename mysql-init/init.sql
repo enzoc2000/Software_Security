@@ -1,10 +1,10 @@
 -- Inizializzazione del database MySQL
-
+SELECT VERSION();
 -- Creazione del database
-CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};
+CREATE DATABASE IF NOT EXISTS food_supply_chain;
 
 -- Usa il database appena creato
-USE ${MYSQL_DATABASE};
+USE food_supply_chain;
 
 -- Creazione della tabella "users"
 CREATE TABLE IF NOT EXISTS `users` (
