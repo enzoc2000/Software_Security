@@ -7,7 +7,11 @@ const config: HardhatUserConfig = {
   networks: {
     besu: {
       url: "http://localhost:8545",
-      chainId: 1337
+      chainId: 1337,
+      timeout: 120000, // 2 minutes
+      gas: "auto",
+      gasPrice: "auto",
+      accounts: ['a146597eb47858335f8e132af2d32832651dddaf5f78a1f7ac03e7149f16178b']
     },
     hardhat: {
       chainId: 1337,
