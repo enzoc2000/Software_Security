@@ -1,34 +1,32 @@
+version: '3.8'
+
 services:
   besu:
-    image: hyperledger/besu:latest
     container_name: ledger-besu
+    image: hyperledger/besu:latest
+    command: >
+        --network=dev
+        --metrics-enabled
+        --metrics-host=0.0.0.0
+        --metrics-port=9545
+        --rpc-http-enabled
+        --rpc-http-host=0.0.0.0
+        --rpc-http-port=8545
+        --rpc-ws-enabled
+        --rpc-ws-host=0.0.0.0
+        --rpc-ws-port=8546
+        --graphql-http-enabled
+        --graphql-http-host=0.0.0.0
+        --graphql-http-port=8547
     volumes:
+      - besu-data:/opt/besu/data
+      - besu-config:/etc/besu
       - ./config:/config
+      - ./data:/var/lib/besu
     ports:
       - "8545:8545"
-      - "8546:8546"
-      - "8547:8547"
       - "9545:9545"
       - "30303:30303"
-      - "30303:30303/udp"
-    command: >
-      --genesis-file=/config/genesis.json
-      --network-id=1337
-      --metrics-enabled
-      --metrics-host=0.0.0.0
-      --metrics-port=9545
-      --rpc-http-enabled
-      --rpc-http-host=0.0.0.0
-      --rpc-http-port=8545
-      --rpc-ws-enabled
-      --rpc-ws-host=0.0.0.0
-      --rpc-ws-port=8546
-      --graphql-http-enabled
-      --graphql-http-host=0.0.0.0
-      --graphql-http-port=8547
-      --miner-enabled
-      --miner-coinbase=0x0000000000000000000000000000000000000000
-      --rpc-http-cors-origins="all"
     networks:
       - besu_net
 
@@ -42,15 +40,15 @@ services:
     networks:
       - besu_net
 
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    depends_on:
-      - prometheus
-    networks:
-      - besu_net
+  # grafana:
+  #   image: grafana/grafana
+  #   container_name: grafana
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - prometheus
+  #   networks:
+  #     - besu_net
 
   mysql:
     image: mysql:8.0
@@ -66,7 +64,7 @@ services:
       - mysql_data:/var/lib/mysql
     networks:
       - besu_net
-
+      
 # 👇 Add this section to define the network
 networks:
   besu_net:
