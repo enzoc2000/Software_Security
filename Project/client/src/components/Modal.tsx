@@ -8,7 +8,7 @@ function Modal(/* { isOpen, onClose, children } */) {
   //if (!isOpen) return null;
   const { idAttore } = useParams();
 
-    const attore = useSelector((state: { users: { value: { id: string; name: string; crediti: string; emissioni: string; }[]; }; }) => 
+    const attore = useSelector((state: { users: { value: { id: string; name: string; crediti: number; emissioni: string; }[]; }; }) => 
         state.users.value.filter((actor) => actor.id == idAttore?.toString())
     )
 
@@ -16,7 +16,7 @@ function Modal(/* { isOpen, onClose, children } */) {
         crediti: 0,
     })
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
         if (credits.crediti <= 0  || attore[0].crediti < credits.crediti ) {
             alert("Inviare un numero di crediti maggiore di 0 e minore dei crediti disponibili")
@@ -26,8 +26,8 @@ function Modal(/* { isOpen, onClose, children } */) {
         console.log("Crediti inviati: ", credits.crediti)
     }
     
-    const handleInputChange = (e)=> {
-        const creditsToSend  = e.target.value;
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>)=> {
+        const creditsToSend  = parseInt(e.target.value, 10) || 0;
         setCredits({
             crediti: creditsToSend
         });
