@@ -12,7 +12,7 @@ export class User {
     private _address: string;
     private _streetNumber: string;
     //URL immagine logo
-    private _companyLogo: string;
+    private _companyLogo?: string;
     //Facoltativo in attesa di capire come gestirlo (se presente o meno in fase di registrazione)
     private _walletAddress?: string;
   
@@ -98,7 +98,7 @@ export class User {
      * Getter companyLogo
      * @return URL del logo dell'utente
      */
-	public get companyLogo(): string {
+	public get companyLogo(): string | undefined{
 		return this._companyLogo;
 	}
 

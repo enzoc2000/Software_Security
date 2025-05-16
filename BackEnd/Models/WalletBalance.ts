@@ -2,29 +2,21 @@
  * Modello del saldo del portafoglio
  */
 export class WalletBalance {
-    private _id: number;
-    private _userId: string;
+    private _userId: number;
+    private _address: string;
     private _balance: number;
 
-	constructor(id: number, userId: string, balance: number) {
-		this._id = id;
+	constructor(userId: number, balance: number, address: string) {
 		this._userId = userId;
 		this._balance = balance;
+        this._address = address;
 	}
-
-    /**
-     * Getter id
-     * @return Identificativo del saldo del portafoglio
-     */ 
-    public get id(): number {
-        return this._id;
-    }
 
     /**
      * Getter userId
      * @return Identificativo dell'utente
      */
-    public get userId(): string {
+    public get userId(): number {
         return this._userId;
     }
 
@@ -37,18 +29,18 @@ export class WalletBalance {
     }
 
     /**
-     * Setter id
-     * @param id Identificativo del saldo del portafoglio
-     */
-    public set id(id: number) {
-        this._id = id;
+     * Getter address
+     * @return Indirizzo del portafoglio
+     */ 
+    public get address(): string {
+        return this._address;
     }
 
     /**
      * Setter userId
      * @param userId Identificativo dell'utente
      */
-    public set userId(userId: string) {
+    public set userId(userId: number) {
         this._userId = userId;
     }
 
@@ -58,5 +50,13 @@ export class WalletBalance {
      */
     public set balance(balance: number) {
         this._balance = balance;
+    }
+
+    /**
+     * Setter address
+     * @param address Indirizzo del portafoglio
+     */
+    public set address(address: string) {
+        this._address = address;
     }
 }

@@ -1,7 +1,7 @@
 import { WalletBalance } from '../Models/WalletBalance';
 
 // Mappa che simula un database in memoria
-const WalletBalances: Map<string, WalletBalance> = new Map();
+const WalletBalances: Map<number, WalletBalance> = new Map();
 
 export class WalletBalanceDAO {
     // Salvataggio di un WalletBalance
@@ -10,7 +10,7 @@ export class WalletBalanceDAO {
     }
 
     // Recupero del WalletBalance per un utente
-    async findByUserId(userId: string): Promise<WalletBalance | undefined> {
+    async findByUserId(userId: number): Promise<WalletBalance | undefined> {
         return WalletBalances.get(userId);
     }
 
