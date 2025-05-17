@@ -3,25 +3,25 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import FirstPage from './components/FirstPage'
-import App from './App'
 import Login from './components/Login'
 import  store  from './redux/store'
 import { Provider } from 'react-redux'
 import ExchangePage from './components/ExchangePage'
+import Registration from './components/Registration'
 
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <Login />,
   },
   {
     path: "/firstPage",
     element: <FirstPage/>,
   },
   {
-    path: "/login",
-    element: <Login />,
+    path: "/registration",
+    element: <Registration />,
   },
   {
     path: "/exchangePage/:idAttore",

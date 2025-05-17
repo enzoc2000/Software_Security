@@ -102,11 +102,10 @@ function CardForm() {
                 <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
                     type="password" 
                     name="indirizzoWallet" 
-                    placeholder='indirizzoWallet'
+                    placeholder='clickOnConnectWallet'
                     value={users.indirizzoWallet}
-                    onChange={handleInputChange}
                 ></input>
-                <button className="grid p-2 m-1 border-2 border-red-800 text-red-800 font-bold py-2 px-4 rounded-lg hover:bg-red-700"
+                <button className="grid p-2 m-1 border-2 border-red-800 text-red-800 font-bold py-2 px-4 rounded-lg"
                     type="submit">
                     Login
                 </button>            

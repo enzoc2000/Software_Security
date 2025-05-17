@@ -4,13 +4,7 @@ function Navbar() {
     return (
         <ul>
             <li>
-                <Link to="/"></Link>
-            </li>
-            <li>
-                <Link to="/firstPage">First Page</Link>
-            </li>
-            <li>
-                <Link to="/login">Login</Link>
+                <Link to="/registration">Registrazione</Link>
             </li>
         </ul>
     );
