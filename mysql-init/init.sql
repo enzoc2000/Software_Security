@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id_user`),
   UNIQUE KEY `id_users_UNIQUE` (`id_user`),
   UNIQUE KEY `password_hash_UNIQUE` (`password_hash`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Creazione della tabella "wallets"
 CREATE TABLE IF NOT EXISTS `wallets` (
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `wallets` (
   UNIQUE KEY `address_UNIQUE` (`address`),
   UNIQUE KEY `id_user_UNIQUE` (`id_user`),
   CONSTRAINT `id_user_wallet` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Creazione della tabella "system_wallet"
 CREATE TABLE IF NOT EXISTS `system_wallet` (
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `system_wallet` (
   PRIMARY KEY (`id_system_wallet`),
   UNIQUE KEY `id_system_wallet_UNIQUE` (`id_system_wallet`),
   UNIQUE KEY `address_UNIQUE` (`address`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Creazione della tabella "emissions"
 CREATE TABLE IF NOT EXISTS `emissions` (
@@ -53,4 +53,4 @@ CREATE TABLE IF NOT EXISTS `emissions` (
   UNIQUE KEY `id_emission_UNIQUE` (`id_emission`),
   UNIQUE KEY `id_user_UNIQUE` (`id_user`),
   CONSTRAINT `id_user_emission` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
