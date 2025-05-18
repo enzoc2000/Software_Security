@@ -13,7 +13,11 @@ export const seedUsers = [
         address: 'Via Roma 1',
         streetNumber: '1',
         companyLogo: 'logo_azienda_agricola.png',
-        //walletAddress: '0x1234567890abcdef1234567890abcdef12345678',
+        wallet: {
+            id: 1,
+            address: '0x1234567890abcdef1234567890abcdef12345678',
+            balance: 0,
+        },
     },
     {
         id: 2,
@@ -25,7 +29,11 @@ export const seedUsers = [
         address: 'Via Milano 1',
         streetNumber: '1',
         companyLogo: 'logo_azienda_trasporti.png',
-        //walletAddress: '0xabcdef1234567890abcdef1234567890abcdef12',
+        wallet: {
+            id: 2,
+            address: '0xabcdef1234567890abcdef1234567890abcdef12',
+            balance: 0,
+        },
     },
     {
         id: 3,
@@ -37,6 +45,10 @@ export const seedUsers = [
         address: 'Via Torino 1',
         streetNumber: '1',
         companyLogo: 'logo_azienda_rivenditore.png',
-        //walletAddress: '0x7890abcdef1234567890abcdef1234567890abcd',
+        wallet: {
+            id: 3,
+            address: '0x7890abcdef1234567890abcdef1234567890abcd',
+            balance: 0,
+        },
     },
   ];

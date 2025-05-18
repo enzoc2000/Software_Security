@@ -1,4 +1,4 @@
-import bcrypt from 'bcryptjs';
+const bcrypt = require('bcryptjs');
 
 /**
  * Utils per hashing e verifica delle password basato su bcryptjs
