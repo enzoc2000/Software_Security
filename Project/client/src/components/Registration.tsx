@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import CardForm from "./CardForm";
 import supplyChainLogo from './assets/logoSupplyChain.png'
+import RegisterCardForm from "./RegisterCardForm";
 function Registration(){
     return(
         <>
@@ -11,7 +11,7 @@ function Registration(){
                 <div  >
                     <img className="w-auto" src={supplyChainLogo} alt="logo" />
                 </div>
-                <CardForm/>
+                <RegisterCardForm/>
                 <Link to="/">Torna al Login</Link>
             </div>
         </>

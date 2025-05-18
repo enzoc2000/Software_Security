@@ -1,14 +1,12 @@
-import Card from './components/card';
 import Navbar from './components/Navbar';
-import { useSelector } from 'react-redux';
 function App() {
-  const users = useSelector((state: any) => state.users.value);
-  const count = useSelector((state: any) => state.counter.value);
+  /* const users = useSelector((state: any) => state.users.value);
+  const count = useSelector((state: any) => state.counter.value); */
 
   return (
     <>  
       <Navbar />
-      <div className='grid'>
+      {/* <div className='grid'>
         {users.map((item: {id: number, name: string, crediti: number, emissioni: number}) => (
           <Card 
             key={item.id}
@@ -17,7 +15,7 @@ function App() {
             CO2= {item.emissioni}>
           </Card>
         ))}
-      </div> 
+      </div>  */}
     </>
   );
 }

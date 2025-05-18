@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, {  useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 //import { loginUser } from '../../../../BackEnd/services/UserService';
 
@@ -15,6 +15,7 @@ function isLengthValid(value: string, min = 3, max = 20): boolean {
 function isFieldOK(value: string): boolean {
   return isLengthValid(value) && !hasForbiddenSymbol(value);
 }
+
 function userOK(user:{username:string, password:string, indirizzoWallet:string}): boolean {
     const { username, password, indirizzoWallet } = user;
 
@@ -33,19 +34,28 @@ function userOK(user:{username:string, password:string, indirizzoWallet:string})
   return allFieldsValid && allDistinct;
 }
 
-function CardForm() {
-    const [users, setUser] = useState({
-        username: "",
-        password: "",
-        indirizzoWallet: ""
-    });
+interface DatiUtente {
+  username: string;
+  password: string;
+  indirizzoWallet: string;
+}
 
+function RegisterCardForm() {
+    const [datiUtente, setDatiUtente] = useState<DatiUtente | null>(null)
+    
+    useEffect(() => {
+    const storedAddress = sessionStorage.getItem("walletAddress");
+    if (storedAddress) {
+    setDatiUtente({...datiUtente!, indirizzoWallet: storedAddress! });
+    }
+    }, []);
+    
     const navigate = useNavigate();
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>)=> {
         const {name, value} = e.target;
-        setUser({
-            ...users,
+        setDatiUtente({
+            ...datiUtente!,
             [name]: value
         });
     } 
@@ -54,12 +64,8 @@ function CardForm() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();  
 
-        const currentUser = {...users};
-        setUser({
-            username: "",
-            password: "",
-            indirizzoWallet: ""
-        });
+        const currentUser = {...datiUtente!};
+        setDatiUtente(null);
         if(userOK(currentUser)){
             console.log("Utente: "+ currentUser.username +" OK")
             
@@ -89,21 +95,21 @@ function CardForm() {
                     type="text" 
                     name="username" 
                     placeholder='username'
-                    value={users.username}
+                    value={datiUtente?.username}
                     onChange={handleInputChange}
                 ></input>
                 <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
                     type="password" 
                     name="password" 
                     placeholder='password'
-                    value={users.password}
+                    value={datiUtente?.password}
                     onChange={handleInputChange}
                 ></input>
                 <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
                     type="password" 
                     name="indirizzoWallet" 
                     placeholder='clickOnConnectWallet'
-                    value={users.indirizzoWallet}
+                    value={datiUtente?.indirizzoWallet}
                 ></input>
                 <button className="grid p-2 m-1 border-2 border-red-800 text-red-800 font-bold py-2 px-4 rounded-lg"
                     type="submit">
@@ -114,4 +120,4 @@ function CardForm() {
     );
 }
 
-export default CardForm;    
+export default RegisterCardForm;    

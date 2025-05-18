@@ -1,45 +1,59 @@
 import { useState } from "react";
 import logoSupplyChain from "./assets/logoSupplyChain.png"
-import Card from "./card"
+import Card from "./Card"
 import { useSelector } from "react-redux"
-import { Link} from "react-router-dom";
+import { Link, useLocation} from "react-router-dom";
 
 interface User {
   id: number;
   name: string;
-  crediti: number;
-  emissioni: number;
+  credits: number;
+  emissions: number;
+}
+
+
+interface LocationState {
+  user: {
+    nome: string,
+    crediti: number,
+    emissioni: number
+  };
 }
 
 //viene mostrata la pagina iniziale con il logo e il titolo dell'applicazione
 //viene mostrata la card con i dati dell'attore che ha effettuato la chiamata
 function FirstPage(){
-    /* const{ usernameAttore } = useParams();
 
-    const attore = useSelector((state: { user: { value: { id: string; name: string; crediti: number; emissioni: number; }[]; }; }) =>
-        state.user.value.filter((actor) => actor.name == usernameAttore?.toString())
-    ) */
+  // Assuming the "users" slice returns an array of User objects.
+  const dati_attore: User[] = useSelector((state: { users: { value: User[]; }; }) => state.users.value);
 
-      // Assuming the "users" slice returns an array of User objects.
-    const dati_attore: User[] = useSelector((state: any) => state.users.value);
+  const location = useLocation()
 
-    // Example state for a single User. Adjust initial values as needed.
-    const [user, setUser] = useState<User>({
-        id: 0,
-        name: "",
-        crediti: 0,
-        emissioni: 0,
-    });
+  const state = location.state as LocationState || { user: { id: 0, name: "", crediti: 0, emissioni: 0 } };
+      
+  const { nome, crediti, emissioni } = state.user
 
-    //const dispatch = useDispatch()
+  const utente = state.user;
+  // Example state for a single User. Adjust initial values as needed.
+  const [user, setUser] = useState<User>({
+    id: 0,
+    name: "",
+    emissions: 0,
+    credits: 0
+  });
+  
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>)=> {
-        const {name, value} = e.target;
-        setUser({
-            ...user,
-            [name]: value
-        });
-    } 
+  if (!state || !state.user) {
+    return <p>Errore: dati utente non disponibili.</p>;
+  }
+
+
+
+  console.log(utente);
+  
+
+  //const dispatch = useDispatch()
+
 
     // Function to store the selected item in sessionStorage.
     const handleCardClick = (item: User) => {
@@ -68,7 +82,7 @@ function FirstPage(){
                     key={item.id}
                     onClick={() => handleCardClick(item)}
                     >
-                    <Card key={item.id} name={item.name} crediti={item.crediti} CO2={item.emissioni} />
+                    <Card key={item.id} name={item.name} crediti={item.credits} CO2={item.emissions}/>
                 </Link>
             ))}
             </div>
@@ -77,7 +91,7 @@ function FirstPage(){
                     Welcome: 
                 </h1>
                 <h1 className="text-5xl  ">
-                    {dati_attore[0].name}
+                    {nome}
                 </h1>
             </div>
             <div className="flex place-items-center-safe" >
@@ -85,7 +99,7 @@ function FirstPage(){
                     Your average CO2 emissions are: 
                 </h1>
                 <h1 className="text-5xl  ">
-                    {dati_attore[0].emissioni}
+                    {emissioni}
                 </h1>
             </div>
             <div className="flex place-items-center-safe" >
@@ -93,18 +107,8 @@ function FirstPage(){
                     Your credits are: 
                 </h1>
                 <h1 className="text-5xl  ">
-                    {dati_attore[0].crediti}
+                    {crediti}
                 </h1>
-            </div>
-            <div className="flex place-items-center-safe" >
-                <input 
-                    className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
-                    type="text" 
-                    name="name" 
-                    placeholder='actor name'
-                    value={user.name}
-                    onChange={handleInputChange}
-                ></input>
             </div>
         </>
     )
