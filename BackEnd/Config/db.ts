@@ -1,6 +1,6 @@
 // Creazione di una connessione al database MySQL tramite mysql2
-import mysql from 'mysql2/promise';
-import dotenv from 'dotenv';
+const mysql = require('mysql2/promise');
+const dotenv = require('dotenv');
 
 dotenv.config();
 

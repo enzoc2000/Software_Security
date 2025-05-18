@@ -1,7 +1,7 @@
 /**
  * Modello del saldo del portafoglio
  */
-export class WalletBalance {
+export class UserWallet {
     private _userId: number;
     private _address: string;
     private _balance: number;

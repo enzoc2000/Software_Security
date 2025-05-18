@@ -1,10 +1,10 @@
-import { WalletBalance } from '../Models/WalletBalance';
-import { WalletBalanceDAO } from '../DAO/WalletBalanceDAO';
+import { UserWallet } from '../Models/UserWallet';
+import { UserWalletDAO } from '../DAO/UserWalletDAO';
 import { web3, tokenContractABI, TOKEN_CONTRACT_ADDRESS, SYSTEM_WALLET_PRIVATE_KEY, SYSTEM_WALLET_PUBLIC_ADDRESS } from '../Utils/web3';
 
-const walletBalanceDAO = new WalletBalanceDAO();
+const walletBalanceDAO = new UserWalletDAO();
 
-export async function issueTokens(userId: string, amount: number): Promise<WalletBalance> {
+export async function issueTokens(userId: string, amount: number): Promise<UserWallet> {
   try {
     const contract = new web3.eth.Contract(tokenContractABI, TOKEN_CONTRACT_ADDRESS);
 
@@ -24,7 +24,7 @@ export async function issueTokens(userId: string, amount: number): Promise<Walle
     let walletBalance = await walletBalanceDAO.findByUserId(userId);
 
     if (!walletBalance) {
-      walletBalance = new WalletBalance(Math.floor(Math.random() * 1000000), userId, amount);
+      walletBalance = new UserWallet(Math.floor(Math.random() * 1000000), userId, amount);
       await walletBalanceDAO.save(walletBalance);
     } 
     else {

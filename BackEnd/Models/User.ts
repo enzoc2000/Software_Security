@@ -1,3 +1,5 @@
+import { UserWallet } from "./UserWallet";
+
 /**
  * Modello utente della filiera
  */
@@ -14,10 +16,10 @@ export class User {
     //URL immagine logo
     private _companyLogo?: string;
     //Facoltativo in attesa di capire come gestirlo (se presente o meno in fase di registrazione)
-    private _walletAddress?: string;
+    private _wallet?: UserWallet;
   
     constructor(id: number, username: string, password: string, role: string, name: string, city: string, 
-        address: string, streetNumber: string, companyLogo: string, walletAddress?: string) {
+        address: string, streetNumber: string, companyLogo: string, wallet?: UserWallet) {
       this._id = id;
       this._username = username;
       this._passwordHash = password;
@@ -27,7 +29,7 @@ export class User {
       this._address = address;
       this._streetNumber = streetNumber;
       this._companyLogo = companyLogo;
-      this._walletAddress = walletAddress;
+      this._wallet = wallet;
     }
     
     /**
@@ -106,8 +108,8 @@ export class User {
      * Getter walletAddress
      * @return Indirizzo del wallet dell'utente
     */
-    public get walletAddress(): string | undefined {
-		return this._walletAddress;
+    public get wallet(): UserWallet | undefined {
+		return this._wallet;
 	}
 
     /**
@@ -186,8 +188,8 @@ export class User {
      * Setter walletAddress
      * @param {string} walletAddress
      */
-    public set walletAddress(walletAddress: string) {
-		this._walletAddress = walletAddress;
+    public set wallet(wallet: UserWallet) {
+		this._wallet = wallet;
 	}
     
 }
