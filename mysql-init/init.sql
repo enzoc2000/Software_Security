@@ -8,8 +8,8 @@ USE food_supply_chain;
 
 -- Creazione della tabella "users"
 CREATE TABLE IF NOT EXISTS `users` (
-  `id_user` int unsigned NOT NULL,
-  `username` varchar(15) NOT NULL,
+  `id_user` int unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(30) NOT NULL,
   `password_hash` char(60) NOT NULL,
   `role` varchar(45) NOT NULL,
   `name` varchar(45) NOT NULL,

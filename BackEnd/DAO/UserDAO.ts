@@ -1,5 +1,7 @@
 import { User } from '../Models/User';
 import { db } from '../Config/db';
+import { UserWalletDAO } from './UserWalletDAO';
+import { UserWallet } from '../Models/UserWallet';
 
 /**
  * DAO per la gestione dell'accesso ai dati utente
@@ -12,10 +14,9 @@ export class UserDAO {
   async save(user: User): Promise<void> {
     await db.execute(
     `INSERT INTO users 
-      (id_user, username, password_hash, role, name, city, address, street_number, company_logo) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (username, password_hash, role, name, city, address, street_number, company_logo) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     [
-      user.id,
       user.username,
       user.passwordHash,
       user.role,
@@ -39,7 +40,13 @@ export class UserDAO {
       return undefined;
 
     const row = rows[0];
-    return this.mapRowToUser(row);
+    const user: User = this.mapRowToUser(row);
+    // Se l'utente ha un wallet associato, lo recupero
+    const walletDAO = new UserWalletDAO();
+    const wallet = await walletDAO.findByUserId(user.id);
+    if (wallet)
+      user.wallet = wallet;
+    return user;
   }
 
   //Recupero di un utente tramite ID
@@ -52,8 +59,10 @@ export class UserDAO {
     if (rows.length === 0) 
       return undefined;
 
+    const walletDAO = new UserWalletDAO();
+    const wallet = await walletDAO.findByUserId(userId);
     const row = rows[0];
-    return this.mapRowToUser(row);
+    return this.mapRowToUser(row, wallet);
   }
   
   //Aggiornamento di un utente
@@ -84,7 +93,7 @@ export class UserDAO {
   }
 
   // Funzione di utilità per convertire una riga del DB in un oggetto User
-  private mapRowToUser(row: any): User {
+  private mapRowToUser(row: any, wallet?: UserWallet): User {
     return new User(
       row.id_user,
       row.username,
@@ -94,7 +103,8 @@ export class UserDAO {
       row.city,
       row.address,
       row.street_number,
-      row.company_logo
+      row.company_logo,
+      wallet
     );
   }
 }

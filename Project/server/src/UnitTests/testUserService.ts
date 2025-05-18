@@ -1,6 +1,6 @@
-import { signUpUser, loginUser, linkWallet } from './Services/UserService';
-import { seedUsers } from './Data/seedUsers';
-import { UserWallet } from './Models/UserWallet';
+import { signUpUser, loginUser, linkWallet } from '../Services/UserService';
+import { seedUsers } from '../Data/seedUsers';
+import { UserWallet } from '../Models/UserWallet';
 
 // Piccolo test per verificare il funzionamento dei servizi utente
 async function main() {
