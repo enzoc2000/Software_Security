@@ -1,6 +1,7 @@
 import React, { useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import connectWallet from '../utils/ConnectWallet';
+import {loginUser}  from '../../../server/src/Services/UserService';
 
 const NO_SYMBOLS = [",", ".", "?", "|", `"`, "'", "=", "&"];
 
@@ -78,20 +79,13 @@ function LoginCardForm() {
             console.log("Utente: "+ currentUser.username +" OK")
             
             //Chiamata al backend (UserService) e autenticazione
-            //Passo al backend un oggetto di tipo {username, password, indirizzoWallet}
-            //loginUser(users.username, users.password)
-            //const utenteAutenticato = loginUser(users.username, users.password)
-            const utenteAutenticato = {
-              nome: currentUser.username,
-              crediti: 10,
-              emissioni: 20
-            } //loginUser(users.username, users.password)
-            //Il backend mi deve restituire un oggetto di tipo utente (JSON) con i dati dell'utente
+            const utenteAutenticato = loginUser(datiUtente.username, datiUtente.password, datiUtente.indirizzoWallet);
             
             //I dati dell'utente sono: nome, crediti, CO2_emessa, ecc..
+            console.log("Dati utente autenticato:", utenteAutenticato);
 
-            navigate("/firstPage", {state: {user: utenteAutenticato }})
-            //Passo alla pagina di FirstPage con i dati dell'utente autenticato             
+            //Passo alla pagina di FirstPage con i dati dell'utente autenticato 
+            navigate("/firstPage", {state: {user: utenteAutenticato }})            
         }
         else{
             alert("Dati non validi")
