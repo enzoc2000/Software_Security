@@ -15,13 +15,8 @@ const userWalletDAO = new UserWalletDAO();
  * Inizializza gli utenti di default nel sistema se non esistono già facendo riferimento al seedUsers.
  */
 export async function signUpUser(username: string, password: string, 
-<<<<<<< HEAD
-  role: string, name: string, city: string, address: string, streetNumber: string, companyLogo: string): 
-  Promise<Boolean> {
-=======
   role: string, name: string, city: string, address: string, streetNumber: string, companyLogo: string, walletAddress: string): 
   Promise<void> {
->>>>>>> 27cf92865a52d49c8b2a77641dd8316fc706780e
     // todo aggiungere il controllo anche sul walletAddress
     const existingUser = await userDAO.findByUsername(username);
     if (!existingUser) {
@@ -37,16 +32,11 @@ export async function signUpUser(username: string, password: string,
         streetNumber,
         companyLogo,
       );
-<<<<<<< HEAD
-      await userDAO.save(user);
-      return true;
-=======
       const userid = await userDAO.save(user);
 
       //Link del wallet all'utente
       const userWallet = new UserWallet(userid, 0, walletAddress);
       linkWallet(userid, userWallet);
->>>>>>> 27cf92865a52d49c8b2a77641dd8316fc706780e
     }
     else
       throw new Error('Username già in uso');
