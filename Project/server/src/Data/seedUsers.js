@@ -1,8 +1,10 @@
+"use strict";
 /**
  * Dati di seed degli utenti della filiera.
  */
-
-export const seedUsers = [
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.seedUsers = void 0;
+exports.seedUsers = [
     {
         id: 1,
         username: 'azienda_agricola',
@@ -54,4 +56,4 @@ export const seedUsers = [
         },*/
         walletAddress: '0x7890abcdef1234567890abcdef1234567890abcd',
     },
-  ];
+];

@@ -18,8 +18,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `street_number` varchar(45) NOT NULL,
   `company_logo` mediumblob,
   PRIMARY KEY (`id_user`),
-  UNIQUE KEY `id_users_UNIQUE` (`id_user`),
-  UNIQUE KEY `password_hash_UNIQUE` (`password_hash`)
+  UNIQUE KEY `id_users_UNIQUE` (`id_user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Creazione della tabella "wallets"
