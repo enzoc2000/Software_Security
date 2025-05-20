@@ -11,8 +11,8 @@ import { UserWallet } from '../Models/UserWallet';
 export class UserDAO {
   
   //Salvataggio di un utente 
-  async save(user: User): Promise<void> {
-    await db.execute(
+  async save(user: User): Promise<number> {
+    const [result]: any = await db.execute(
     `INSERT INTO users 
       (username, password_hash, role, name, city, address, street_number, company_logo) 
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -27,6 +27,9 @@ export class UserDAO {
       user.companyLogo ?? null
     ]
     );
+
+    // Restituisce l'ID dell'utente appena creato
+    return result.insertId;
   }
   
   //Recupero di un utente tramite username
