@@ -1,8 +1,8 @@
 import React, { useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import connectWallet from '../utils/ConnectWallet';
-import {loginUser}  from '../../../server/src/Services/UserService';
-
+import { linkWallet } from '../../../server/src/Services/UserService';
+import { UserWallet } from '../../../server/src/Models/UserWallet';
 const NO_SYMBOLS = [",", ".", "?", "|", `"`, "'", "=", "&"];
 
 function hasForbiddenSymbol(value: string): boolean {
@@ -35,14 +35,45 @@ function userOK(user:{username:string, password:string, indirizzoWallet:string})
   return allFieldsValid && allDistinct;
 }
 
-interface DatiUtente {
+interface Utente {
   username: string;
   password: string;
   indirizzoWallet: string;
 }
 
+interface DatiUtente {
+  id: number;
+  username: string;
+  password: string;
+  role: string;
+  name: string;
+  city: string;
+  address: string;
+  streetNumber: string;
+  companyLogo: string;
+}
+
+async function login(username: string, password: string, indirizzoWallet: string) : Promise<DatiUtente> {
+  const res = await fetch("http://localhost:3010/api/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username, password, indirizzoWallet }),
+  });
+  console.log(res)
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error("Login failed: " + err.error);
+  }
+
+  const data = await res.json();
+  return data;
+}
+
+
 function LoginCardForm() {
-    const [datiUtente, setDatiUtente] = useState<DatiUtente>({
+    const [datiUtente, setDatiUtente] = useState<Utente>({
         username: "",
         password: "",
         indirizzoWallet: ""
@@ -50,6 +81,11 @@ function LoginCardForm() {
     
     const navigate = useNavigate();
 
+    const strutturaWallet = {
+        userId: 0,
+        balance: 0,
+        address: ""
+    } as UserWallet;
     
     const buttonConnectWallet = async () => {    
         const objPromise = connectWallet();
@@ -66,10 +102,10 @@ function LoginCardForm() {
         });
     } 
     
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();  
         const currentUser = {...datiUtente!}
-        console.log(currentUser)
+        
         setDatiUtente({
             username: "",
             password: "",
@@ -78,14 +114,19 @@ function LoginCardForm() {
         if(userOK(currentUser)){
             console.log("Utente: "+ currentUser.username +" OK")
             
+            try {
             //Chiamata al backend (UserService) e autenticazione
-            const utenteAutenticato = loginUser(datiUtente.username, datiUtente.password, datiUtente.indirizzoWallet);
-            
+            const utenteAutenticato = await login(datiUtente.username, datiUtente.password, datiUtente.indirizzoWallet);
+           
             //I dati dell'utente sono: nome, crediti, CO2_emessa, ecc..
             console.log("Dati utente autenticato:", utenteAutenticato);
+            //const utenteLinkato = await linkWallet(strutturaWallet.userId, strutturaWallet);
 
             //Passo alla pagina di FirstPage con i dati dell'utente autenticato 
-            navigate("/firstPage", {state: {user: utenteAutenticato }})            
+            navigate("/firstPage", {state: {user: utenteAutenticato }})   
+            } catch (error) {
+              alert("Login fallito: " + error);
+            }         
         }
         else{
             alert("Dati non validi")

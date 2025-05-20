@@ -1,8 +1,9 @@
-import React, {  useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import { useNavigate } from 'react-router-dom';
+import connectWallet from '../utils/ConnectWallet';
 //import { loginUser } from '../../../../BackEnd/services/UserService';
 
-const NO_SYMBOLS = [",", ".", "?", "|", `"`, "'", "=", "&"];
+/* const NO_SYMBOLS = [",", ".", "?", "|", `"`, "'", "=", "&"];
 
 function hasForbiddenSymbol(value: string): boolean {
   return NO_SYMBOLS.some(sym => value.includes(sym));
@@ -32,90 +33,177 @@ function userOK(user:{username:string, password:string, indirizzoWallet:string})
     password !== indirizzoWallet;
 
   return allFieldsValid && allDistinct;
-}
+} */
 
 interface DatiUtente {
   username: string;
   password: string;
-  indirizzoWallet: string;
+  role: string;
+  name: string;
+  city: string;
+  address: string;
+  streetNumber: string;
+  companyLogo: string;
+  walletAddress: string;
+}
+
+async function signUp(utente: DatiUtente) : Promise<boolean> {
+  const { username, password, role, name, city, address, streetNumber, companyLogo, walletAddress } = utente;
+  const res = await fetch("http://localhost:3010/api/signUp", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ 
+        username,
+        password,
+        role,
+        name,
+        city,
+        address,
+        streetNumber,
+        companyLogo, 
+        walletAddress}),
+  });
+  console.log(res)
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error("Sign up failed: " + err.error);
+  }
+
+  const data = await res.json();
+  return data;
 }
 
 function RegisterCardForm() {
-    const [datiUtente, setDatiUtente] = useState<DatiUtente | null>(null)
-    
-    useEffect(() => {
-    const storedAddress = sessionStorage.getItem("walletAddress");
-    if (storedAddress) {
-    setDatiUtente({...datiUtente!, indirizzoWallet: storedAddress! });
-    }
-    }, []);
+    const [datiUtente, setDatiUtente] = useState<DatiUtente>({
+        username: "",
+        password: "",
+        role: "",
+        name: "",
+        city: "",
+        address: "",
+        streetNumber: "",
+        companyLogo: "",
+        walletAddress: ""
+    })
     
     const navigate = useNavigate();
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>)=> {
-        const {name, value} = e.target;
+
+    const buttonConnectWallet = async () => {    
+            const objPromise = connectWallet();
+            setDatiUtente({
+                ...datiUtente!,
+                walletAddress: (await objPromise).address
+            });
+    }
+
+    const handleInputChange = (name: string, e: string)=> {
         setDatiUtente({
             ...datiUtente!,
-            [name]: value
+            [name]: e
         });
     } 
     
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async(e: React.FormEvent) => {
         e.preventDefault();  
 
         const currentUser = {...datiUtente!};
-        setDatiUtente(null);
-        if(userOK(currentUser)){
+        
+        if(await signUp(currentUser)){
             console.log("Utente: "+ currentUser.username +" OK")
             
-            //Chiamata al backend (UserService) e autenticazione
-            //Passo al backend un oggetto di tipo {username, password, indirizzoWallet}
-            const utenteAutenticato = currentUser; //loginUser(users.username, users.password)
-            //const utenteAutenticato = loginUser(users.username, users.password)
-
-            //Il backend mi deve restituire un oggetto di tipo utente (JSON) con i dati dell'utente
-            
-            //I dati dell'utente sono: nome, crediti, CO2_emessa, ecc..
-
-            navigate("/firstPage", {state: {user: utenteAutenticato}})
+            navigate("/login")
             //Passo alla pagina di FirstPage con i dati dell'utente autenticato             
         }
         else{
-            alert("Dati non validi")
+            alert("Sign up failed")
         }
 
     } 
 
     return (
         <>
+          <div className='m-5'>
+            <button onClick={buttonConnectWallet} 
+                    className="text-sm ms-50 border-2 font-bold py-1 px-1">
+                    Connect Wallet
+            </button>
             <form className='grid border-3 rounded-lg p-4 m-4 border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800 '
                 onSubmit={handleSubmit}>
                 <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
                     type="text" 
                     name="username" 
                     placeholder='username'
-                    value={datiUtente?.username}
-                    onChange={handleInputChange}
+                    value={datiUtente.username}
+                    onChange={(e) => handleInputChange("username", e.target.value)}
                 ></input>
                 <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
                     type="password" 
                     name="password" 
                     placeholder='password'
-                    value={datiUtente?.password}
-                    onChange={handleInputChange}
+                    value={datiUtente.password}
+                    onChange={(e) => handleInputChange("password", e.target.value)}
                 ></input>
                 <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
-                    type="password" 
-                    name="indirizzoWallet" 
-                    placeholder='clickOnConnectWallet'
-                    value={datiUtente?.indirizzoWallet}
+                    type="text" 
+                    name="role" 
+                    placeholder='role'
+                    value={datiUtente.role}
+                    onChange={(e) => handleInputChange("role", e.target.value)}
                 ></input>
+                <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
+                    type="text" 
+                    name="name" 
+                    placeholder='name'
+                    value={datiUtente.name}
+                    onChange={(e) => handleInputChange("name", e.target.value)}
+                ></input>
+                <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
+                    type="text" 
+                    name="city" 
+                    placeholder='city'
+                    value={datiUtente.city}
+                    onChange={(e) => handleInputChange("city", e.target.value)}
+                ></input>
+                <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
+                    type="text" 
+                    name="address" 
+                    placeholder='address'
+                    value={datiUtente.address}
+                    onChange={(e) => handleInputChange("address", e.target.value)}
+                ></input>
+                <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
+                    type="text" 
+                    name="streetNumber" 
+                    placeholder='streetNumber'
+                    value={datiUtente.streetNumber}
+                    onChange={(e) => handleInputChange("streetNumber", e.target.value)}
+                ></input>
+                <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
+                    type="text" 
+                    name="companyLogo" 
+                    placeholder='companyLogo'
+                    value={datiUtente.companyLogo}
+                    onChange={(e) => handleInputChange("companyLogo", e.target.value)}
+                ></input>
+                <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
+                      type="password" 
+                      name="indirizzoWallet" 
+                      placeholder='clickOnConnectWallet'
+                      value={datiUtente.walletAddress}
+                      onChange={(e) => handleInputChange("indirizzoWallet", e.target.value)}
+                      readOnly
+                  ></input>
                 <button className="grid p-2 m-1 border-2 border-red-800 text-red-800 font-bold py-2 px-4 rounded-lg"
                     type="submit">
-                    Login
+                    Registration
                 </button>            
             </form>
+          </div>
         </>
     );
 }
