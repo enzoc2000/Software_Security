@@ -48,22 +48,12 @@ interface DatiUtente {
 }
 
 async function signUp(utente: DatiUtente) : Promise<boolean> {
-  const { username, password, role, name, city, address, streetNumber, companyLogo, walletAddress } = utente;
   const res = await fetch("http://localhost:3010/api/signUp", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ 
-        username,
-        password,
-        role,
-        name,
-        city,
-        address,
-        streetNumber,
-        companyLogo, 
-        walletAddress}),
+    body: JSON.stringify(utente),
   });
   console.log(res)
 
@@ -72,8 +62,8 @@ async function signUp(utente: DatiUtente) : Promise<boolean> {
     throw new Error("Sign up failed: " + err.error);
   }
 
-  const data = await res.json();
-  return data;
+  const {success} = await res.json();
+  return success;
 }
 
 function RegisterCardForm() {
@@ -116,7 +106,7 @@ function RegisterCardForm() {
         if(await signUp(currentUser)){
             console.log("Utente: "+ currentUser.username +" OK")
             
-            navigate("/login")
+            navigate("/")
             //Passo alla pagina di FirstPage con i dati dell'utente autenticato             
         }
         else{
@@ -191,7 +181,7 @@ function RegisterCardForm() {
                     onChange={(e) => handleInputChange("companyLogo", e.target.value)}
                 ></input>
                 <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
-                      type="password" 
+                      type="text" //Da modificare poi in password
                       name="indirizzoWallet" 
                       placeholder='clickOnConnectWallet'
                       value={datiUtente.walletAddress}

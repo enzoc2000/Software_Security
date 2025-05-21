@@ -1,8 +1,6 @@
 import React, { useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import connectWallet from '../utils/ConnectWallet';
-import { linkWallet } from '../../../server/src/Services/UserService';
-import { UserWallet } from '../../../server/src/Models/UserWallet';
 const NO_SYMBOLS = [",", ".", "?", "|", `"`, "'", "=", "&"];
 
 function hasForbiddenSymbol(value: string): boolean {
@@ -17,20 +15,20 @@ function isLengthValid(value: string, min = 3, max = 50): boolean {
 function isFieldOK(value: string): boolean {
   return isLengthValid(value) && !hasForbiddenSymbol(value);
 }
-function userOK(user:{username:string, password:string, indirizzoWallet:string}): boolean {
-  const { username, password, indirizzoWallet } = user;
+function userOK(user:{username:string, password:string, walletAddress:string}): boolean {
+  const { username, password, walletAddress } = user;
 
   // Tutti e tre i campi devono essere “OK”
   const allFieldsValid =
     isFieldOK(username) &&
     isFieldOK(password) &&
-    isFieldOK(indirizzoWallet);
+    isFieldOK(walletAddress);
 
   // E devono essere tutti distinti
   const allDistinct =
     username !== password &&
-    username !== indirizzoWallet &&
-    password !== indirizzoWallet;
+    username !== walletAddress &&
+    password !== walletAddress;
 
   return allFieldsValid && allDistinct;
 }
@@ -38,10 +36,10 @@ function userOK(user:{username:string, password:string, indirizzoWallet:string})
 interface Utente {
   username: string;
   password: string;
-  indirizzoWallet: string;
+  walletAddress: string;
 }
 
-interface DatiUtente {
+interface utenteAutenticato {
   id: number;
   username: string;
   password: string;
@@ -53,13 +51,13 @@ interface DatiUtente {
   companyLogo: string;
 }
 
-async function login(username: string, password: string, indirizzoWallet: string) : Promise<DatiUtente> {
+async function login(utente: Utente) : Promise<utenteAutenticato> {
   const res = await fetch("http://localhost:3010/api/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ username, password, indirizzoWallet }),
+    body: JSON.stringify(utente),
   });
   console.log(res)
   if (!res.ok) {
@@ -76,22 +74,17 @@ function LoginCardForm() {
     const [datiUtente, setDatiUtente] = useState<Utente>({
         username: "",
         password: "",
-        indirizzoWallet: ""
+        walletAddress: ""
     })
     
     const navigate = useNavigate();
 
-    const strutturaWallet = {
-        userId: 0,
-        balance: 0,
-        address: ""
-    } as UserWallet;
     
     const buttonConnectWallet = async () => {    
         const objPromise = connectWallet();
         setDatiUtente({
             ...datiUtente!,
-            indirizzoWallet: (await objPromise).address
+            walletAddress: (await objPromise).address
         });
     }
 
@@ -104,32 +97,38 @@ function LoginCardForm() {
     
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();  
-        const currentUser = {...datiUtente!}
+        const currentUser = {...datiUtente}
         
-        setDatiUtente({
-            username: "",
-            password: "",
-            indirizzoWallet: ""
-        });
         if(userOK(currentUser)){
             console.log("Utente: "+ currentUser.username +" OK")
             
             try {
             //Chiamata al backend (UserService) e autenticazione
-            const utenteAutenticato = await login(datiUtente.username, datiUtente.password, datiUtente.indirizzoWallet);
+            const utenteAutenticato = await login(datiUtente);
            
             //I dati dell'utente sono: nome, crediti, CO2_emessa, ecc..
             console.log("Dati utente autenticato:", utenteAutenticato);
             //const utenteLinkato = await linkWallet(strutturaWallet.userId, strutturaWallet);
 
+            setDatiUtente({
+                username: "",
+                password: "",
+                walletAddress: ""
+            });
             //Passo alla pagina di FirstPage con i dati dell'utente autenticato 
             navigate("/firstPage", {state: {user: utenteAutenticato }})   
+
             } catch (error) {
               alert("Login fallito: " + error);
             }         
         }
         else{
             alert("Dati non validi")
+            setDatiUtente({
+                username: "",
+                password: "",
+                walletAddress: ""
+            });
         }
 
     } 
@@ -158,11 +157,11 @@ function LoginCardForm() {
                       onChange={(e) => handleInputChange("password", e.target.value)}
                   ></input>
                   <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
-                      type="password" 
-                      name="indirizzoWallet" 
+                      type="text" 
+                      name="walletAddress" 
                       placeholder='clickOnConnectWallet'
-                      value={datiUtente.indirizzoWallet}
-                      onChange={(e) => handleInputChange("indirizzoWallet", e.target.value)}
+                      value={datiUtente.walletAddress}
+                      onChange={(e) => handleInputChange("walletAddress", e.target.value)}
                       readOnly
                   ></input>
                   <button className="grid p-2 m-1 border-2 border-red-800 text-red-800 font-bold py-2 px-4 rounded-lg"

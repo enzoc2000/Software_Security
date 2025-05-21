@@ -17,7 +17,7 @@ app.get("/", (req: Request, res: Response) => {
 app.post("/api/login", async (req: Request, res: Response) => {
   const { username, password, walletAddress } = req.body;
 
-  console.log("Tentativo login:", { username, walletAddress });
+  console.log("Tentativo login:", + req.body );
 
   try {
     const user = await loginUser(username, password, walletAddress);
@@ -36,7 +36,7 @@ app.post("/api/login", async (req: Request, res: Response) => {
   }
 });
 
-app.get("/api/signUp", async (req: Request, res: Response) => {
+app.post("/api/signUp", async (req: Request, res: Response) => {
   const {username,
         password,
         role,
@@ -44,11 +44,15 @@ app.get("/api/signUp", async (req: Request, res: Response) => {
         city,
         address,
         streetNumber,
-        companyLogo,} = req.body;
+        companyLogo,
+        walletAddress
+  } = req.body;
+  
+  console.log("Tentativo signUp:", req.body);
   try {
-    const user = await signUpUser(username, password, role, name, city, address, streetNumber, companyLogo);
-    if (user) {
-      res.status(200);
+    const okUser = await signUpUser(username, password, role, name, city, address, streetNumber, companyLogo, walletAddress);
+    if (okUser) {
+      res.status(201).json({ success: true });
     } else {
       res.status(401).json({ message: "Invalid credentials" });
     }

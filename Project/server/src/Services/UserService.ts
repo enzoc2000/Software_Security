@@ -16,7 +16,7 @@ const userWalletDAO = new UserWalletDAO();
  */
 export async function signUpUser(username: string, password: string, 
   role: string, name: string, city: string, address: string, streetNumber: string, companyLogo: string, walletAddress: string): 
-  Promise<void> {
+  Promise<Boolean> {
     // todo aggiungere il controllo anche sul walletAddress
     const existingUser = await userDAO.findByUsername(username);
     if (!existingUser) {
@@ -32,11 +32,20 @@ export async function signUpUser(username: string, password: string,
         streetNumber,
         companyLogo,
       );
+      //--------------------------------------------------------------------------------------
+      //Prima di salvare l'utente dobbiamo verificare se il walletAddress è già in uso
+      /* const existingWallet = await userWalletDAO.findByAddress(walletAddress);
+      if (existingWallet) {
+        throw new Error('Indirizzo wallet già in uso');
+      } */
+      //--------------------------------------------------------------------------------------
+      //Salviamo l'utente
       const userid = await userDAO.save(user);
 
       //Link del wallet all'utente
       const userWallet = new UserWallet(userid, 0, walletAddress);
       linkWallet(userid, userWallet);
+      return true;
     }
     else
       throw new Error('Username già in uso');

@@ -7,7 +7,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "olddev": "nodemon --watch 'src/**/*.ts' --exec ts-node src/index.ts",
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts"
+    "dev": "ts-node-dev --respawn --transpile-only src/Config/index.ts"
   },
   "keywords": [],
   "author": "",
