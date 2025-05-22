@@ -43,13 +43,13 @@ app.post("/api/signUp", async (req: Request, res: Response) => {
         name,
         city,
         address,
-        serialNumber,
-        walletAddress
+        walletAddress,
+        serialCode
   } = req.body;
   
   console.log("Tentativo signUp:", req.body);
   try {
-    const okUser = await signUpUser(username, password, role, name, city, address, serialNumber, walletAddress);
+    const okUser = await signUpUser(username, password, role, name, city, address, walletAddress, serialCode);
     if (okUser) {
       res.status(201).json({ success: true });
     } else {

@@ -38,8 +38,8 @@ export async function signUpUser(username: string, password: string,
     }
 
     //Controllo validità del serial code
-    const hashSerialCode = await hashPassword(serialCode);
-    const validCode = await userDAO.checkSerialCode(hashSerialCode);
+    const validCode = await userDAO.checkSerialCode(serialCode);
+    console.log(validCode);
     if (!validCode) {
       throw new Error('Serial code non valido');
     }
@@ -52,7 +52,7 @@ export async function signUpUser(username: string, password: string,
     linkWallet(userid, userWallet);
 
     //Aggiorniamo il serial code come utilizzato
-    await userDAO.updateSerialCode(serialCode);
+    await userDAO.updateSerialCode(validCode);
 
     return true;
 }

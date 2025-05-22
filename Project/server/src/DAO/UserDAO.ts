@@ -2,6 +2,8 @@ import { User } from '../Models/User';
 import { db } from '../Config/db';
 import { UserWalletDAO } from './UserWalletDAO';
 import { UserWallet } from '../Models/UserWallet';
+import { compare } from 'bcryptjs';
+import { verifyPassword } from '../Utils/cryptoUtils';
 
 /**
  * DAO per la gestione dell'accesso ai dati utente
@@ -68,16 +70,23 @@ export class UserDAO {
 
   //Controllo della validità di un serial code
   //Restituisce true se il serial code è valido e non è stato utilizzato
-  async checkSerialCode(serialCode: string): Promise<boolean> {
+  async checkSerialCode(serialCode: string): Promise<string | false> {
     const [rows]: any = await db.execute(
-      `SELECT * FROM serial_codes WHERE serial_code = ? AND is_used = FALSE`,
-      [serialCode]
+      `SELECT * FROM serial_codes WHERE is_used = FALSE`
     );
+    console.log(serialCode);
+    console.log(rows);
 
     if (rows.length === 0) 
       return false;
 
-    return true;
+    for (const row of rows) {
+      const isCodeValid = await verifyPassword(serialCode, row.serial_code);
+      if (isCodeValid) {
+        return row.serial_code;
+      }
+    }
+    return false;
   }
 
   //Aggiornamento del serial code come utilizzato

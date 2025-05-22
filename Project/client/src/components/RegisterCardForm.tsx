@@ -9,7 +9,7 @@ function hasForbiddenSymbol(value: string): boolean {
   return NO_SYMBOLS.some(sym => value.includes(sym));
 }
 
-function isLengthValid(value: string, min = 3, max = 20): boolean {
+function isLengthValid(value: string, min = 3, max = 50): boolean {
   return value.length >= min && value.length <= max;
 }
 
@@ -18,7 +18,7 @@ function isFieldOK(value: string): boolean {
 }
 
 function userOK(user: DatiUtente): boolean {
-  const { username, password, role, name, city, address, serialNumber, walletAddress } = user;
+  const { username, password, role, name, city, address, serialCode, walletAddress } = user;
 
   // Tutti e tre i campi devono essere “OK”
   const allFieldsValid =
@@ -28,7 +28,7 @@ function userOK(user: DatiUtente): boolean {
     isFieldOK(name) &&
     isFieldOK(city) &&
     isFieldOK(address) &&
-    isFieldOK(serialNumber) &&
+    isFieldOK(serialCode) &&
     isFieldOK(walletAddress);
 
   // E devono essere tutti distinti
@@ -54,8 +54,8 @@ interface DatiUtente {
   name: string;
   city: string;
   address: string;
-  serialNumber: string;
   walletAddress: string;
+  serialCode: string;
 }
 
 async function signUp(utente: DatiUtente) : Promise<boolean> {
@@ -85,7 +85,7 @@ function RegisterCardForm() {
         name: "",
         city: "",
         address: "",
-        serialNumber: "",
+        serialCode: "",
         walletAddress: ""
     })
     
@@ -183,10 +183,10 @@ function RegisterCardForm() {
                 ></input>
                 <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
                     type="text" 
-                    name="serialNumber" 
-                    placeholder='serialNumber'
-                    value={datiUtente.serialNumber}
-                    onChange={(e) => handleInputChange("serialNumber", e.target.value)}
+                    name="serialCode" 
+                    placeholder='serialCode'
+                    value={datiUtente.serialCode}
+                    onChange={(e) => handleInputChange("serialCode", e.target.value)}
                 ></input> 
                 <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
                       type="text" //Da modificare poi in password
