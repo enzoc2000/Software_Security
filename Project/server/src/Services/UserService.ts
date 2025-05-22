@@ -15,40 +15,46 @@ const userWalletDAO = new UserWalletDAO();
  * Inizializza gli utenti di default nel sistema se non esistono già facendo riferimento al seedUsers.
  */
 export async function signUpUser(username: string, password: string, 
-  role: string, name: string, city: string, address: string, streetNumber: string, companyLogo: string, walletAddress: string): 
+  role: string, name: string, city: string, address: string, walletAddress: string, serialCode: string): 
   Promise<Boolean> {
-    // todo aggiungere il controllo anche sul walletAddress
     const existingUser = await userDAO.findByUsername(username);
-    if (!existingUser) {
-      const passwordHash = await hashPassword(password);
-      const user = new User(
-        0,
-        username,
-        passwordHash,
-        role,
-        name,
-        city,
-        address,
-        streetNumber,
-        companyLogo,
-      );
-      //--------------------------------------------------------------------------------------
-      //Prima di salvare l'utente dobbiamo verificare se il walletAddress è già in uso
-      /* const existingWallet = await userWalletDAO.findByAddress(walletAddress);
-      if (existingWallet) {
-        throw new Error('Indirizzo wallet già in uso');
-      } */
-      //--------------------------------------------------------------------------------------
-      //Salviamo l'utente
-      const userid = await userDAO.save(user);
-
-      //Link del wallet all'utente
-      const userWallet = new UserWallet(userid, 0, walletAddress);
-      linkWallet(userid, userWallet);
-      return true;
-    }
-    else
+    if (existingUser) {
       throw new Error('Username già in uso');
+    }
+    const passwordHash = await hashPassword(password);
+    const user = new User(
+      0,
+      username,
+      passwordHash,
+      role,
+      name,
+      city,
+      address,
+    );
+    //Controllo se walletAddress è già in uso
+    const existingWallet = await userWalletDAO.findByAddress(walletAddress);
+    if (existingWallet) {
+      throw new Error('Indirizzo wallet già in uso');
+    }
+
+    //Controllo validità del serial code
+    const hashSerialCode = await hashPassword(serialCode);
+    const validCode = await userDAO.checkSerialCode(hashSerialCode);
+    if (!validCode) {
+      throw new Error('Serial code non valido');
+    }
+
+    //Salviamo l'utente
+    const userid = await userDAO.save(user);
+
+    //Link del wallet all'utente
+    const userWallet = new UserWallet(userid, 0, walletAddress);
+    linkWallet(userid, userWallet);
+
+    //Aggiorniamo il serial code come utilizzato
+    await userDAO.updateSerialCode(serialCode);
+
+    return true;
 }
 
 /**

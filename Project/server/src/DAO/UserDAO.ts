@@ -14,17 +14,15 @@ export class UserDAO {
   async save(user: User): Promise<number> {
     const [result]: any = await db.execute(
     `INSERT INTO users 
-      (username, password_hash, role, name, city, address, street_number, company_logo) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      (username, password_hash, role, name, city, address) 
+      VALUES (?, ?, ?, ?, ?, ?)`,
     [
       user.username,
       user.passwordHash,
       user.role,
       user.name,
       user.city,
-      user.address,
-      user.streetNumber,
-      user.companyLogo ?? null
+      user.address
     ]
     );
 
@@ -67,6 +65,28 @@ export class UserDAO {
     const row = rows[0];
     return this.mapRowToUser(row, wallet);
   }
+
+  //Controllo della validità di un serial code
+  //Restituisce true se il serial code è valido e non è stato utilizzato
+  async checkSerialCode(serialCode: string): Promise<boolean> {
+    const [rows]: any = await db.execute(
+      `SELECT * FROM serial_codes WHERE serial_code = ? AND is_used = FALSE`,
+      [serialCode]
+    );
+
+    if (rows.length === 0) 
+      return false;
+
+    return true;
+  }
+
+  //Aggiornamento del serial code come utilizzato
+  async updateSerialCode(serialCode: string): Promise<void> {
+    await db.execute(
+      `UPDATE serial_codes SET is_used = TRUE WHERE serial_code = ?`,
+      [serialCode]
+    );
+  }
   
   //Aggiornamento di un utente
   async update(user: User): Promise<void> {
@@ -77,9 +97,7 @@ export class UserDAO {
         role = ?, 
         name = ?, 
         city = ?, 
-        address = ?, 
-        street_number = ?, 
-        company_logo = ?
+        address = ?
       WHERE id_user = ?`,
       [
         user.username,
@@ -88,8 +106,6 @@ export class UserDAO {
         user.name,
         user.city,
         user.address,
-        user.streetNumber,
-        user.companyLogo ?? null,
         user.id
       ]
     );
@@ -105,8 +121,6 @@ export class UserDAO {
       row.name,
       row.city,
       row.address,
-      row.street_number,
-      row.company_logo,
       wallet
     );
   }
