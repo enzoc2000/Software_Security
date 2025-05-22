@@ -28,9 +28,6 @@ interface LocationState {
     _name: string;
     _city: string;
     _address: string;
-    _streetNumber: string;
-    //URL immagine logo
-    _companyLogo?: string;
     //Facoltativo in attesa di capire come gestirlo (se presente o meno in fase di registrazione)
     _wallet?: {
       _userId: number;
@@ -39,6 +36,26 @@ interface LocationState {
     };
   }
 }
+
+
+/* async function listaActors(nomeUtente: string) : Promise<User[]> {
+  const res = await fetch("http://localhost:3010/api/signUp", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(nomeUtente),
+  });
+  console.log(res)
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error("Sign up failed: " + err.error);
+  }
+
+  const {success} = await res.json();
+  return success;
+} */
 
 //viene mostrata la pagina iniziale con il logo e il titolo dell'applicazione
 //viene mostrata la card con i dati dell'attore che ha effettuato la chiamata
@@ -51,7 +68,14 @@ function FirstPage(){
 
   const state = location.state as LocationState;
 
-  const utente = state.user;
+  //const utente = state.user;
+
+
+  //check(utente)
+  // Tenere traccia dell'andamento dell'utente all'interno dell'app 
+  // Fare bottone di logout per eliminare i dati dell'utente
+  
+  //const listaAttori: User[] = listaActors(utente._username)
 
 
   // Example state for a single User. Adjust initial values as needed.
@@ -63,7 +87,7 @@ function FirstPage(){
   }); */
   
 
-  if (!state || !state.user) {
+  if (!state ) {
     return <p>Errore: dati utente non disponibili.</p>;
   }
 
@@ -108,7 +132,7 @@ function FirstPage(){
                     Welcome : 
                 </h1>
                 <h1 className="text-5xl  ">
-                    {utente._name}
+                    {state.user._username} 
                 </h1>
             </div>
             <div className="flex place-items-center-safe" >
@@ -116,7 +140,7 @@ function FirstPage(){
                     Your role is the: 
                 </h1>
                 <h1 className="text-5xl  ">
-                    {utente._role}
+                    {state.user._role}
                 </h1>
             </div>
             <div className="flex place-items-center-safe" >
@@ -124,7 +148,7 @@ function FirstPage(){
                     Your city is: 
                 </h1>
                 <h1 className="text-5xl  ">
-                    {utente._city}
+                    {state.user._city}
                 </h1>
             </div>
             <div className="flex place-items-center-safe" >
@@ -132,7 +156,7 @@ function FirstPage(){
                     Your address is: 
                 </h1>
                 <h1 className="text-5xl  ">
-                    {utente._address}
+                    {state.user._address}
                 </h1>
             </div>
             <div className="flex place-items-center-safe" >
@@ -140,7 +164,7 @@ function FirstPage(){
                     Your wallet balance is: 
                 </h1>
                 <h1 className="text-5xl  ">
-                    {utente._wallet?._balance}
+                    {state.user._wallet?._balance}
                 </h1>
             </div>
         </div>

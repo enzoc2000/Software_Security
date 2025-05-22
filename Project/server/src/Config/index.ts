@@ -2,17 +2,16 @@
 // api di prova
 import express, { Request, Response } from "express";
 import cors from 'cors'
+import jwt from "jsonwebtoken";
 import { loginUser, signUpUser } from "../Services/UserService";
 
 
 const app = express();
 app.use(cors()); // Consenti al frontend di fare richieste
 app.use(express.json());
-const PORT = process.env.PORT || 3010;
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello, Express with TypeScript!");
-});
+const PORT = process.env.SERVER_PORT;
+const JWT_SECRET = process.env.JWT_SECRET
 
 app.post("/api/login", async (req: Request, res: Response) => {
   const { username, password, walletAddress } = req.body;

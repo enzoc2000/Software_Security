@@ -2,6 +2,7 @@ import React, { useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import connectWallet from '../utils/ConnectWallet';
 const NO_SYMBOLS = [",", ".", "?", "|", `"`, "'", "=", "&"];
+const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
 
 function hasForbiddenSymbol(value: string): boolean {
   return NO_SYMBOLS.some(sym => value.includes(sym));
@@ -47,12 +48,10 @@ interface utenteAutenticato {
   name: string;
   city: string;
   address: string;
-  streetNumber: string;
-  companyLogo: string;
 }
 
 async function login(utente: Utente) : Promise<utenteAutenticato> {
-  const res = await fetch("http://localhost:3010/api/login", {
+  const res = await fetch(`http://localhost:${VITE_SERVER_PORT}/api/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -115,8 +114,9 @@ function LoginCardForm() {
                 password: "",
                 walletAddress: ""
             });
+            localStorage.setItem("user", JSON.stringify(utenteAutenticato));
             //Passo alla pagina di FirstPage con i dati dell'utente autenticato 
-            navigate("/firstPage", {state: {user: utenteAutenticato }})   
+            navigate("/firstPage", {state: {user: utenteAutenticato , wallet: currentUser.walletAddress}});   
 
             } catch (error) {
               alert("Login fallito: " + error);
