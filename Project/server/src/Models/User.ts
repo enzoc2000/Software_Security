@@ -12,14 +12,11 @@ export class User {
     private _name: string;
     private _city: string;
     private _address: string;
-    private _streetNumber: string;
-    //URL immagine logo
-    private _companyLogo?: string;
     //Facoltativo in attesa di capire come gestirlo (se presente o meno in fase di registrazione)
     private _wallet?: UserWallet;
   
     constructor(id: number, username: string, password: string, role: string, name: string, city: string, 
-        address: string, streetNumber: string, companyLogo: string, wallet?: UserWallet) {
+        address: string, wallet?: UserWallet) {
       this._id = id;
       this._username = username;
       this._passwordHash = password;
@@ -27,8 +24,6 @@ export class User {
       this._name = name;
       this._city = city;
       this._address = address;
-      this._streetNumber = streetNumber;
-      this._companyLogo = companyLogo;
       this._wallet = wallet;
     }
     
@@ -86,22 +81,6 @@ export class User {
      */
 	public get address(): string {
 		return this._address;
-	}
-
-    /**
-     * Getter streetNumber
-     * @return Numero civico dell'utente
-     */
-	public get streetNumber(): string {
-		return this._streetNumber;
-	}
-
-    /**
-     * Getter companyLogo
-     * @return URL del logo dell'utente
-     */
-	public get companyLogo(): string | undefined{
-		return this._companyLogo;
 	}
 
     /**
@@ -166,22 +145,6 @@ export class User {
      */
 	public set address(address: string) {
 		this._address = address;
-	}
-
-    /**
-     * Setter streetNumber
-     * @param {number} streetNumber
-     */
-	public set streetNumber(streetNumber: string) {
-		this._streetNumber = streetNumber;
-	}
-
-    /**
-     * Setter companyLogo
-     * @param {string} companyLogo
-     */
-	public set companyLogo(companyLogo: string) {
-		this._companyLogo = companyLogo;
 	}
 
     /**
