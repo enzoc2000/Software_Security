@@ -3,13 +3,13 @@ import Card from "./Card"
 import { useSelector } from "react-redux"
 import { Link, useLocation} from "react-router-dom";
 
-interface DatiUtente {
+/* interface DatiUtente {
   username: string;
   role: string;
   name: string;
   city: string;
   address: string;
-}
+} */
 
 interface User {
   id: number;
@@ -105,10 +105,10 @@ function FirstPage(){
             </div>
             <div className="flex place-items-center-safe" >
                 <h1 className="text-5xl text-red-800 ">
-                    Welcome user: 
+                    Welcome : 
                 </h1>
                 <h1 className="text-5xl  ">
-                    {utente._username}
+                    {utente._name}
                 </h1>
             </div>
             <div className="flex place-items-center-safe" >
@@ -117,14 +117,6 @@ function FirstPage(){
                 </h1>
                 <h1 className="text-5xl  ">
                     {utente._role}
-                </h1>
-            </div>
-            <div className="flex place-items-center-safe" >
-                <h1 className="text-5xl text-red-800 ">
-                    Your name is: 
-                </h1>
-                <h1 className="text-5xl  ">
-                    {utente._name}
                 </h1>
             </div>
             <div className="flex place-items-center-safe" >
