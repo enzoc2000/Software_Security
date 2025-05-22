@@ -11,8 +11,6 @@ async function main() {
                   seedUsers[0].name,
                   seedUsers[0].city,
                   seedUsers[0].address,
-                  seedUsers[0].streetNumber,
-                  seedUsers[0].companyLogo,
                   seedUsers[0].walletAddress);
   
   // Registrazione del secondo utente di seedUsers
@@ -22,8 +20,6 @@ async function main() {
                   seedUsers[1].name,
                   seedUsers[1].city,
                   seedUsers[1].address,
-                  seedUsers[1].streetNumber,
-                  seedUsers[1].companyLogo,
                   seedUsers[1].walletAddress);
                   
   // Registrazione del terzo utente di seedUsers
@@ -33,8 +29,6 @@ async function main() {
                   seedUsers[2].name,
                   seedUsers[2].city,
                   seedUsers[2].address,
-                  seedUsers[2].streetNumber,
-                  seedUsers[2].companyLogo,
                   seedUsers[2].walletAddress);
 
   // Esempio di associazione wallet

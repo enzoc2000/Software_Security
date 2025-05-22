@@ -11,8 +11,6 @@ export const seedUsers = [
         name: 'Azienda Agricola Rossi',
         city: 'Roma',
         address: 'Via Roma 1',
-        streetNumber: '1',
-        companyLogo: 'logo_azienda_agricola.png',
         /*wallet: {
             id: 1,
             address: '0x1234567890abcdef1234567890abcdef12345678',
@@ -28,8 +26,6 @@ export const seedUsers = [
         name: 'Azienda Trasporti Bianchi',
         city: 'Milano',
         address: 'Via Milano 1',
-        streetNumber: '1',
-        companyLogo: 'logo_azienda_trasporti.png',
         /*wallet: {
             id: 2,
             address: '0xabcdef1234567890abcdef1234567890abcdef12',
@@ -45,13 +41,26 @@ export const seedUsers = [
         name: 'Azienda Rivenditore Verdi',
         city: 'Torino',
         address: 'Via Torino 1',
-        streetNumber: '1',
-        companyLogo: 'logo_azienda_rivenditore.png',
         /*wallet: {
             id: 3,
             address: '0x7890abcdef1234567890abcdef1234567890abcd',
             balance: 0,
         },*/
         walletAddress: '0x7890abcdef1234567890abcdef1234567890abcd',
+    },
+  ];
+
+  export const seedSerialCodes = [
+    {
+        serial_code: 'A9D3X7L2MQY8',
+        is_used: false,
+    },
+    {
+        serial_code: 'P4K8N1TZRW35',
+        is_used: false,
+    },
+    {
+        serial_code: 'M6Q2F9BLXE7Y',
+        is_used: false,
     },
   ];
