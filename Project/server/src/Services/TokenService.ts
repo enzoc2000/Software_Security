@@ -4,7 +4,7 @@ import { web3, tokenContractABI, TOKEN_CONTRACT_ADDRESS, SYSTEM_WALLET_PRIVATE_K
 
 const walletBalanceDAO = new UserWalletDAO();
 
-export async function issueTokens(userId: string, amount: number): Promise<UserWallet> {
+export async function issueTokens(userId: number, amount: number): Promise<UserWallet> {
   try {
     const contract = new web3.eth.Contract(tokenContractABI, TOKEN_CONTRACT_ADDRESS);
 
@@ -24,7 +24,7 @@ export async function issueTokens(userId: string, amount: number): Promise<UserW
     let walletBalance = await walletBalanceDAO.findByUserId(userId);
 
     if (!walletBalance) {
-      walletBalance = new UserWallet(Math.floor(Math.random() * 1000000), userId, amount);
+      walletBalance = new UserWallet(userId, Math.floor(Math.random() * 1000000), "0");
       await walletBalanceDAO.save(walletBalance);
     } 
     else {
@@ -39,7 +39,7 @@ export async function issueTokens(userId: string, amount: number): Promise<UserW
   }
 }
 
-export async function getWalletBalance(userId: string): Promise<number> {
+export async function getWalletBalance(userId: number): Promise<number> {
   const walletBalance = await walletBalanceDAO.findByUserId(userId);
   if (!walletBalance) throw new Error('Wallet non trovato');
   return walletBalance.balance;
