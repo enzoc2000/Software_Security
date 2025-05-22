@@ -15,8 +15,6 @@ CREATE TABLE IF NOT EXISTS `users` (
   `name` varchar(45) NOT NULL,
   `city` varchar(45) NOT NULL,
   `address` varchar(45) NOT NULL,
-  `street_number` varchar(45) NOT NULL,
-  `company_logo` mediumblob,
   PRIMARY KEY (`id_user`),
   UNIQUE KEY `id_users_UNIQUE` (`id_user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -52,4 +50,12 @@ CREATE TABLE IF NOT EXISTS `emissions` (
   UNIQUE KEY `id_emission_UNIQUE` (`id_emission`),
   UNIQUE KEY `id_user_UNIQUE` (`id_user`),
   CONSTRAINT `id_user_emission` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Creazione della tabella "serial_codes"
+CREATE TABLE `serial_codes` (
+  `serial_code` varchar(12) NOT NULL,
+  `is_used` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`serial_code`),
+  UNIQUE KEY `serial_code_UNIQUE` (`serial_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
