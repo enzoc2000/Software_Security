@@ -18,6 +18,7 @@ services:
         --graphql-http-enabled
         --graphql-http-host=0.0.0.0
         --graphql-http-port=8547
+        --network-id=1338
     volumes:
       - besu-data:/opt/besu/data
       - besu-config:/etc/besu
