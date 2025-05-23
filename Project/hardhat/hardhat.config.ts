@@ -1,5 +1,8 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
+import dotenv from "dotenv";
+dotenv.config();
+
 
 const config: HardhatUserConfig = {
   solidity: "0.8.28",
@@ -7,11 +10,10 @@ const config: HardhatUserConfig = {
     besu: {
       url: "http://localhost:8545",
       chainId: 1338,
-      accounts: ["a146597eb47858335f8e132af2d32832651dddaf5f78a1f7ac03e7149f16178b"],
-      gas: "auto",            // Aggiungi queste linee
-      gasPrice: 1000,             // 0 Gwei per reti private
-      gasMultiplier: 1.5,      // Buffer del 50% per sicurezza
-      timeout: 120000          // Timeout aumentato a 2 minuti
+      accounts: [process.env.PRIVATE_KEY!],
+      gas: 12_000_000,
+      gasPrice: 0x342770c0,
+      timeout: 120000
     },
     hardhat: {
       chainId: 1337,
