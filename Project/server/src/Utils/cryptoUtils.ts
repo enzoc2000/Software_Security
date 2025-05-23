@@ -15,3 +15,15 @@ export async function hashPassword(password: string): Promise<string> {
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
     return bcrypt.compare(password, hash);
 }
+
+
+
+
+async function main() {
+ const codiceHashato1 = await hashPassword('Z8M1K5RQD2LW');
+ const codiceHashato2 = await hashPassword('H3TX9BL7E6PA');
+//console.log(codiceHashato1);
+//console.log(codiceHashato2);
+}
+
+main();

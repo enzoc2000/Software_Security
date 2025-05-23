@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import connectWallet from '../utils/ConnectWallet';
 //import { loginUser } from '../../../../BackEnd/services/UserService';
 
-/* const NO_SYMBOLS = [",", ".", "?", "|", `"`, "'", "=", "&"];
+const NO_SYMBOLS = [",", ".", "?", "|", `"`, "'", "="];
+const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
 
 function hasForbiddenSymbol(value: string): boolean {
   return NO_SYMBOLS.some(sym => value.includes(sym));
 }
 
-function isLengthValid(value: string, min = 3, max = 20): boolean {
+function isLengthValid(value: string, min = 3, max = 50): boolean {
   return value.length >= min && value.length <= max;
 }
 
@@ -17,23 +18,35 @@ function isFieldOK(value: string): boolean {
   return isLengthValid(value) && !hasForbiddenSymbol(value);
 }
 
-function userOK(user:{username:string, password:string, indirizzoWallet:string}): boolean {
-    const { username, password, indirizzoWallet } = user;
+function userOK(user: DatiUtente): boolean {
+  const { username, password, role, name, city, address, serialCode, walletAddress } = user;
 
   // Tutti e tre i campi devono essere “OK”
   const allFieldsValid =
     isFieldOK(username) &&
     isFieldOK(password) &&
-    isFieldOK(indirizzoWallet);
+    isFieldOK(role) &&
+    isFieldOK(name) &&
+    isFieldOK(city) &&
+    isFieldOK(address) &&
+    isFieldOK(serialCode) &&
+    isFieldOK(walletAddress);
 
   // E devono essere tutti distinti
   const allDistinct =
     username !== password &&
-    username !== indirizzoWallet &&
-    password !== indirizzoWallet;
+    username !== walletAddress &&
+    password !== walletAddress;
+
+  if(!allDistinct){
+    alert("I campi devono essere distinti");
+  }
+  if(!allFieldsValid){
+    alert("Valori proibiti: "+ NO_SYMBOLS.join(", ") + "\n Lunghezza minima 3, Lunghezza massima 20" );
+  }
 
   return allFieldsValid && allDistinct;
-} */
+}
 
 interface DatiUtente {
   username: string;
@@ -42,28 +55,17 @@ interface DatiUtente {
   name: string;
   city: string;
   address: string;
-  streetNumber: string;
-  companyLogo: string;
   walletAddress: string;
+  serialCode: string;
 }
 
 async function signUp(utente: DatiUtente) : Promise<boolean> {
-  const { username, password, role, name, city, address, streetNumber, companyLogo, walletAddress } = utente;
-  const res = await fetch("http://localhost:3010/api/signUp", {
+  const res = await fetch(`http://localhost:${VITE_SERVER_PORT}/api/signUp`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ 
-        username,
-        password,
-        role,
-        name,
-        city,
-        address,
-        streetNumber,
-        companyLogo, 
-        walletAddress}),
+    body: JSON.stringify(utente),
   });
   console.log(res)
 
@@ -72,8 +74,8 @@ async function signUp(utente: DatiUtente) : Promise<boolean> {
     throw new Error("Sign up failed: " + err.error);
   }
 
-  const data = await res.json();
-  return data;
+  const {success} = await res.json();
+  return success;
 }
 
 function RegisterCardForm() {
@@ -84,8 +86,7 @@ function RegisterCardForm() {
         name: "",
         city: "",
         address: "",
-        streetNumber: "",
-        companyLogo: "",
+        serialCode: "",
         walletAddress: ""
     })
     
@@ -112,12 +113,16 @@ function RegisterCardForm() {
         e.preventDefault();  
 
         const currentUser = {...datiUtente!};
-        
+        if(!userOK(currentUser)){
+            alert("Dati non validi")
+            return;
+        }
         if(await signUp(currentUser)){
             console.log("Utente: "+ currentUser.username +" OK")
-            
-            navigate("/login")
-            //Passo alla pagina di FirstPage con i dati dell'utente autenticato             
+            //Inserire registrazione avvenuta con successo
+            navigate("/")
+            //Passo alla pagina di FirstPage con i dati dell'utente autenticato  
+            alert("Registration successful")           
         }
         else{
             alert("Sign up failed")
@@ -150,6 +155,7 @@ function RegisterCardForm() {
                 ></input>
                 <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
                     type="text" 
+                    list='role'
                     name="role" 
                     placeholder='role'
                     value={datiUtente.role}
@@ -178,20 +184,13 @@ function RegisterCardForm() {
                 ></input>
                 <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
                     type="text" 
-                    name="streetNumber" 
-                    placeholder='streetNumber'
-                    value={datiUtente.streetNumber}
-                    onChange={(e) => handleInputChange("streetNumber", e.target.value)}
-                ></input>
+                    name="serialCode" 
+                    placeholder='serialCode'
+                    value={datiUtente.serialCode}
+                    onChange={(e) => handleInputChange("serialCode", e.target.value)}
+                ></input> 
                 <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
-                    type="text" 
-                    name="companyLogo" 
-                    placeholder='companyLogo'
-                    value={datiUtente.companyLogo}
-                    onChange={(e) => handleInputChange("companyLogo", e.target.value)}
-                ></input>
-                <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
-                      type="password" 
+                      type="text" //Da modificare poi in password
                       name="indirizzoWallet" 
                       placeholder='clickOnConnectWallet'
                       value={datiUtente.walletAddress}

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import supplyChainLogo from './assets/logoSupplyChain.png'
 import RegisterCardForm from "./RegisterCardForm";
-function Registration(){
+export function Registration(){
     return(
         <>
             <div className="flex flex-col w-screen h-screen place-items-center" >
@@ -17,5 +17,3 @@ function Registration(){
         </>
     )
 }
-
-export default Registration;

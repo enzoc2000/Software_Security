@@ -2,12 +2,12 @@ import { UserWallet } from '../Models/UserWallet';
 import { db } from '../Config/db';
 
 /**
- * DAO per la gestione dell'accesso ai dati del WalletBalance
- * Questa classe fornisce metodi per salvare, recuperare e aggiornare i saldi del portafoglio nel database.
+ * DAO per la gestione dell'accesso ai dati del Wallet
+ * Questa classe fornisce metodi per salvare, recuperare e aggiornare i dati del portafoglio nel database.
  * Utilizza il modulo db per eseguire query SQL.
  */
 export class UserWalletDAO {
-    // Salvataggio di un WalletBalance
+    // Salvataggio di un Wallet
     async save(walletBalance: UserWallet): Promise<void> {
         await db.execute(
             `INSERT INTO wallets (id_user, address, balance) VALUES (?, ?, ?)`,
@@ -19,15 +19,32 @@ export class UserWalletDAO {
         );
     }
 
-    // Recupero del WalletBalance per un utente
-    async findByUserId(userId: number): Promise<UserWallet | undefined> {
+    // Recupero del Wallet per un utente
+    async findByUserId(userId: number): Promise<UserWallet> {
         const [rows]: any = await db.execute(
-            `SELECT * FROM wallets WHERE id_user = ?`,
+            `SELECT * FROM wallets WHERE id_user = ?`, 
             [userId]
         );
 
         if (rows.length === 0)
-            return undefined;
+            throw new Error('Wallet non trovato');
+
+        const row = rows[0];
+        //const wallet = new UserWallet(0,row.balance,'');
+        //return wallet;
+    
+         return this.mapRowToWalletBalance(row); 
+    }
+
+    // Recupero del Wallet sulla base dell'indirizzo
+    async findByAddress(address: string): Promise<UserWallet> {
+        const [rows]: any = await db.execute(
+            `SELECT * FROM wallets WHERE address = ?`,
+            [address]
+        );
+
+        if (rows.length === 0)
+            throw new Error('Wallet non trovato');
 
         const row = rows[0];
         return this.mapRowToWalletBalance(row);

@@ -31,6 +31,6 @@ export async function submitEmission(userId: number, co2Amount: number): Promise
 /**
  * Restituisce le emissioni registrate da un utente.
  */
-export async function getEmissionsByUser(userId: number): Promise<Emission[] | undefined> {
+export async function getEmissionsByUser(userId: number): Promise<Emission[]> {
   return await emissionDAO.findByUserId(userId);
 }

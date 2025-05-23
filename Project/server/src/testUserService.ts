@@ -1,5 +1,5 @@
 import { signUpUser, loginUser, linkWallet } from './Services/UserService';
-import { seedUsers } from './Data/seedUsers';
+import { seedUsers, seedSerialCodes } from './Data/seedUsers';
 import { UserWallet } from './Models/UserWallet';
 
 // Piccolo test per verificare il funzionamento dei servizi utente
@@ -11,9 +11,8 @@ async function main() {
                   seedUsers[0].name,
                   seedUsers[0].city,
                   seedUsers[0].address,
-                  seedUsers[0].streetNumber,
-                  seedUsers[0].companyLogo,
-                  seedUsers[0].walletAddress);
+                  seedUsers[0].walletAddress,
+                  seedSerialCodes[0].serial_code);
   
   // Registrazione del secondo utente di seedUsers
   await signUpUser(seedUsers[1].username,
@@ -22,9 +21,8 @@ async function main() {
                   seedUsers[1].name,
                   seedUsers[1].city,
                   seedUsers[1].address,
-                  seedUsers[1].streetNumber,
-                  seedUsers[1].companyLogo,
-                  seedUsers[1].walletAddress);
+                  seedUsers[1].walletAddress,
+                  seedSerialCodes[1].serial_code);
                   
   // Registrazione del terzo utente di seedUsers
   await signUpUser(seedUsers[2].username,
@@ -33,9 +31,8 @@ async function main() {
                   seedUsers[2].name,
                   seedUsers[2].city,
                   seedUsers[2].address,
-                  seedUsers[2].streetNumber,
-                  seedUsers[2].companyLogo,
-                  seedUsers[2].walletAddress);
+                  seedUsers[2].walletAddress,
+                  seedSerialCodes[2].serial_code);
 
   // Esempio di associazione wallet
   // Associa un wallet all'utente con ID 1

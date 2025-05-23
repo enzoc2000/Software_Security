@@ -23,26 +23,26 @@ export class EmissionDAO {
     }
 
     // Recupero di tutte le emissioni
-    async findAll(): Promise<Emission[] | undefined> {
+    async findAll(): Promise<Emission[]> {
         const [rows]: any = await db.execute(
             `SELECT * FROM emissions`
         );
 
         if (rows.length === 0) 
-            return undefined;
+            throw new Error('Emissione non trovata');
 
         return rows.map(this.mapRowToEmission);
     }
 
     // Recupero di un'emissione tramite ID dell'utente
-    async findByUserId(userId: number): Promise<Emission[] | undefined> {
+    async findByUserId(userId: number): Promise<Emission[]> {
         const [rows]: any = await db.execute(
             `SELECT * FROM emissions WHERE id_user = ?`,
             [userId]
         );
 
         if (rows.length === 0) 
-        return undefined;
+            throw new Error('Emissione non trovata');
 
         return rows.map(this.mapRowToEmission);
     }
