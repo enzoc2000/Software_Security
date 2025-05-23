@@ -16,7 +16,7 @@ async function main() {
 
   try {
     const CarbonCredit = await ethers.getContractFactory("CarbonCredit");
-    const carbonCredit = await CarbonCredit.deploy(
+    const contract = await CarbonCredit.deploy(
       initialSupply, // Unico parametro richiesto dal tuo costruttore
       {
         gasLimit: 5_000_000,
@@ -24,14 +24,15 @@ async function main() {
       }
     );
     
-    console.log("Deploy tx sent:", carbonCredit.deployTransaction.hash);
 
   // 5. Attendi la conferma
   console.log(`\n⏳ Waiting for deployment confirmation...`);
   console.log(`📝 TX Hash: ${contract.deploymentTransaction().hash}`);
   
   await contract.waitForDeployment();
+  console.log("Contract deployed at:", contract.address);
   const tokenAddress = await contract.getAddress();
+  console.log("TokenAddress Contract deployed at:", tokenAddress);
 
 
   // 6. Salva i dettagli del deploy
@@ -53,10 +54,6 @@ async function main() {
     "./deployment-info.json", 
     JSON.stringify(deploymentInfo, null, 2)
   );
-
-    await carbonCredit.deployed();
-    console.log("Contract deployed at:", carbonCredit.address);
-
 
   // 7. Output per MetaMask
   console.log(`
