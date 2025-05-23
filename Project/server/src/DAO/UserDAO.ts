@@ -33,14 +33,14 @@ export class UserDAO {
   }
   
   //Recupero di un utente tramite username
-  async findByUsername(username: string): Promise<User | undefined> {
+  async findByUsername(username: string): Promise<User> {
     const [rows]: any = await db.execute(
       `SELECT * FROM users WHERE username = ?`,
       [username]
     );
 
     if (rows.length === 0) 
-      return undefined;
+      throw new Error('Utente non trovato');
 
     const row = rows[0];
     const user: User = this.mapRowToUser(row);
@@ -68,7 +68,7 @@ export class UserDAO {
     return this.mapRowToUser(row, wallet);
   }
 
-  //Controllo della validità di un serial code
+  //Controllo della validità di un seriale code
   //Restituisce true se il serial code è valido e non è stato utilizzato
   async checkSerialCode(serialCode: string): Promise<string | false> {
     const [rows]: any = await db.execute(
@@ -118,6 +118,28 @@ export class UserDAO {
         user.id
       ]
     );
+  }
+
+  // Fuznione che recupera di tutti gli utenti tranne quello con lo username specificato
+  async findAllExceptUserId(id: number): Promise<User[]> {
+    const [rows]: any = await db.execute(
+      `SELECT * FROM users WHERE id_user != ?`,
+      [id]
+    );
+
+    if (rows.length === 0) 
+        throw new Error('Utenti non trovati');
+
+    const walletDAO = new UserWalletDAO();
+    const users: User[] = [];
+
+    for (const row of rows) {
+      const wallet = await walletDAO.findByUserId(row.id_user);
+      const user = this.mapRowToUser(row, wallet);
+      users.push(user);
+    }
+
+    return users; 
   }
 
   // Funzione di utilità per convertire una riga del DB in un oggetto User

@@ -10,7 +10,7 @@ describe("CarbonCredit", function () {
     const initialSupply = 1000;
     const CarbonCreditFactory = await ethers.getContractFactory("CarbonCredit");
     const carbonCredit = (await CarbonCreditFactory.deploy(initialSupply)) as CarbonCredit;
-    await carbonCredit.deployed();
+    await carbonCredit.deployed();//
     return { carbonCredit, deployer, other, initialSupply };
   }
 
@@ -18,7 +18,7 @@ describe("CarbonCredit", function () {
     const { carbonCredit, deployer, initialSupply } = await loadFixture(deployCarbonCreditFixture);
     const decimals = await carbonCredit.decimals();
     const deployerBalance = await carbonCredit.balanceOf(deployer.address);
-    const expectedSupply = ethers.utils.parseUnits(initialSupply.toString(), decimals);
+    const expectedSupply = ethers.parseUnits(initialSupply.toString(), decimals); //const expectedSupply = ethers.utils.parseUnits(initialSupply.toString(), decimals);
     expect(deployerBalance).to.equal(expectedSupply);
   });
 
@@ -57,7 +57,7 @@ describe("CarbonCredit", function () {
     tx = await carbonCredit.mine();
     await tx.wait();
 
-    const expectedInitial = ethers.utils.parseUnits(initialSupply.toString(), decimals);
+    const expectedInitial = ethers.parseUnits(initialSupply.toString(), decimals); //const expectedInitial = ethers.utils.parseUnits(initialSupply.toString(), decimals);
     const deployerBalance = await carbonCredit.balanceOf(deployer.address);
     // Final balance should be initial supply plus two mining rewards
     expect(deployerBalance).to.equal(expectedInitial.add(reward.mul(2)));
