@@ -1,7 +1,9 @@
 import React, { useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import connectWallet from '../utils/ConnectWallet';
+import { useAuth } from '../hooks/useAuth';
 const NO_SYMBOLS = [",", ".", "?", "|", `"`, "'", "=", "&"];
+const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
 
 function hasForbiddenSymbol(value: string): boolean {
   return NO_SYMBOLS.some(sym => value.includes(sym));
@@ -47,12 +49,10 @@ interface utenteAutenticato {
   name: string;
   city: string;
   address: string;
-  streetNumber: string;
-  companyLogo: string;
 }
 
-async function login(utente: Utente) : Promise<utenteAutenticato> {
-  const res = await fetch("http://localhost:3010/api/login", {
+async function loginApi(utente: Utente) : Promise<{utenteAutenticato: utenteAutenticato, token: string}> {
+  const res = await fetch(`http://localhost:${VITE_SERVER_PORT}/api/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -78,6 +78,7 @@ function LoginCardForm() {
     })
     
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     
     const buttonConnectWallet = async () => {    
@@ -98,25 +99,24 @@ function LoginCardForm() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();  
         const currentUser = {...datiUtente}
+        setDatiUtente({
+          username: "",
+          password: "",
+          walletAddress: ""
+        });
         
         if(userOK(currentUser)){
             console.log("Utente: "+ currentUser.username +" OK")
             
             try {
             //Chiamata al backend (UserService) e autenticazione
-            const utenteAutenticato = await login(datiUtente);
-           
-            //I dati dell'utente sono: nome, crediti, CO2_emessa, ecc..
-            console.log("Dati utente autenticato:", utenteAutenticato);
-            //const utenteLinkato = await linkWallet(strutturaWallet.userId, strutturaWallet);
+            const {utenteAutenticato, token} = await loginApi(datiUtente);
+            //I dati dell'utente sono: nome, crediti, CO2_emessa, ecc..            //const utenteLinkato = await linkWallet(strutturaWallet.userId, strutturaWallet);
 
-            setDatiUtente({
-                username: "",
-                password: "",
-                walletAddress: ""
-            });
+            login(token, utenteAutenticato);
+
             //Passo alla pagina di FirstPage con i dati dell'utente autenticato 
-            navigate("/firstPage", {state: {user: utenteAutenticato }})   
+            navigate("/firstPage");   
 
             } catch (error) {
               alert("Login fallito: " + error);
@@ -124,11 +124,6 @@ function LoginCardForm() {
         }
         else{
             alert("Dati non validi")
-            setDatiUtente({
-                username: "",
-                password: "",
-                walletAddress: ""
-            });
         }
 
     } 

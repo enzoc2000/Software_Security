@@ -53,14 +53,14 @@ export class UserDAO {
   }
 
   //Recupero di un utente tramite ID
-  async findById(userId: number): Promise<User | undefined> {
+  async findById(userId: number): Promise<User> {
     const [rows]: any = await db.execute(
       `SELECT * FROM users WHERE id_user = ?`,
       [userId]
     );
 
     if (rows.length === 0) 
-      return undefined;
+      throw new Error("Utente non trovato");
 
     const walletDAO = new UserWalletDAO();
     const wallet = await walletDAO.findByUserId(userId);

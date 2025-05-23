@@ -1,7 +1,7 @@
 import LoginCardForm from "./LoginCardForm";
 import supplyChainLogo from './assets/logoSupplyChain.png'
 import { Link } from "react-router-dom";
-function Login(){
+export function Login(){
     return(
         <>
             <div className="flex flex-col w-screen h-screen place-items-center" >
@@ -17,5 +17,3 @@ function Login(){
         </>
     )
 }
-
-export default Login;

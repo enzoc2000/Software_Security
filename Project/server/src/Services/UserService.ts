@@ -101,6 +101,6 @@ export async function linkWallet(userId: number, wallet: UserWallet): Promise<Us
 /**
  * Recupera un utente dato il suo ID.
  */
-export async function getUserById(userId: number): Promise<User | undefined> {
+export async function getUserById(userId: number): Promise<User> {
   return await userDAO.findById(userId);
 }

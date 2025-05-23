@@ -4,6 +4,7 @@ import connectWallet from '../utils/ConnectWallet';
 //import { loginUser } from '../../../../BackEnd/services/UserService';
 
 const NO_SYMBOLS = [",", ".", "?", "|", `"`, "'", "="];
+const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
 
 function hasForbiddenSymbol(value: string): boolean {
   return NO_SYMBOLS.some(sym => value.includes(sym));
@@ -59,7 +60,7 @@ interface DatiUtente {
 }
 
 async function signUp(utente: DatiUtente) : Promise<boolean> {
-  const res = await fetch("http://localhost:3010/api/signUp", {
+  const res = await fetch(`http://localhost:${VITE_SERVER_PORT}/api/signUp`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

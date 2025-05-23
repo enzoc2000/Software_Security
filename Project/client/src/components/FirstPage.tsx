@@ -1,98 +1,45 @@
 import logoSupplyChain from "./assets/logoSupplyChain.png"
-import Card from "./Card"
-import { useSelector } from "react-redux"
-import { Link, useLocation} from "react-router-dom";
+import { useVerifyAuth } from "../hooks/useVerifyAuth";
 
-/* interface DatiUtente {
-  username: string;
-  role: string;
-  name: string;
-  city: string;
-  address: string;
-} */
+/* async function listActors(nomeUtente: string) : Promise<User[]> {
+  const res = await fetch(`http://localhost:${VITE_SERVER_PORT}/api/listActors`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(nomeUtente),
+  });
+  console.log(res)
 
-interface User {
-  id: number;
-  name: string;
-  emissions: number;
-  credits: number;
-}
-
-
-interface LocationState {
-  user: { _id: number;
-    _username: string;
-    passwordHash: string;
-    //(Azienda trasportatrice, agricola, rivenditore, ecc.)
-    _role: string;
-    _name: string;
-    _city: string;
-    _address: string;
-    _streetNumber: string;
-    //URL immagine logo
-    _companyLogo?: string;
-    //Facoltativo in attesa di capire come gestirlo (se presente o meno in fase di registrazione)
-    _wallet?: {
-      _userId: number;
-      _address: string;
-      _balance: number;
-    };
-  }
-}
-
-//viene mostrata la pagina iniziale con il logo e il titolo dell'applicazione
-//viene mostrata la card con i dati dell'attore che ha effettuato la chiamata
-function FirstPage(){
-
-  // Assuming the "users" slice returns an array of User objects.
-  const dati_attore: User[] = useSelector((state: { users: { value: User[]; }; }) => state.users.value);
-
-  const location = useLocation()
-
-  const state = location.state as LocationState;
-
-  const utente = state.user;
-
-
-  // Example state for a single User. Adjust initial values as needed.
-  /* const [user, setUser] = useState<User>({
-    id: 0,
-    name: "",
-    emissions: 0,
-    credits: 0
-  }); */
-  
-
-  if (!state || !state.user) {
-    return <p>Errore: dati utente non disponibili.</p>;
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error("Not found: " + err.error);
   }
 
+  const {success} = await res.json();
+  return success;
+}  */
 
+export function FirstPage() {
+  const { profile } = useVerifyAuth();
 
-  //const dispatch = useDispatch()
-
-
-    // Function to store the selected item in sessionStorage.
-    const handleCardClick = (item: User) => {
-    // Store the selected item in sessionStorage.
-    // Could be used to pass data to another page.
-      sessionStorage.setItem("dati_utente", JSON.stringify(item));
-      sessionStorage.setItem("dati_attore", JSON.stringify(item));
-};
-
-    return(
-        <div className="flex flex-col h-screen w-screen " >
-            <div className="flex flex-col place-items-center-safe" >
-                <h1 className="text-5xl text-red-800 ">
-                        Sustainable Food Supply Chain
-                </h1>
-                <img 
-                    className="w-auto"
-                    src={logoSupplyChain}
-                    alt="logo">
-                </img>
-            </div>
-            <div className="flex flex-wrap w-screen place-items-center" >
+  if (!profile) {
+    // finché non ho caricamento completo
+    return <div>Loading profile…</div>;
+  }
+  return (
+    <div className="flex flex-col h-screen w-screen " >
+      <div className="flex flex-col place-items-center-safe" >
+        <h1 className="text-5xl text-red-800 ">
+          Sustainable Food Supply Chain
+        </h1>
+        <img
+          className="w-auto"
+          src={logoSupplyChain}
+          alt="logo">
+        </img>
+      </div>
+      {/* <div className="flex flex-wrap w-screen place-items-center" >
                 {dati_attore.map((item: User) => (
                 <Link
                     to={`/ExchangePage/${item.id}`}
@@ -102,53 +49,37 @@ function FirstPage(){
                     <Card key={item.id} name={item.name} crediti={item.credits} CO2={item.emissions}/>
                 </Link>
             ))}
-            </div>
-            <div className="flex place-items-center-safe" >
-                <h1 className="text-5xl text-red-800 ">
-                    Welcome : 
-                </h1>
-                <h1 className="text-5xl  ">
-                    {utente._name}
-                </h1>
-            </div>
-            <div className="flex place-items-center-safe" >
-                <h1 className="text-5xl text-red-800 ">
-                    Your role is the: 
-                </h1>
-                <h1 className="text-5xl  ">
-                    {utente._role}
-                </h1>
-            </div>
-            <div className="flex place-items-center-safe" >
-                <h1 className="text-5xl text-red-800 ">
-                    Your city is: 
-                </h1>
-                <h1 className="text-5xl  ">
-                    {utente._city}
-                </h1>
-            </div>
-            <div className="flex place-items-center-safe" >
-                <h1 className="text-5xl text-red-800 ">
-                    Your address is: 
-                </h1>
-                <h1 className="text-5xl  ">
-                    {utente._address}
-                </h1>
-            </div>
-            <div className="flex place-items-center-safe" >
-                <h1 className="text-5xl text-red-800 ">
-                    Your wallet balance is: 
-                </h1>
-                <h1 className="text-5xl  ">
-                    {utente._wallet?._balance}
-                </h1>
-            </div>
+            </div> */}
+      <div className="grid grid-cols place-items-center-safe space-x-4 mt-8">
+        <div className="flex place-items-center-safe">
+          <h2 className="text-4xl text-red-800">Welcome:</h2>
+          <p className="text-2xl">{profile.name}</p>
         </div>
-    )
+        <div className="flex place-items-center-safe">
+          <h2 className="text-4xl text-red-800">Role:</h2>
+          <p className="text-2xl">{profile.role}</p>
+        </div>
+        <div className="flex place-items-center-safe">
+          <h2 className="text-4xl text-red-800">City:</h2>
+          <p className="text-2xl">{profile.city}</p>
+        </div>
+        <div className="flex place-items-center-safe">
+          <h2 className="text-4xl text-red-800">Address:</h2>
+          <p className="text-2xl">{profile.address}</p>
+        </div>
+        <div className="flex place-items-center-safe" >
+          <h1 className="text-4xl text-red-800 ">
+            Your wallet balance is:
+          </h1>
+          <h1 className="text-2xl  ">
+            { }
+          </h1>
+        </div>
+      </div>
+      
+    </div>
+  )
 }
-
-export default FirstPage
-
 
 /*
 function FirstPage() {
