@@ -5,7 +5,7 @@ services:
     container_name: ledger-besu
     image: hyperledger/besu:latest
     command: >
-        --network=dev
+        --genesis-file=/config/genesis.json
         --metrics-enabled
         --metrics-host=0.0.0.0
         --metrics-port=9545
@@ -15,6 +15,9 @@ services:
         --rpc-ws-enabled
         --rpc-ws-host=0.0.0.0
         --rpc-ws-port=8546
+        --rpc-http-cors-origins="*"
+        --host-allowlist="*"
+        --rpc-http-api=ETH,NET,WEB3,ADMIN
         --graphql-http-enabled
         --graphql-http-host=0.0.0.0
         --graphql-http-port=8547
