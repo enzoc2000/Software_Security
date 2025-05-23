@@ -1,6 +1,6 @@
 {
   "config": {
-    "chainId": 1337,
+    "chainId": 1338,
     "berlinBlock": 0,
     "homesteadBlock": 0,
     "eip150Block": 0,
@@ -13,19 +13,13 @@
     "londonBlock": 0,  
     "ethash": {}
   },
+  "nonce": "0x0",
+  "timestamp": "0x0",
   "difficulty": "0x1",
-  "gasLimit": "0x1fffffffffffff",
+  "gasLimit": "0x2F00000",
   "alloc": {
-    
-    "0x2B70E2087473622A4DC2aD8E03F4253BFb6Cf79E": {
-    "balance": "10000000000000000000000" 
-    },
-    "0x9c895B655b7340615b953bA7E777455B78550DF6": {
-    "balance": "10000000000000000000000" 
-    },
-    "0xD41cd93b99383D039de8B7E3E6d48F6EceA8CE5d": { "balance": "10000000000000000000000" },
-    "0x02f4Cc224877c6A922C98a5Ba65Df66624b5bB24": { "balance": "10000000000000000000000" },
-    "0x190Bd8F8fd158d121D8ECCDf82E49Ec82213445b": { "balance": "10000000000000000000000" },
-    "0x4EE5A61661cdE4DbDA6FbB2bFBC1dC8145e82363": { "balance": "10000000000000000000000" }
+    "0xc73aF3677eBc555Fc631d3EdfCE675A656b684e5": {
+    "balance": "0xD3C21BCECCEDA1000000" 
+    }
   }
 }

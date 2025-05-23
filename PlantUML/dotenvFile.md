@@ -2,17 +2,19 @@
 # .env della cartella Besu:
 # -- crearlo se non lo si ha --
 
-MYSQL_ROOT_PASSWORD=software_security
-MYSQL_DATABASE=food_supply_chain
-MYSQL_USER=appuser
-MYSQL_PASSWORD=apppassword
+
+MYSQL_ROOT_PASSWORD=<root_password>
+MYSQL_DATABASE=<db_name>
+MYSQL_USER=<appuser>
+MYSQL_PASSWORD=<appuser_password>
+ 
 DB_HOST=127.0.0.1
 DB_PORT=3306
 HOST_PORT=3307 
 ## oppure 3306 a seconda della porta locale che si utilizza
-DB_NAME=food_supply_chain
-DB_USER=appuser
-DB_PASSWORD=apppassword
+DB_NAME=<db_name>
+DB_USER=<appuser>
+DB_PASSWORD=<appuser_password>
 
 # #########################################################
 # .env nella cartella server
@@ -20,9 +22,11 @@ DB_PASSWORD=apppassword
 
 DB_HOST=127.0.0.1
 DB_PORT=3307
-DB_NAME=food_supply_chain
-DB_USER=appuser
-DB_PASSWORD=apppassword
+## oppure 3306 a seconda della porta locale che si utilizza
+DB_PORT=3306
+DB_NAME=<db_name>
+DB_USER=<appuser>
+DB_PASSWORD=<appuser_password>
 
 SERVER_PORT=3010
 JWT_SECRET=your_jwt_secret

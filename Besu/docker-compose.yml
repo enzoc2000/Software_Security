@@ -6,21 +6,17 @@ services:
     image: hyperledger/besu:latest
     command: >
         --genesis-file=/config/genesis.json
-        --metrics-enabled
-        --metrics-host=0.0.0.0
-        --metrics-port=9545
+        --data-path=/opt/besu/data
+        --logging=DEBUG
         --rpc-http-enabled
         --rpc-http-host=0.0.0.0
         --rpc-http-port=8545
-        --rpc-ws-enabled
-        --rpc-ws-host=0.0.0.0
-        --rpc-ws-port=8546
+        --rpc-http-api=ETH,NET,WEB3,DEBUG,TXPOOL,ADMIN
         --rpc-http-cors-origins="*"
         --host-allowlist="*"
-        --rpc-http-api=ETH,NET,WEB3,ADMIN
-        --graphql-http-enabled
-        --graphql-http-host=0.0.0.0
-        --graphql-http-port=8547
+        --miner-enabled
+        --miner-coinbase=0xc73aF3677eBc555Fc631d3EdfCE675A656b684e5
+        --min-gas-price=0
     volumes:
       - besu-data:/opt/besu/data
       - besu-config:/etc/besu
@@ -33,23 +29,13 @@ services:
     networks:
       - besu_net
 
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
-    networks:
-      - besu_net
-
-  # grafana:
-  #   image: grafana/grafana
-  #   container_name: grafana
+  # prometheus:
+  #   image: prom/prometheus
+  #   container_name: prometheus
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml
   #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     - prometheus
+  #     - "9090:9090"
   #   networks:
   #     - besu_net
 
