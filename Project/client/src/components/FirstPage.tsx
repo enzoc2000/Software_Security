@@ -1,5 +1,7 @@
 import logoSupplyChain from "./assets/logoSupplyChain.png"
 import { useVerifyAuth } from "../hooks/useVerifyAuth";
+import { Link } from "react-router-dom";
+import Card from "./card";
 
 /* async function listActors(nomeUtente: string) : Promise<User[]> {
   const res = await fetch(`http://localhost:${VITE_SERVER_PORT}/api/listActors`, {
@@ -20,6 +22,13 @@ import { useVerifyAuth } from "../hooks/useVerifyAuth";
   return success;
 }  */
 
+interface User {
+  id: number;
+  name: string;
+  role: string;
+  walletBalance: number;
+}
+
 export function FirstPage() {
   const { profile } = useVerifyAuth();
 
@@ -27,6 +36,26 @@ export function FirstPage() {
     // finché non ho caricamento completo
     return <div>Loading profile…</div>;
   }
+
+  const dati_attore: User[] = [{
+    id: 1,
+    name: "Attore 1",
+    role: "Attore",
+    walletBalance: 100,
+  },
+  {
+    id: 2,
+    name: "Attore 2",
+    role: "Attore",
+    walletBalance: 100,
+  },];
+  const handleCardClick = (item: User) => {
+    // Store the selected item in sessionStorage.
+    // Could be used to pass data to another page.
+    sessionStorage.setItem("datiAttore", JSON.stringify(item));
+  };
+
+
   return (
     <div className="flex flex-col h-screen w-screen " >
       <div className="flex flex-col place-items-center-safe" >
@@ -39,17 +68,17 @@ export function FirstPage() {
           alt="logo">
         </img>
       </div>
-      {/* <div className="flex flex-wrap w-screen place-items-center" >
-                {dati_attore.map((item: User) => (
-                <Link
-                    to={`/ExchangePage/${item.id}`}
-                    key={item.id}
-                    onClick={() => handleCardClick(item)}
-                    >
-                    <Card key={item.id} name={item.name} crediti={item.credits} CO2={item.emissions}/>
-                </Link>
-            ))}
-            </div> */}
+      <div className="flex flex-wrap w-screen place-items-center" >
+        {dati_attore.map((item: User) => (
+          <Link
+            to={`/ExchangePage/${item.id}`}
+            key={item.id}
+            onClick={() => handleCardClick(item)}
+          >
+            <Card key={item.id} name={item.name} role={item.role} walletBalance={item.walletBalance} />
+          </Link>
+        ))}
+      </div>
       <div className="grid grid-cols place-items-center-safe space-x-4 mt-8">
         <div className="flex place-items-center-safe">
           <h2 className="text-4xl text-red-800">Welcome:</h2>
@@ -76,7 +105,7 @@ export function FirstPage() {
           </h1>
         </div>
       </div>
-      
+
     </div>
   )
 }
