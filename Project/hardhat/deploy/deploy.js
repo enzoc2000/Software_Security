@@ -24,15 +24,21 @@ async function main() {
       }
     );
     
-
+    const blockBefore = await ethers.provider.getBlockNumber();
+    console.log("Block before:", blockBefore);
+    
+    setTimeout(async () => {
+      const blockAfter = await ethers.provider.getBlockNumber();
+      console.log("Block after 30s:", blockAfter);
+    }, 30000);
+    
   // 5. Attendi la conferma
   console.log(`\n⏳ Waiting for deployment confirmation...`);
   console.log(`📝 TX Hash: ${contract.deploymentTransaction().hash}`);
   
   await contract.waitForDeployment();
-  console.log("Contract deployed at:", contract.address);
   const tokenAddress = await contract.getAddress();
-  console.log("TokenAddress Contract deployed at:", tokenAddress);
+  console.log("Contract deployed at:", tokenAddress);
 
 
   // 6. Salva i dettagli del deploy
@@ -49,11 +55,6 @@ async function main() {
       chainId: network.chainId
     }
   };
-
-  fs.writeFileSync(
-    "./deployment-info.json", 
-    JSON.stringify(deploymentInfo, null, 2)
-  );
 
   // 7. Output per MetaMask
   console.log(`
