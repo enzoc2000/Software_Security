@@ -13,7 +13,7 @@ interface DatiAttore {
   crediti: string;
   emissioni: string;
 }
-function ExchangePage() {
+export function ExchangePage() {
     const { id } = useParams<{ id: string }>();
 
     const [datiUtente, setDatiUtente] = useState<DatiUtente | null>(null);
@@ -56,5 +56,3 @@ function ExchangePage() {
     </div>
   );
 }
-
-export default ExchangePage;
