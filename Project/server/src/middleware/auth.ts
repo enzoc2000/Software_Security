@@ -32,7 +32,7 @@ export const authMiddleware: RequestHandler = (req, res, next): void => {
     const payload = jwt.verify(token, JWT_SECRET) as jwtPayload;
     // Qui scrivo direttamente su req.userId e req.role
     req.userId = payload.userId;
-    req.role   = payload.role;
+    req.role = payload.role;
     next();
   } catch {
     res.status(401).json({ message: "Token non valido o scaduto" });
