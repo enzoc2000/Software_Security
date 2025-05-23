@@ -3,6 +3,7 @@ import { UserWallet } from '../Models/UserWallet';
 import { UserDAO } from '../DAO/UserDAO';
 import { hashPassword, verifyPassword } from '../Utils/cryptoUtils';
 import { UserWalletDAO } from '../DAO/UserWalletDAO';
+import { UserDTO } from '../Models/UserDTO';
 
 /**
  * Servizio per la gestione degli utenti.
@@ -61,7 +62,7 @@ export async function signUpUser(username: string, password: string,
  * Effettua il login di un utente verificando username e password.
  * @throws Error se le credenziali non sono valide.
  */
-export async function loginUser(username: string, password: string, walletAddress: string): Promise<User> {
+export async function loginUser(username: string, password: string, walletAddress: string): Promise<UserDTO> {
   const user = await userDAO.findByUsername(username);
   if (!user) {
     throw new Error('Utente non trovato');
@@ -78,14 +79,25 @@ export async function loginUser(username: string, password: string, walletAddres
     throw new Error('Indirizzo wallet non valido');
   }
 
-  return user;
+  // Mappa User → DTO
+  const userDTO: UserDTO = {
+    id: user.id,
+    role: user.role,
+    name: user.name,
+    city: user.city,
+    address: user.address,
+    wallet_address: user.wallet?.address,
+    wallet_balance: user.wallet?.balance,
+  };
+
+  return userDTO;
 }
 
 /**
  * Collega un indirizzo wallet a un utente esistente.
  * @throws Error se l'utente non viene trovato.
  */
-export async function linkWallet(userId: number, wallet: UserWallet): Promise<User> {
+export async function linkWallet(userId: number, wallet: UserWallet): Promise<UserDTO> {
   const user = await userDAO.findById(userId);
   if (!user) {
     throw new Error('Utente non trovato');
@@ -95,12 +107,55 @@ export async function linkWallet(userId: number, wallet: UserWallet): Promise<Us
   await userWalletDAO.save(wallet);
   await userDAO.update(user);
   
-  return user;
+  // Mappa User → DTO
+  const userDTO: UserDTO = {
+    id: user.id,
+    role: user.role,
+    name: user.name,
+    city: user.city,
+    address: user.address,
+    wallet_address: user.wallet?.address,
+    wallet_balance: user.wallet?.balance,
+  };
+
+  return userDTO;
 }
 
 /**
  * Recupera un utente dato il suo ID.
  */
-export async function getUserById(userId: number): Promise<User> {
-  return await userDAO.findById(userId);
+export async function getUserById(userId: number): Promise<UserDTO> {
+  const user= await userDAO.findById(userId);
+  if(!user.wallet){
+    throw new Error('Wallet non trovato')
+  }
+  // Mappa User → DTO
+  const userDTO: UserDTO = {
+    id: user.id,
+    role: user.role,
+    name: user.name,
+    city: user.city,
+    address: user.address,
+    wallet_address: user.wallet?.address,
+    wallet_balance: user.wallet?.balance,
+  };
+
+  return userDTO;
+}
+
+//Funzione che recuper tutti gli utenti nel db eccetto quello riferito all'ID che si passa alla funzione 
+export async function getUsersExcept(id: number): Promise<UserDTO[]>{
+  const users= await userDAO.findAllExceptUserId(id);
+   const usersDTO: UserDTO[] = users.map(user => ({
+    id: user.id,
+    role: user.role,
+    name: user.name,
+    city: user.city,
+    address: user.address,
+    wallet_address: user.wallet?.address,
+    wallet_balance: user.wallet?.balance,
+  }));
+
+  return usersDTO;
+
 }
