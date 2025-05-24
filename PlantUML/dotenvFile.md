@@ -36,3 +36,11 @@ JWT_SECRET=your_jwt_secret
 # -- crearlo se non lo si ha --
 
 VITE_SERVER_PORT=3010
+
+# #########################################################
+# .env nella cartella hardhat
+# -- crearlo se non lo si ha --
+## Contattare Ema o Yassir
+
+PRIVATE_KEY=<privatekey>
+
