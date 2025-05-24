@@ -55,8 +55,8 @@ interface DatiUtente {
   name: string;
   city: string;
   address: string;
-  walletAddress: string;
   serialCode: string;
+  walletAddress: string;
 }
 
 async function signUp(utente: DatiUtente) : Promise<boolean> {
