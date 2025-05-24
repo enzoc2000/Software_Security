@@ -6,7 +6,6 @@ services:
     image: hyperledger/besu:latest
     command: >
         --genesis-file=/config/genesis.json
-        --data-path=/opt/besu/data
         --logging=DEBUG
         --rpc-http-enabled
         --rpc-http-host=0.0.0.0
