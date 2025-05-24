@@ -3,8 +3,9 @@
 import express, { Request, Response } from "express";
 import cors from 'cors'
 import jwt from "jsonwebtoken";
-import { getUserById, loginUser, signUpUser } from "../Services/UserService";
+import { getUserById, getUsersExcept, loginUser, signUpUser } from "../Services/UserService";
 import { authMiddleware } from "../middleware/auth";
+import { UserDTO } from "../Models/UserDTO";
 
 
 const app = express();
@@ -18,6 +19,35 @@ if (!JWT_SECRET || !PORT) {
   console.error("❌ SERVER_PORT o JWT_SECRET non definiti in .env");
   process.exit(1);
 }
+
+app.get(
+  "/api/profilo",
+  authMiddleware,                    // <— applica il controllo del JWT
+  async (req: Request, res: Response): Promise<void> => {
+    console.log(req.userId);
+    try {
+      // req.userId è stato valorizzato dal middleware
+      const user = await getUserById(req.userId!);
+      if (!user) {
+        res.status(404).json({ message: "Utente non trovato" });
+      }
+      // ritorna solo i campi “pubblici” del profilo
+      const { id, role, name, city, address, wallet_address, wallet_balance} = user;
+      res.status(200).json({
+        id,
+        role,
+        name,
+        city,
+        address,
+        wallet_address,
+        wallet_balance
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Errore interno" });
+    }
+  }
+);
 
 app.post("/api/login", async (req: Request, res: Response) => {
   const { username, password, walletAddress } = req.body;
@@ -36,11 +66,11 @@ app.post("/api/login", async (req: Request, res: Response) => {
     const payload = { userId: user.id, role: user.role };
     // Firmiamo il token, valido per 2 ore
     const token = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: "2h" });
-    
+
     res
       .status(200)
       .json({ user, token });
-      
+
   } catch (error: any) {
     console.error("Errore durante il login:", error);
     res
@@ -50,16 +80,16 @@ app.post("/api/login", async (req: Request, res: Response) => {
 });
 
 app.post("/api/signUp", async (req: Request, res: Response) => {
-  const {username,
-        password,
-        role,
-        name,
-        city,
-        address,
-        walletAddress,
-        serialCode
+  const { username,
+    password,
+    role,
+    name,
+    city,
+    address,
+    walletAddress,
+    serialCode
   } = req.body;
-  
+
   console.log("Tentativo signUp:", req.body);
   try {
     const okUser = await signUpUser(username, password, role, name, city, address, walletAddress, serialCode);
@@ -74,32 +104,25 @@ app.post("/api/signUp", async (req: Request, res: Response) => {
   }
 });
 
-app.get(
-  "/api/profilo",
-  authMiddleware,                    // <— applica il controllo del JWT
-  async (req: Request, res: Response): Promise<void> => {
+app.post(
+  "/api/listActors",
+  authMiddleware,
+  async (req: Request, res: Response) => {
+    const { id } = req.body;
+    console.log("Tentativo listActors:", req.body);
     try {
-      // req.userId è stato valorizzato dal middleware
-      const user = await getUserById(req.userId!);
-      if (!user) {
-        res.status(404).json({ message: "Utente non trovato" });
+      const users = await getUsersExcept(id);
+      if (!users) {
+        res.status(404).json({ message: "Utenti non trovati" });
       }
-      // ritorna solo i campi “pubblici” del profilo
-      const { id, username, role, name, city, address } = user;
-      res.status(200).json({
-        id,
-        username,
-        role,
-        name,
-        city,
-        address,
-      });
+      res.status(200).json(users);
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Errore interno" });
     }
   }
 );
+
 
 app.listen(PORT, () => {
   console.log(`✅ Server backend attivo su http://localhost:${PORT}`);

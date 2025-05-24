@@ -1,24 +1,17 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { UserDTO } from "../../../server/src/Models/UserDTO";
 
-interface User {
-  id: number;
-  username: string;
-  role: string;
-  name: string;
-  city: string;
-  address: string;
-}
 interface Auth {
-  user: User | null;
+  user: UserDTO | null;
   token: string | null;
-  login: (token: string, user: User) => void;
+  login: (token: string, user: UserDTO) => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<Auth | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserDTO | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
   // Al montaggio, recupera da localStorage
@@ -26,7 +19,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const storedToken = localStorage.getItem("authToken");
       const storedUser  = localStorage.getItem("user");
-
+      console.log({storedToken});
+      console.log({storedUser});
+      
       if (storedToken) {
         setToken(storedToken);
       }
@@ -43,7 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const login = (newToken: string, newUser: User) => {
+  const login = (newToken: string, newUser: UserDTO) => {
     setToken(newToken);
     setUser(newUser);
     localStorage.setItem("authToken", newToken);

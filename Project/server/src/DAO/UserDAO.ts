@@ -33,14 +33,14 @@ export class UserDAO {
   }
   
   //Recupero di un utente tramite username
-  async findByUsername(username: string): Promise<User> {
+  async findByUsername(username: string): Promise<User | undefined> {
     const [rows]: any = await db.execute(
       `SELECT * FROM users WHERE username = ?`,
       [username]
     );
 
     if (rows.length === 0) 
-      throw new Error('Utente non trovato');
+      return;
 
     const row = rows[0];
     const user: User = this.mapRowToUser(row);

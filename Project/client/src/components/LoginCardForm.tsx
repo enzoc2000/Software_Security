@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import connectWallet from '../utils/ConnectWallet';
 import { useAuth } from '../hooks/useAuth';
+import { UserDTO } from '../../../server/src/Models/UserDTO';
 const NO_SYMBOLS = [",", ".", "?", "|", `"`, "'", "=", "&"];
 const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
 
@@ -41,17 +42,8 @@ interface Utente {
   walletAddress: string;
 }
 
-interface utenteAutenticato {
-  id: number;
-  username: string;
-  password: string;
-  role: string;
-  name: string;
-  city: string;
-  address: string;
-}
 
-async function loginApi(utente: Utente): Promise<{ utenteAutenticato: utenteAutenticato, token: string }> {
+async function loginApi(utente: Utente): Promise<{ utenteAutenticato: UserDTO, token: string }> {
   const res = await fetch(`http://localhost:${VITE_SERVER_PORT}/api/login`, {
     method: "POST",
     headers: {
@@ -59,7 +51,6 @@ async function loginApi(utente: Utente): Promise<{ utenteAutenticato: utenteAute
     },
     body: JSON.stringify(utente),
   });
-  console.log(res)
   if (!res.ok) {
     const err = await res.json();
     throw new Error("Login failed: " + err.error);
