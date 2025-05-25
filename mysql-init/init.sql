@@ -67,3 +67,11 @@ VALUES
   ('$2b$10$y6NelmtreGBasM6zcrVMGeQkwq.vLh.sUc0BbHLiQ1s9dpt4SeU8e'),
   ('$2b$10$4t1q.7J7KWlon/FcYjXxFOQXr6kj4PKTtt8bqn5rI0L6/YDqnf2jy'),
   ('$2b$10$seg3DF/kFFKK3XqP/YiG4etohM1V5XrO/P/iqrBBrbeAKrifVvWme');
+
+-- Creazione della tabella "role_thresholds"
+CREATE TABLE IF NOT EXISTS `role_thresholds` (
+  `role` varchar(60) NOT NULL,
+  `threshold` double unsigned NOT NULL,
+  PRIMARY KEY (`role`),
+  UNIQUE KEY `role_UNIQUE` (`role`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
