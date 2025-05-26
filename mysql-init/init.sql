@@ -75,3 +75,9 @@ CREATE TABLE IF NOT EXISTS `role_thresholds` (
   PRIMARY KEY (`role`),
   UNIQUE KEY `role_UNIQUE` (`role`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO role_thresholds (role, threshold) 
+VALUES 
+  ('azienda_agricola', 100),
+  ('azienda_trasporti', 100),
+  ('azienda_rivenditore', 100);
