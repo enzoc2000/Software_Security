@@ -33,19 +33,19 @@ function userOK(user: DatiUtente): boolean {
     isFieldOK(walletAddress);
 
   // E devono essere tutti distinti
-  const allDistinct =
+  /* const allDistinct =
     username !== password &&
     username !== walletAddress &&
     password !== walletAddress;
 
   if(!allDistinct){
     alert("I campi devono essere distinti");
-  }
+  } */
   if(!allFieldsValid){
     alert("Valori proibiti: "+ NO_SYMBOLS.join(", ") + "\n Lunghezza minima 3, Lunghezza massima 20" );
   }
 
-  return allFieldsValid && allDistinct;
+  return allFieldsValid;
 }
 
 interface DatiUtente {
@@ -153,14 +153,16 @@ function RegisterCardForm() {
                     value={datiUtente.password}
                     onChange={(e) => handleInputChange("password", e.target.value)}
                 ></input>
-                <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
-                    type="text" 
-                    list='role'
-                    name="role" 
-                    placeholder='role'
+                <select className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
+                    name="role"
                     value={datiUtente.role}
                     onChange={(e) => handleInputChange("role", e.target.value)}
-                ></input>
+                >
+                    <option value="" disabled>Select role</option>
+                    <option value="farmer">farmer</option>
+                    <option value="transporter">transporter</option>
+                    <option value="retailer">retailer</option>
+                </select>
                 <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
                     type="text" 
                     name="name" 
