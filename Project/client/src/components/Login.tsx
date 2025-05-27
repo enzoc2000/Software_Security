@@ -5,7 +5,7 @@ export function Login(){
         <>
             <div className="flex flex-col w-screen h-screen place-items-center" >
                 <LoginCardForm/>
-                <Link to="/registration">Registrazione</Link>
+                <Link to="/registration">Registration</Link>
             </div>
         </>
     )

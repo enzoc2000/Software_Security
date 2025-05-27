@@ -5,7 +5,7 @@ export function Registration(){
         <>
             <div className="flex flex-col w-screen h-screen place-items-center" >
                 <RegisterCardForm/>
-                <Link to="/">Torna al Login</Link>
+                <Link to="/">Back to Login</Link>
             </div>
         </>
     )
