@@ -3,7 +3,8 @@ import { EmissionDAO } from '../DAO/EmissionDAO';
 import { isValidCO2Amount } from '../Utils/validation';
 import { RoleThresholdDAO } from '../DAO/RoleThresholdDAO';
 import { UserDAO } from '../DAO/UserDAO';
-import { issueTokens } from './TokenService'  ;
+import { issueTokens } from './TokenService';
+import { EmissionDTO } from '../Models/EmissionDTO';
 
 /**
  * Servizio per la gestione delle emissioni.
@@ -40,20 +41,26 @@ export async function submitEmission(userId: number, co2Amount: number): Promise
   if (!userThreshold) {
     throw new Error('Soglia non trovata per il ruolo dell\'utente');
   }
-  
+
   if (userThreshold - emission.co2Amount >= 0) {
-  //await issueTokens(userId, userThreshold - emission.co2Amount);
-  console.log(`Carbon credit assegnati (+${userThreshold - emission.co2Amount} tCO₂)`);
-} else {
-  //await removeTokens(userId, Math.abs(userThreshold - emission.co2Amount)); //Il metotdo removeTokens deve essere implementato in TokenService.ts
-  console.log(`Carbon credit rimossi (-${Math.abs(userThreshold - emission.co2Amount)} tCO₂)`);
-}
+    //await issueTokens(userId, userThreshold - emission.co2Amount);
+    console.log(`Carbon credit assegnati (+${userThreshold - emission.co2Amount} tCO₂)`);
+  } else {
+    //await removeTokens(userId, Math.abs(userThreshold - emission.co2Amount)); //Il metotdo removeTokens deve essere implementato in TokenService.ts
+    console.log(`Carbon credit rimossi (-${Math.abs(userThreshold - emission.co2Amount)} tCO₂)`);
+  }
   return emission;
 }
 
 /**
  * Restituisce le emissioni registrate da un utente.
  */
-export async function getEmissionsByUser(userId: number): Promise<Emission[]> {
-  return await emissionDAO.findByUserId(userId);
+export async function getEmissionsByUser(userId: number): Promise<EmissionDTO[]> {
+  const emissions = await emissionDAO.findByUserId(userId);
+  const emissionsDTO: EmissionDTO[] = emissions.map(emission => ({
+    id_emission: emission.id,
+    co2_amount: emission.co2Amount,
+    date: emission.timestamp
+  }));
+  return emissionsDTO;
 }
