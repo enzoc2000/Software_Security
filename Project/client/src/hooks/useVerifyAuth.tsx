@@ -45,5 +45,5 @@ export function useVerifyAuth() {
             });
     }, [token, navigate, API_PORT]);
 
-    return { profile };
+    return { profile, token };
 }
