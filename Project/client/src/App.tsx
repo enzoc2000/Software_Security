@@ -4,7 +4,12 @@ import { Login } from "./components/Login";
 import { FirstPage } from "./components/FirstPage";
 import { ExchangePage } from "./components/ExchangePage";
 import { Registration } from "./components/Registration";
+import { Settings } from "lucide-react";
+import { CreditsIssuing } from "./components/CreditsIssuing";
+import { EmissionsLog } from "./components/EmissionsLog";
 import logoSupplyChain from "./components/assets/logoSupplyChain.png"
+import Modal from "./components/Modal";
+
 export function App() {
   function PrivateRoute() {
     const { token } = useAuth();
@@ -30,8 +35,13 @@ export function App() {
         {/* altre rotte pubbliche */}
         <Route element={<PrivateRoute />}>
           <Route path="/firstPage" element={<FirstPage />} />
+          <Route path="/creditsIssuing" element={<CreditsIssuing />} />
+          <Route path="/EmissionsLog" element={<EmissionsLog />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/modal" element={<Modal credits={0} profile={{ id: 0, role: "", name: "", city: "", address: ""}} onClose={function (): void {
+            throw new Error("Function not implemented.");
+          } } />} />
           <Route path="/exchangePage/:idAttore" element={<ExchangePage />} />
-          {/* altre rotte protette */}
         </Route>
       </Routes>
 

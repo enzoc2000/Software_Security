@@ -17,8 +17,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Al montaggio, recupera da localStorage
   useEffect(() => {
     try {
-      const storedToken = localStorage.getItem("authToken");
-      const storedUser  = localStorage.getItem("user");
+      const storedToken = sessionStorage.getItem("authToken");
+      const storedUser  = sessionStorage.getItem("user");
       console.log({storedToken});
       console.log({storedUser});
       
@@ -33,23 +33,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (err) {
       console.error("Errore nel ripristino dell'Auth:", err);
       // in caso di JSON malformato, rimuovi tutto
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("user");
+      sessionStorage.removeItem("authToken");
+      sessionStorage.removeItem("user");
     }
   }, []);
 
   const login = (newToken: string, newUser: UserDTO) => {
     setToken(newToken);
     setUser(newUser);
-    localStorage.setItem("authToken", newToken);
-    localStorage.setItem("user", JSON.stringify(newUser));
+    sessionStorage.setItem("authToken", newToken);
+    sessionStorage.setItem("user", JSON.stringify(newUser));
   };
 
   const logout = () => {
     setToken(null);
     setUser(null);
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("authToken");
+    sessionStorage.removeItem("user");
   };
 
   return (

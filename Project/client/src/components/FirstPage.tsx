@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Card from "./card";
 import { UserDTO } from "../../../server/src/Models/UserDTO";
 import { useVerifyActors } from "../hooks/useVerifyActors";
+import Navbar from "./Navbar";
 
 
 
@@ -30,12 +31,11 @@ export function FirstPage() {
 
   return (
     <div className="flex flex-col h-screen w-screen " >
-      <h1 className="text-5xl text-red-800 ">
-        {`Benvenuto Nella Pagina Principale!`}
-      </h1>
-      <div className="grid grid-colsm-4 text-5xl">
+      <Navbar />
+      <span className="text-6xl text-blue-800 mt-2">{`Welcome ${profile.name}!`}</span>
+      <div className="grid grid-colsm-4 text-5xl mt-5">
         <div className="flex">
-          <h2 className="text-red-800">Welcome:</h2>
+          <h2 className="text-red-800">User:</h2>
           <p>{profile.name}</p>
         </div>
         <div className="flex ">
@@ -55,9 +55,12 @@ export function FirstPage() {
           <p>{profile.wallet_balance}</p>
         </div>
       </div>
-      <h1 className="text-5xl text-red-800 ">
-        {`Qui di seguito troverete tutti gli attori della filiera!`}
+      <h1 className="text-5xl text-red-800 mt-5">
+        {`Here you will find all the actors!`}
       </h1>
+      <p className="text-2xl ">
+        {`Click on an actor to send credits!`}
+      </p>
       <div className="flex flex-wrap w-screen place-items-center" >
         {datiAttori.map((item: UserDTO) => (
           <Link

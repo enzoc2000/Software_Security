@@ -1,70 +1,83 @@
 import { X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { UserDTO } from '../../../server/src/Models/UserDTO';
+import { useNavigate } from 'react-router-dom';
 
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
+async function sendCreditsApi(profileId: number, actorId: number, amount: number): Promise<boolean> {
+  const res = await fetch(`http://localhost:${VITE_SERVER_PORT}/api/sendCredits`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ profileId, actorId, amount }),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error("Send credits failed: " + err.error);
+  }
 
-function Modal(/* { isOpen, onClose, children } */) {
-  //if (!isOpen) return null;
-  const { idAttore } = useParams();
+  const data = await res.json();
+  return data;
+}
 
-    const attore = useSelector((state: { users: { value: { id: string; name: string; crediti: number; emissioni: string; }[]; }; }) => 
-        state.users.value.filter((actor) => actor.id == idAttore?.toString())
-    )
-
-    const [credits, setCredits] = useState({
-        crediti: 0,
-    })
-
-    const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-        if (credits.crediti <= 0  || attore[0].crediti < credits.crediti ) {
-            alert("Inviare un numero di crediti maggiore di 0 e minore dei crediti disponibili")
-            return
-        }
-        //send token to another user
-        console.log("Crediti inviati: ", credits.crediti)
+export function Modal({ credits, profile, onClose }: { credits: number, profile: UserDTO, onClose: () => void }) {
+  const [datiAttore, setDatiAttore] = useState<UserDTO | null>(null);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const storedAttore = sessionStorage.getItem("datiAttore");
+    if (storedAttore) {
+      setDatiAttore(JSON.parse(storedAttore) as UserDTO);
     }
-    
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>)=> {
-        const creditsToSend  = parseInt(e.target.value, 10) || 0;
-        setCredits({
-            crediti: creditsToSend
-        });
+  }, []);
+
+
+  if (!datiAttore) {
+    return <div>No data found.</div>;
+  }
+
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    //send token to another user
+    try {
+      console.log("Inizio invio crediti: ", credits);
+      /* const result = await sendCreditsApi(profile.id, datiAttore.id, credits);
+      if (!result) {
+        alert("Send credits failed: insufficient balance");
+        return;
+      } */
+      alert(`Credits sent successfully: ${credits}`);
+      sessionStorage.removeItem("datiAttore");
+      onClose();
+      navigate(-1);
     } 
+    catch (error) {
+      console.error("Error during credits transfer: ", error);
+    }
+  }
 
   return (
-    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center">
-      <div className='mt-10 flex flex-col gap-5'>
-        <button className='place-self-end'>
+    <div className="fixed p-5 inset-0 bg-black/30 backdrop-blur-sm place-items-center-safe">
+      <div className='mt-10 gap-5'>
+        <button className='place-self-end' onClick={onClose}>
           <X size={30} />
         </button>
-        <div className='flex flex-col gap-5 bg-white rounded-lg p-5'>
-            <h1 className="text-5xl">Vuoi inviare crediti a 
-                <text className="text-red-800"> {attore[0].name} </text>
-                ?
-            </h1>
-            <h2>Di seguito i dati di {attore[0].name}</h2>
-            <h1>Crediti: 
-                <text className="text-red-800">{attore[0].crediti}</text>
-            </h1>
-            <input className="flex-1/12 text-red-800 border-1 border-red-800 rounded-lg p-1 m-1"
-            type="number"
-            min="0"
-            max={attore[0].crediti}
-            name="crediti"
-            placeholder="inserisci crediti"
-            onChange={(e) => {handleInputChange(e)}}>
-            </input>
-            <button className="bg-red-800 text-white border-2 border-black rounded-lg "
-            type="submit"
-            onClick={(e) => {handleSubmit(e)}}>
-                Invia Crediti
-            </button>
+        <div className='grid gap-5 border-2 bg-white rounded-lg p-5 border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800'>
+          <h1 className="text-5xl">Are you sure you want to send {credits} credits
+            to {datiAttore.name} ?
+          </h1>
+          <button
+            className="border-2 px-4 py-2 rounded-lg border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800"
+            onClick={onClose}>No
+          </button>
+          <button
+            className="border-2 px-4 py-2 rounded-lg border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800"
+            onClick={(e) => handleSubmit(e)}>Yes
+          </button>
+
         </div>
       </div>
     </div>
   );
 }
-
 export default Modal;
