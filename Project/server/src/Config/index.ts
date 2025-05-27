@@ -147,11 +147,11 @@ app.post(
   authMiddleware,
   async (req: Request, res: Response) => {
     const { profileId } = req.body;
-    console.log("Attempt to submit emissions:", req.body);
+    console.log("Attempt to log emissions:", req.body);
     try {
       const emissions = await getEmissionsByUser(profileId);
       if (!emissions) {
-        res.status(404).json({ message: "Emissione non inserita" });
+        res.status(404).json({ message: "Emissioni non trovate" });
       }
       res.status(200).json(emissions);
     } catch (err) {
