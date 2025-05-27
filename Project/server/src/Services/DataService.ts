@@ -42,10 +42,10 @@ export async function submitEmission(userId: number, co2Amount: number): Promise
   }
   
   if (userThreshold - emission.co2Amount >= 0) {
-  await issueTokens(userId, userThreshold - emission.co2Amount);
+  //await issueTokens(userId, userThreshold - emission.co2Amount);
   console.log(`Carbon credit assegnati (+${userThreshold - emission.co2Amount} tCO₂)`);
 } else {
-  await removeTokens(userId, Math.abs(userThreshold - emission.co2Amount)); //Il metotdo removeTokens deve essere implementato in TokenService.ts
+  //await removeTokens(userId, Math.abs(userThreshold - emission.co2Amount)); //Il metotdo removeTokens deve essere implementato in TokenService.ts
   console.log(`Carbon credit rimossi (-${Math.abs(userThreshold - emission.co2Amount)} tCO₂)`);
 }
   return emission;

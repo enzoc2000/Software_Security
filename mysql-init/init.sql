@@ -48,7 +48,6 @@ CREATE TABLE IF NOT EXISTS `emissions` (
   `id_user` int unsigned NOT NULL,
   PRIMARY KEY (`id_emission`),
   UNIQUE KEY `id_emission_UNIQUE` (`id_emission`),
-  UNIQUE KEY `id_user_UNIQUE` (`id_user`),
   CONSTRAINT `id_user_emission` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 

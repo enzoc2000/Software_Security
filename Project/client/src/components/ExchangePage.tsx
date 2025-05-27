@@ -46,7 +46,7 @@ export function ExchangePage() {
 
 
   return (
-    <div>
+    <div className=" m-5">
       <h1 className="text-5xl text-blue-800 ">
         {`Welcome in the Exchange Page!`}
       </h1>
@@ -64,12 +64,12 @@ export function ExchangePage() {
       <p className="text-3xl ">Address: {datiAttore.address}</p>
       <p className="text-3xl ">Balance: {datiAttore.wallet_balance}</p>
 
-      <div className="flex text-sm place-items-center-safe">
+      <div className="flex flex-col p-2 m-2 place-items-center-safe border-2 rounded-lg border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800 ">
         <h1 className="text-red-800 mt-5">
           How many credits do you want to send?
         </h1>
         <div className="flex m-2 pt-5">
-          <input className="w-12 p-2 m-2 border-2 border-red-800 rounded-lg"
+          <input className=" p-2 m-2 border-2 border-red-800 rounded-lg"
             type="number"
             placeholder="0"
             min={0}
@@ -77,7 +77,7 @@ export function ExchangePage() {
             onChange={handleInputChange}
             value={credits}
           />
-          <button className="w-12 p-2 m-2 border-2 border-red-800 rounded-lg"
+          <button className=" p-2 m-2 border-2 border-red-800 rounded-lg"
             onClick={handleSubmit}>
             Send
           </button>

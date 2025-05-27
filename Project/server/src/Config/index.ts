@@ -5,7 +5,7 @@ import cors from 'cors'
 import jwt from "jsonwebtoken";
 import { getUserById, getUsersExcept, loginUser, signUpUser } from "../Services/UserService";
 import { authMiddleware } from "../middleware/auth";
-import { UserDTO } from "../Models/UserDTO";
+import { getEmissionsByUser, submitEmission } from "../Services/DataService";
 
 
 const app = express();
@@ -116,6 +116,44 @@ app.post(
         res.status(404).json({ message: "Utenti non trovati" });
       }
       res.status(200).json(users);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Errore interno" });
+    }
+  }
+);
+
+app.post(
+  "/api/submitEmissions",
+  authMiddleware,
+  async (req: Request, res: Response) => {
+    const { profileId, co2Amount } = req.body;
+    console.log("Attempt to submit emissions:", req.body);
+    try {
+      const emission = await submitEmission(profileId, co2Amount);
+      if (!emission) {
+        res.status(404).json({ message: "Emissione non inserita" });
+      }
+      res.status(200).json(emission);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Errore interno" });
+    }
+  }
+);
+
+app.post(
+  "/api/logEmissions",
+  authMiddleware,
+  async (req: Request, res: Response) => {
+    const { profileId } = req.body;
+    console.log("Attempt to submit emissions:", req.body);
+    try {
+      const emissions = await getEmissionsByUser(profileId);
+      if (!emissions) {
+        res.status(404).json({ message: "Emissione non inserita" });
+      }
+      res.status(200).json(emissions);
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Errore interno" });
