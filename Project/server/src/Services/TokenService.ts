@@ -32,7 +32,7 @@ export async function issueTokens(userId: number, amount: number): Promise<UserW
       await walletBalanceDAO.update(walletBalance);
     }
 
-    return walletBalance;
+    return walletBalance; //Dobbiamo restituire quanti crediti sono stati emessi
   } 
   catch (error: any) {
     throw new Error('Errore nell\'emissione sulla blockchain: ' + error.message);

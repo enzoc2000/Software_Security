@@ -68,7 +68,8 @@ VALUES
   ('$2b$10$4t1q.7J7KWlon/FcYjXxFOQXr6kj4PKTtt8bqn5rI0L6/YDqnf2jy'),
   ('$2b$10$seg3DF/kFFKK3XqP/YiG4etohM1V5XrO/P/iqrBBrbeAKrifVvWme');
 
--- Creazione della tabella "role_thresholds"
+-- Creazione della tabella "role_thresholds" 
+-- Le soglie per i ruoli fanno riferimeto ad un valore mensile di CO2 emessa
 CREATE TABLE IF NOT EXISTS `role_thresholds` (
   `role` varchar(60) NOT NULL,
   `threshold` double unsigned NOT NULL,
