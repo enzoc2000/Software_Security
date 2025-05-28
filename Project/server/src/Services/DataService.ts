@@ -25,7 +25,7 @@ export async function submitEmission(userId: number, co2Amount: number): Promise
   }
 
   const emission = new Emission(
-    Math.floor(Math.random() * 1000000), // ID casuale tra 0 e 999999
+    0,
     userId,
     co2Amount,
     new Date()
