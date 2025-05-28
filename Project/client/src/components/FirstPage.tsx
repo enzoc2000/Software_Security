@@ -2,22 +2,22 @@ import { useVerifyAuth } from "../hooks/useVerifyAuth";
 import { Link } from "react-router-dom";
 import Card from "./card";
 import { UserDTO } from "../../../server/src/Models/UserDTO";
-import { useVerifyActors } from "../hooks/useVerifyActors";
+import { useVerifyActorsDebts } from "../hooks/useVerifyActorsDebts";
 import Navbar from "./Navbar";
 
 
 
 export function FirstPage() {
   const { profile } = useVerifyAuth();
-  const { datiAttori } = useVerifyActors(profile.id);
+  const { dataActorsInDebt } = useVerifyActorsDebts();
 
   if (!profile) {
     // finché non ho caricamento completo
-    return <div>Loading profile…</div>;
+    return <div><h1>Loading profile...</h1></div>;
   }
 
-  if (!datiAttori) {
-    return <div>Loading actors…</div>;
+  if (!dataActorsInDebt) {
+    return <div><h1>Loading actors...</h1></div>;
   }
 
   const handleCardClick = (item: UserDTO) => {
@@ -54,13 +54,13 @@ export function FirstPage() {
         </div>
       </div>
       <h1 className="text-5xl text-red-800 mt-5">
-        {`Here you will find all the actors!`}
+        {`Here you will find all the actors with debts!`}
       </h1>
       <p className="text-2xl ">
         {`Click on an actor to send credits!`}
       </p>
       <div className="flex flex-wrap w-screen place-items-center" >
-        {datiAttori.map((item: UserDTO) => (
+        {dataActorsInDebt.map((item: UserDTO) => (
           <Link
             to={`/ExchangePage/${item.id}`}
             key={item.id}
