@@ -11,8 +11,6 @@ export function FirstPage() {
   const { profile } = useVerifyAuth();
   const { datiAttori } = useVerifyActors(profile.id);
 
-  console.log(datiAttori);
-  console.log(profile);
   if (!profile) {
     // finché non ho caricamento completo
     return <div>Loading profile…</div>;

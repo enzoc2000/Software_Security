@@ -78,7 +78,7 @@ export function CreditsIssuing() {
                     navigate(-1)
                 }}
             >
-                Go Back to Actors List
+                Go Back to first page
             </button>
         </div>
     );
