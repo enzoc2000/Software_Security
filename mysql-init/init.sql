@@ -81,3 +81,11 @@ VALUES
   ('azienda_agricola', 100),
   ('azienda_trasporti', 100),
   ('azienda_rivenditore', 100);
+
+CREATE TABLE IF NOT EXISTS `debts` (
+  `id_user` int unsigned NOT NULL AUTO_INCREMENT,
+  `debt` int unsigned NOT NULL,
+  PRIMARY KEY (`id_user`),
+  UNIQUE KEY `id_user_UNIQUE` (`id_user`),
+  CONSTRAINT `id_user_debts` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
