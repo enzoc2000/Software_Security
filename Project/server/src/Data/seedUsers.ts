@@ -16,7 +16,7 @@ export const seedUsers = [
             address: '0x1234567890abcdef1234567890abcdef12345678',
             balance: 0,
         },*/
-        walletAddress: '0x1234567890abcdef1234567890abcdef12345678',
+        walletAddress: '0xc73aF3677eBc555Fc631d3EdfCE675A656b684e5',
     },
     {
         id: 2,

@@ -1,46 +1,44 @@
-import { UserWallet } from '../Models/UserWallet';
-import { UserWalletDAO } from '../DAO/UserWalletDAO';
-import { web3, tokenContractABI, TOKEN_CONTRACT_ADDRESS, SYSTEM_WALLET_PRIVATE_KEY, SYSTEM_WALLET_PUBLIC_ADDRESS } from '../Utils/web3';
+// server/src/services/walletService.ts
+import { ethers } from "ethers";
+import { UserWalletDAO } from "../DAO/UserWalletDAO";
+import hardhatConfig from "../../hardhat-config.json"; // Config esportata da Hardhat
 
-const walletBalanceDAO = new UserWalletDAO();
+const walletDAO = new UserWalletDAO();
 
-export async function issueTokens(userId: number, amount: number): Promise<UserWallet> {
+export async function getWalletBalance(userId: number): Promise<{
+  ethBalance: string;
+  tokenBalance: string;
+  address: string;
+}> {
   try {
-    const contract = new web3.eth.Contract(tokenContractABI, TOKEN_CONTRACT_ADDRESS);
+    // 1. Recupera l'indirizzo dal database usando l'ID utente
+    const walletData = await walletDAO.findByUserId(userId);
+    if (!walletData) throw new Error("Wallet non trovato per questo utente");
 
-    const tx = {
-      from: SYSTEM_WALLET_PUBLIC_ADDRESS,
-      to: TOKEN_CONTRACT_ADDRESS,
-      gas: 200000,
-      data: contract.methods.transfer(userId, web3.utils.toWei(amount.toString(), 'ether')).encodeABI(),
+    // 2. Configura il provider (connessione alla blockchain)
+    const provider = new ethers.JsonRpcProvider(hardhatConfig.network.url);
+
+    // 3. Crea l'istanza del contratto token
+    const tokenContract = new ethers.Contract(
+      hardhatConfig.token.address,
+      hardhatConfig.token.abi,
+      provider
+    );
+
+    // 4. Recupera i saldi IN PARALLELO (performance ottimizzata)
+    const [ethBalance, tokenBalance] = await Promise.all([
+      provider.getBalance(walletData.address), // Saldo ETH
+      tokenContract.balanceOf(walletData.address), // Saldo token
+    ]);
+
+    // 5. Formatta i risultati
+    return {
+      ethBalance: ethers.formatEther(ethBalance), // Converti wei → ETH
+      tokenBalance: ethers.formatEther(tokenBalance), // Converti wei → token
+      address: walletData.address,
     };
-
-    const signedTx = await web3.eth.accounts.signTransaction(tx, SYSTEM_WALLET_PRIVATE_KEY);
-    if (!signedTx.rawTransaction) throw new Error('Errore nella firma della transazione');
-
-    await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
-
-    // SOLO dopo il successo della transazione aggiorniamo il DB
-    let walletBalance = await walletBalanceDAO.findByUserId(userId);
-
-    if (!walletBalance) {
-      walletBalance = new UserWallet(userId, Math.floor(Math.random() * 1000000), "0");
-      await walletBalanceDAO.save(walletBalance);
-    } 
-    else {
-      walletBalance.balance += amount;
-      await walletBalanceDAO.update(walletBalance);
-    }
-
-    return walletBalance;
-  } 
-  catch (error: any) {
-    throw new Error('Errore nell\'emissione sulla blockchain: ' + error.message);
+  } catch (error) {
+    console.error(`Errore nel recupero saldo per l'utente ${userId}:`, error);
+    throw new Error("Impossibile ottenere il saldo");
   }
-}
-
-export async function getWalletBalance(userId: number): Promise<number> {
-  const walletBalance = await walletBalanceDAO.findByUserId(userId);
-  if (!walletBalance) throw new Error('Wallet non trovato');
-  return walletBalance.balance;
 }

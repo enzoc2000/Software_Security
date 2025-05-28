@@ -28,5 +28,5 @@ const config: HardhatUserConfig = {
     }
   }
 };
-
+export const CARBON_CREDIT_ADDRESS = "0x2E6A0e0106F37A045a8b0B9C9357Ffe9a873Fa4c"
 export default config;
