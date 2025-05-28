@@ -1,4 +1,4 @@
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useVerifyAuth } from "../hooks/useVerifyAuth";
 import { UserDTO } from "../../../server/src/Models/UserDTO";
@@ -8,15 +8,15 @@ export function ExchangePage() {
   const { profile } = useVerifyAuth();
   const navigate = useNavigate();
 
-  const [datiAttore, setDatiAttore] = useState<UserDTO | null>(null);
+  const [dataActorsInDebt, setDataActorsInDebt] = useState<UserDTO | null>(null);
   const [credits, setCredits] = useState<number>(0);
   const [showModal, setShowModal] = useState<boolean>(false);
-  
+
   useEffect(() => {
-    const storedAttore = sessionStorage.getItem("datiAttore");
-  
+    const storedAttore = sessionStorage.getItem("dataActorsInDebt");
+
     if (storedAttore) {
-      setDatiAttore(JSON.parse(storedAttore) as UserDTO);
+      setDataActorsInDebt(JSON.parse(storedAttore) as UserDTO);
     }
 
   }, [profile]);
@@ -25,7 +25,7 @@ export function ExchangePage() {
     return <div>Loading profile…</div>;
   }
 
-  if (!datiAttore) {
+  if (!dataActorsInDebt) {
     return <div>No data found.</div>;
   }
 
@@ -36,7 +36,7 @@ export function ExchangePage() {
       return
     }
     setShowModal(true);
-    
+
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,11 +58,13 @@ export function ExchangePage() {
       <p className="text-3xl ">Balance: {profile.wallet_balance}</p>
 
       <h1 className="mt-5">Actor Data to Send Credits</h1>
-      <p className="text-3xl ">Name: {datiAttore.name}</p>
-      <p className="text-3xl ">Role: {datiAttore.role}</p>
-      <p className="text-3xl ">City: {datiAttore.city}</p>
-      <p className="text-3xl ">Address: {datiAttore.address}</p>
-      <p className="text-3xl ">Balance: {datiAttore.wallet_balance}</p>
+      <p className="text-3xl ">Name: {dataActorsInDebt.name}</p>
+      <p className="text-3xl ">Role: {dataActorsInDebt.role}</p>
+      <p className="text-3xl ">City: {dataActorsInDebt.city}</p>
+      <p className="text-3xl ">Address: {dataActorsInDebt.address}</p>
+      <p className="text-3xl ">Balance: {dataActorsInDebt.wallet_balance}</p>
+      <p className="text-3xl ">Debt: {dataActorsInDebt.wallet_balance}</p>
+
 
       <div className="flex flex-col p-2 m-2 place-items-center-safe border-2 rounded-lg border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800 ">
         <h1 className="text-red-800 mt-5">
@@ -73,7 +75,7 @@ export function ExchangePage() {
             type="number"
             placeholder="0"
             min={0}
-            max={profile.wallet_balance}
+            max={profile.wallet_balance /* && profile.debt */ }
             onChange={handleInputChange}
             value={credits}
           />
@@ -86,11 +88,10 @@ export function ExchangePage() {
       {showModal && <Modal credits={credits} profile={profile} onClose={() => setShowModal(false)} />}
       <button className=" border-2 border-blue-800 p-2 rounded-lg m-5"
         onClick={() => {
-          sessionStorage.removeItem("datiAttore");
+          sessionStorage.removeItem("dataActorsInDebt");
           navigate(-1)
-        }}
-      >
-        Go Back to Actors List
+        }}>
+        Go Back to first page
       </button>
     </div>
   );

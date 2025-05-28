@@ -23,7 +23,7 @@ export function FirstPage() {
   const handleCardClick = (item: UserDTO) => {
     // Store the selected item in sessionStorage.
     // Could be used to pass data to another page.
-    sessionStorage.setItem("datiAttore", JSON.stringify(item));
+    sessionStorage.setItem("dataActorsInDebt", JSON.stringify(item));
   };
 
 
