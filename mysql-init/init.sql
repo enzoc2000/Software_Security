@@ -6,6 +6,24 @@ CREATE DATABASE IF NOT EXISTS food_supply_chain;
 -- Usa il database appena creato
 USE food_supply_chain;
 
+
+-- Creazione della tabella "role_thresholds" 
+-- Le soglie per i ruoli fanno riferimeto ad un valore mensile di CO2 emessa
+CREATE TABLE IF NOT EXISTS `role_thresholds` (
+  `role` varchar(60) NOT NULL,
+  `threshold` double unsigned NOT NULL,
+  PRIMARY KEY (`role`),
+  UNIQUE KEY `role_UNIQUE` (`role`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO role_thresholds (role, threshold) 
+VALUES 
+  ('farmer', 100),
+  ('carrier', 100),
+  ('producer', 100),
+  ('seller', 100);
+
+
 -- Creazione della tabella "users"
 CREATE TABLE IF NOT EXISTS `users` (
   `id_user` int unsigned NOT NULL AUTO_INCREMENT,
@@ -16,7 +34,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `city` varchar(45) NOT NULL,
   `address` varchar(45) NOT NULL,
   PRIMARY KEY (`id_user`),
-  UNIQUE KEY `id_users_UNIQUE` (`id_user`)
+  UNIQUE KEY `id_users_UNIQUE` (`id_user`),
+  CONSTRAINT `role` FOREIGN KEY (`role`) REFERENCES `role_thresholds` (`role`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Creazione della tabella "wallets"
@@ -67,20 +86,7 @@ VALUES
   ('$2b$10$4t1q.7J7KWlon/FcYjXxFOQXr6kj4PKTtt8bqn5rI0L6/YDqnf2jy'),
   ('$2b$10$seg3DF/kFFKK3XqP/YiG4etohM1V5XrO/P/iqrBBrbeAKrifVvWme');
 
--- Creazione della tabella "role_thresholds" 
--- Le soglie per i ruoli fanno riferimeto ad un valore mensile di CO2 emessa
-CREATE TABLE IF NOT EXISTS `role_thresholds` (
-  `role` varchar(60) NOT NULL,
-  `threshold` double unsigned NOT NULL,
-  PRIMARY KEY (`role`),
-  UNIQUE KEY `role_UNIQUE` (`role`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO role_thresholds (role, threshold) 
-VALUES 
-  ('azienda_agricola', 100),
-  ('azienda_trasporti', 100),
-  ('azienda_rivenditore', 100);
 
 CREATE TABLE IF NOT EXISTS `debts` (
   `id_user` int unsigned NOT NULL AUTO_INCREMENT,
