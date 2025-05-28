@@ -4,6 +4,7 @@ import { UserDAO } from '../DAO/UserDAO';
 import { hashPassword, verifyPassword } from '../Utils/cryptoUtils';
 import { UserWalletDAO } from '../DAO/UserWalletDAO';
 import { UserDTO } from '../Models/UserDTO';
+import { DebtsDAO } from '../DAO/DebtsDAO';
 
 /**
  * Servizio per la gestione degli utenti.
@@ -11,6 +12,7 @@ import { UserDTO } from '../Models/UserDTO';
  */
 const userDAO = new UserDAO();
 const userWalletDAO = new UserWalletDAO();
+const debtsDAO = new DebtsDAO();
 
 /**
  * Inizializza gli utenti di default nel sistema se non esistono già facendo riferimento al seedUsers.
@@ -54,6 +56,9 @@ export async function signUpUser(username: string, password: string,
 
     //Aggiorniamo il serial code come utilizzato
     await userDAO.updateSerialCode(validCode);
+
+    //Ogni volta che si crea un utente, si imposta il suo debito a 0
+    await debtsDAO.save(userid,0);
 
     return true;
 }
