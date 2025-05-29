@@ -140,7 +140,7 @@ export class UserDAO {
     );
 
     if (rows.length === 0) 
-        throw new Error('Utenti non trovati');
+        return [];
 
     const walletDAO = new UserWalletDAO();
     const users: User[] = [];

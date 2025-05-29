@@ -112,9 +112,6 @@ app.post(
     console.log("Tentativo listActors:", req.body);
     try {
       const users = await getUsersExcept(id);
-      if (!users) {
-        res.status(404).json({ message: "Utenti non trovati" });
-      }
       res.status(200).json(users);
     } catch (err) {
       console.error(err);
@@ -150,9 +147,6 @@ app.post(
     console.log("Attempt to log emissions:", req.body);
     try {
       const emissions = await getEmissionsByUser(profileId);
-      if (!emissions) {
-        res.status(404).json({ message: "Emissioni non trovate" });
-      }
       res.status(200).json(emissions);
     } catch (err) {
       console.error(err);

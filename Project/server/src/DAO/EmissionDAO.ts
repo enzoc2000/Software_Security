@@ -42,7 +42,7 @@ export class EmissionDAO {
         );
 
         if (rows.length === 0) 
-            throw new Error('Emissione non trovata');
+            return [];
 
         return rows.map(this.mapRowToEmission);
     }

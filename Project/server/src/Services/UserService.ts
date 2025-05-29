@@ -152,6 +152,10 @@ export async function getUserById(userId: number): Promise<UserDTO> {
 //Funzione che recuper tutti gli utenti nel db eccetto quello riferito all'ID che si passa alla funzione 
 export async function getUsersExcept(id: number): Promise<UserDTO[]> {
   const users = await userDAO.findAllExceptUserId(id);
+  if (users.length === 0) {
+    return [];
+  }
+  
   const usersDTO: UserDTO[] = users.map(user => ({
     id: user.id,
     role: user.role,
