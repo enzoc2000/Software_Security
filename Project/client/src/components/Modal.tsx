@@ -22,17 +22,17 @@ async function sendCreditsApi(profileId: number, actorId: number, amount: number
 }
 
 export function Modal({ credits, profile, onClose }: { credits: number, profile: UserDTO, onClose: () => void }) {
-  const [datiAttore, setDatiAttore] = useState<UserDTO | null>(null);
+  const [dataActorsInDebt, setdataActorsInDebt] = useState<UserDTO | null>(null);
   const navigate = useNavigate();
   useEffect(() => {
-    const storedAttore = sessionStorage.getItem("datiAttore");
+    const storedAttore = sessionStorage.getItem("dataActorsInDebt");
     if (storedAttore) {
-      setDatiAttore(JSON.parse(storedAttore) as UserDTO);
+      setdataActorsInDebt(JSON.parse(storedAttore) as UserDTO);
     }
   }, []);
 
 
-  if (!datiAttore) {
+  if (!dataActorsInDebt) {
     return <div>No data found.</div>;
   }
 
@@ -47,7 +47,7 @@ export function Modal({ credits, profile, onClose }: { credits: number, profile:
         return;
       } */
       alert(`Credits sent successfully: ${credits}`);
-      sessionStorage.removeItem("datiAttore");
+      sessionStorage.removeItem("dataActorsInDebt");
       onClose();
       navigate(-1);
     } 
@@ -64,7 +64,7 @@ export function Modal({ credits, profile, onClose }: { credits: number, profile:
         </button>
         <div className='grid gap-5 border-2 bg-white rounded-lg p-5 border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800'>
           <h1 className="text-5xl">Are you sure you want to send {credits} credits
-            to {datiAttore.name} ?
+            to {dataActorsInDebt.name} ?
           </h1>
           <button
             className="border-2 px-4 py-2 rounded-lg border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800"

@@ -4,12 +4,19 @@ import Card from "./card";
 import { UserDTO } from "../../../server/src/Models/UserDTO";
 import { useVerifyActorsDebts } from "../hooks/useVerifyActorsDebts";
 import Navbar from "./Navbar";
+import { LatestEmissionCard } from "./LatestEmissionCard";
+import { ActorsLatestEmission } from "../../../server/src/Models/ActorsLatestEmission";
+import { useVerifyLatestEmissions } from "../hooks/useVerifyLatestEmissions";
+import { useState } from "react";
 
 
 
 export function FirstPage() {
   const { profile } = useVerifyAuth();
   const { dataActorsInDebt } = useVerifyActorsDebts();
+  const { latestEmissionData } = useVerifyLatestEmissions();
+  const [co2Sum, setCo2Sum] = useState(0);
+  const globalThreshold = 400;
 
   if (!profile) {
     // finché non ho caricamento completo
@@ -20,11 +27,24 @@ export function FirstPage() {
     return <div><h1>Loading actors...</h1></div>;
   }
 
+  if (!latestEmissionData) {
+    return <div><h1>Loading actors latest emission...</h1></div>;
+  }
+
   const handleCardClick = (item: UserDTO) => {
     // Store the selected item in sessionStorage.
     // Could be used to pass data to another page.
-    sessionStorage.setItem("datiAttore", JSON.stringify(item));
+    sessionStorage.setItem("dataActorsInDebt", JSON.stringify(item));
   };
+
+  try {
+    latestEmissionData.forEach(element => {
+      const co2 = element.co2_amount;
+      setCo2Sum(co2Sum + co2);
+    });
+  } catch (error) {
+    console.log(error);
+  }
 
 
   return (
@@ -69,6 +89,48 @@ export function FirstPage() {
             <Card key={item.id} name={item.name} role={item.role} walletBalance={item.wallet_balance!} />
           </Link>
         ))}
+      </div>
+      <h1 className="text-5xl text-red-800 mt-5">
+        {`Here you will find all the actors latest emissions!`}
+      </h1>
+      <div className="flex flex-wrap w-screen place-items-center" >
+        <div className="flex flex-wrap w-screen place-items-center" >
+          {latestEmissionData.map((item: ActorsLatestEmission) => (
+            <LatestEmissionCard key={item.id_emission} co2_amount={item.co2_amount} date={item.date} id_emission={item.id_emission} actor_name={item.actor_name} />
+          ))}
+        </div>
+        <div>
+          <div className="grid m-2 border-2 rounded-lg text-black text-2xl border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
+            <div className="flex flex-wrap p-2 border-2  border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800  " >
+              <h2>
+                Global Emissions Threshold:
+              </h2>
+            </div>
+            <div className="flex border-2 text-black text-2xl border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
+              <div className="flex flex-wrap p-2 border-2 border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800 " >
+                <h2>
+                  Tons of CO2 emitted:
+                </h2>
+                <h2
+                  className={
+                    `ml-2 ${globalThreshold - co2Sum > 0
+                      ? "text-green-800"
+                      : "text-red-800"
+                    }`}>
+                  {co2Sum}
+                </h2>
+              </div>
+              <div className="flex flex-wrap p-2 border-2 border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800 " >
+                <h2>
+                  Threshold:
+                </h2>
+                <h2 className="ml-2 text-red-800 " >
+                  {globalThreshold}
+                </h2>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

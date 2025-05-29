@@ -35,8 +35,13 @@ export function EmissionCard(emission: EmissionDTO) {
                     <h2>
                         Credit assigned:
                     </h2>
-                    <h2 className="ml-2 text-red-800 " >
-                        {threshold - emission.co2_amount} 
+                    <h2
+                        className={
+                            `ml-2 ${threshold - emission.co2_amount > 0
+                                ? "text-green-500"
+                                : "text-red-950"
+                            }`}>
+                        {threshold - emission.co2_amount}
                     </h2>
                 </div>
             </div>
