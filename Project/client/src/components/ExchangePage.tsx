@@ -1,14 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useVerifyAuth } from "../hooks/useVerifyAuth";
-import { UserDTO } from "../../../server/src/Models/UserDTO";
 import { Modal } from "./Modal";
+import { UserDebt } from "../../../server/src/Models/UserDebt";
 
 export function ExchangePage() {
   const { profile } = useVerifyAuth();
   const navigate = useNavigate();
 
-  const [dataActorsInDebt, setDataActorsInDebt] = useState<UserDTO | null>(null);
+  const [dataActorsInDebt, setDataActorsInDebt] = useState<UserDebt | null>(null);
   const [credits, setCredits] = useState<number>(0);
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -16,7 +16,7 @@ export function ExchangePage() {
     const storedAttore = sessionStorage.getItem("dataActorsInDebt");
 
     if (storedAttore) {
-      setDataActorsInDebt(JSON.parse(storedAttore) as UserDTO);
+      setDataActorsInDebt(JSON.parse(storedAttore) as UserDebt);
     }
 
   }, [profile]);
@@ -53,17 +53,12 @@ export function ExchangePage() {
       <h1 className="mt-5">User Data</h1>
       <p className="text-3xl ">Name: {profile.name}</p>
       <p className="text-3xl ">Role: {profile.role}</p>
-      <p className="text-3xl ">City: {profile.city}</p>
-      <p className="text-3xl ">Address: {profile.address}</p>
       <p className="text-3xl ">Balance: {profile.wallet_balance}</p>
 
       <h1 className="mt-5">Actor Data to Send Credits</h1>
       <p className="text-3xl ">Name: {dataActorsInDebt.name}</p>
       <p className="text-3xl ">Role: {dataActorsInDebt.role}</p>
-      <p className="text-3xl ">City: {dataActorsInDebt.city}</p>
-      <p className="text-3xl ">Address: {dataActorsInDebt.address}</p>
-      <p className="text-3xl ">Balance: {dataActorsInDebt.wallet_balance}</p>
-      <p className="text-3xl ">Debt: {dataActorsInDebt.wallet_balance}</p>
+      <p className="text-3xl ">Debt: {dataActorsInDebt.debt}</p>
 
 
       <div className="flex flex-col p-2 m-2 place-items-center-safe border-2 rounded-lg border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800 ">
@@ -75,7 +70,7 @@ export function ExchangePage() {
             type="number"
             placeholder="0"
             min={0}
-            max={profile.wallet_balance /* && profile.debt */ }
+            max={profile.wallet_balance && dataActorsInDebt.debt}
             onChange={handleInputChange}
             value={credits}
           />

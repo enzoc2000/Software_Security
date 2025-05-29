@@ -20,6 +20,15 @@ export class DebtsDAO {
         return rows;
     }
 
+    async findAllExceptUserId(userId: number): Promise<any[]> {
+        const [rows]: any = await db.execute(
+            `SELECT * FROM debts where id_user != ? && debt > 0`,
+            [userId]
+        );
+
+        return rows;
+    }
+
 
     // Recupero di un debito per un utente
     async findByUserId(userId: number): Promise<number> {

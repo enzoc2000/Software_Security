@@ -1,19 +1,19 @@
 import { useVerifyAuth } from "../hooks/useVerifyAuth";
 import { Link } from "react-router-dom";
-import Card from "./card";
-import { UserDTO } from "../../../server/src/Models/UserDTO";
 import { useVerifyActorsDebts } from "../hooks/useVerifyActorsDebts";
 import Navbar from "./Navbar";
 import { LatestEmissionCard } from "./LatestEmissionCard";
 import { ActorsLatestEmission } from "../../../server/src/Models/ActorsLatestEmission";
 import { useVerifyLatestEmissions } from "../hooks/useVerifyLatestEmissions";
 import { useState } from "react";
+import { UserDebt } from "../../../server/src/Models/UserDebt";
+import {DebtCard} from "./DebtCard";
 
 
 
 export function FirstPage() {
   const { profile } = useVerifyAuth();
-  const { dataActorsInDebt } = useVerifyActorsDebts();
+  const { dataActorsInDebt } = useVerifyActorsDebts(profile.id);
   const { latestEmissionData } = useVerifyLatestEmissions();
   const [co2Sum, setCo2Sum] = useState(0);
   const globalThreshold = 400;
@@ -31,7 +31,7 @@ export function FirstPage() {
     return <div><h1>Loading actors latest emission...</h1></div>;
   }
 
-  const handleCardClick = (item: UserDTO) => {
+  const handleCardClick = (item: UserDebt) => {
     // Store the selected item in sessionStorage.
     // Could be used to pass data to another page.
     sessionStorage.setItem("dataActorsInDebt", JSON.stringify(item));
@@ -80,13 +80,13 @@ export function FirstPage() {
         {`Click on an actor to send credits!`}
       </p>
       <div className="flex flex-wrap w-screen place-items-center" >
-        {dataActorsInDebt.map((item: UserDTO) => (
+        {dataActorsInDebt.map((item: UserDebt) => (
           <Link
             to={`/ExchangePage/${item.id}`}
             key={item.id}
             onClick={() => handleCardClick(item)}
           >
-            <Card key={item.id} name={item.name} role={item.role} walletBalance={item.wallet_balance!} />
+            <DebtCard key={item.id} name={item.name} role={item.role} debt={item.debt} id={item.id} />
           </Link>
         ))}
       </div>
