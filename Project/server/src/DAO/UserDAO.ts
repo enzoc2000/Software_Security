@@ -68,6 +68,18 @@ export class UserDAO {
     return this.mapRowToUser(row, wallet);
   }
 
+  async findNameRoleById(userId: number): Promise<{name: string, role: string}> {
+    const [rows]: any = await db.execute(
+      `SELECT name, role FROM users WHERE id_user = ?`,
+      [userId]
+    );
+
+    if (rows.length === 0) 
+      throw new Error("Utente non trovato");
+
+    return rows[0];
+  }
+
   //Controllo della validità di un seriale code
   //Restituisce true se il serial code è valido e non è stato utilizzato
   async checkSerialCode(serialCode: string): Promise<string | false> {

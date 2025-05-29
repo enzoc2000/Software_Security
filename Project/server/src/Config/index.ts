@@ -3,7 +3,7 @@
 import express, { Request, Response } from "express";
 import cors from 'cors'
 import jwt from "jsonwebtoken";
-import { getUserById, getUsersExcept, loginUser, signUpUser } from "../Services/UserService";
+import { getUserById, getUsersExcept, getUsersWithDebt, loginUser, signUpUser } from "../Services/UserService";
 import { authMiddleware } from "../middleware/auth";
 import { getEmissionsByUser, submitEmission } from "../Services/DataService";
 
@@ -32,7 +32,7 @@ app.get(
         res.status(404).json({ message: "Utente non trovato" });
       }
       // ritorna solo i campi “pubblici” del profilo
-      const { id, role, name, city, address, wallet_address, wallet_balance} = user;
+      const { id, role, name, city, address, wallet_address, wallet_balance } = user;
       res.status(200).json({
         id,
         role,
@@ -155,6 +155,23 @@ app.post(
       }
       res.status(200).json(emissions);
     } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Errore interno" });
+    }
+  }
+);
+
+app.post(
+  "/api/listActorsDebts",
+  authMiddleware,
+  async (req: Request, res: Response) => {
+    const { id } = req.body;
+    console.log("Attempt to list actors debts:", req.body);
+    try {
+      const listActorsDebts = await getUsersWithDebt(id);
+      res.status(200).json(listActorsDebts);
+    }
+    catch (err) {
       console.error(err);
       res.status(500).json({ message: "Errore interno" });
     }
