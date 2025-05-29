@@ -63,4 +63,32 @@ export const seedUsers = [
         serial_code: 'M6Q2F9BLXE7Y',
         is_used: false,
     },
+    {
+        serial_code: 'Z8M1K5RQD2LW',
+        is_used: false,
+    },
+    {
+        serial_code: 'H3TX9BL7E6PA',
+        is_used: false,
+    },
+    {
+        serial_code: 'J5Q2N8X1R4Z6',
+        is_used: false,
+    },
+    {
+        serial_code: 'V7K3F9L2M8Y1',
+        is_used: false,
+    },
+    {
+        serial_code: 'B4D6X1P9Q3W8',
+        is_used: false,
+    },
+    {
+        serial_code: 'C2H5T8L7M1Q9',
+        is_used: false,
+    },
+    {
+        serial_code: 'R6F3K9X2B4Y1',
+        is_used: false,
+    },
   ];

@@ -84,7 +84,12 @@ VALUES
   ('$2b$10$e6GLiLHH1pUhiKVYOeptae8SQ0kUdWJ2zc9U8NWrAAI.wtL5504Vq'),
   ('$2b$10$y6NelmtreGBasM6zcrVMGeQkwq.vLh.sUc0BbHLiQ1s9dpt4SeU8e'),
   ('$2b$10$4t1q.7J7KWlon/FcYjXxFOQXr6kj4PKTtt8bqn5rI0L6/YDqnf2jy'),
-  ('$2b$10$seg3DF/kFFKK3XqP/YiG4etohM1V5XrO/P/iqrBBrbeAKrifVvWme');
+  ('$2b$10$seg3DF/kFFKK3XqP/YiG4etohM1V5XrO/P/iqrBBrbeAKrifVvWme'),
+  ('$2b$10$ftzALn4peGF2HrjEpY/iEuu1CBPFPIWXt03/JyDVK2M3QrLwrNnRi'),
+  ('$2b$10$PicPbTslX7wrIfilRmWsl.H69999GaVuwjZ4FhQuBNLGPkodRVEhu'),
+  ('$2b$10$9gNcn33fZED1tDeW/70zZe8g/79UQuadlx/SVm68k3Qlhi.DO0epK'),
+  ('$2b$10$xk0iZlC3lw/1g66uOFoy2uIp5YeKBYW6RhczJKuiKjCqhTpsLrtY6'),
+  ('$2b$10$p4beN2htyPuRArG/AFLqK.zG0xLm1FQanJL177Z3UsCJjAkE3e8Oy');
 
 
 
