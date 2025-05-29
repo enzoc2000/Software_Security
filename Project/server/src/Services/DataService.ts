@@ -5,6 +5,8 @@ import { RoleThresholdDAO } from '../DAO/RoleThresholdDAO';
 import { UserDAO } from '../DAO/UserDAO';
 import { issueTokens } from './TokenService';
 import { EmissionDTO } from '../Models/EmissionDTO';
+import { User } from '../Models/User';
+import { UserLatestEmission } from '../Models/UserLatestEmission';
 
 /**
  * Servizio per la gestione delle emissioni.
@@ -55,7 +57,7 @@ export async function submitEmission(userId: number, co2Amount: number): Promise
 /**
  * Restituisce le emissioni registrate da un utente.
  */
-export async function getEmissionsByUser(userId: number): Promise<EmissionDTO[]> {
+/* export async function getEmissionsByUser(userId: number): Promise<EmissionDTO[]> {
   const emissions = await emissionDAO.findByUserId(userId);
   if (emissions.length === 0) {
     return [];
@@ -66,4 +68,45 @@ export async function getEmissionsByUser(userId: number): Promise<EmissionDTO[]>
     date: emission.timestamp
   }));
   return emissionsDTO;
+} */
+/**
+ * Restituisce le emissioni registrate da un utente e il treshold dell'utente
+ */
+export async function getEmissionsAndTresholdByUser(userId: number): Promise<EmissionDTO[]> {
+  const emissions = await emissionDAO.findByUserId(userId);
+  if (emissions.length === 0) {
+    return [];
+  }
+  //console.log(emissions);
+  const user = await userDAO.findById(userId)
+  
+  const treshold = await roleThresholdDAO.findThresholdByRole(user.role);
+  
+  const emissionsDTO: EmissionDTO[] = emissions.map(emission => ({
+    id_emission: emission.id,
+    co2_amount: emission.co2Amount,
+    treshold: treshold,
+    date: emission.timestamp
+  }));
+  //console.log(emissionsDTO);
+  return emissionsDTO;
+}
+
+export async function getLatestEmissions(): Promise<UserLatestEmission[]> {
+  const latestEmissions: {id_emission: number, id_user: number, timestamp: Date, co2_amount: number }[] =
+    await emissionDAO.findLatest();
+
+  if (latestEmissions.length === 0) {
+    return [];
+  }
+
+  const emissions = await Promise.all(
+    latestEmissions.map(
+      async userEmission => {
+        const { name, role } = await userDAO.findNameRoleById(userEmission.id_user);
+        const treshold = await roleThresholdDAO.findThresholdByRole(role);
+        return { id_emission: userEmission.id_emission, actor_name: name,actor_role: role, co2_amount: userEmission.co2_amount, date: userEmission.timestamp, treshold: treshold };
+      }));
+
+  return emissions;
 }

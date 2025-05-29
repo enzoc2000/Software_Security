@@ -155,7 +155,7 @@ export async function getUsersExcept(id: number): Promise<UserDTO[]> {
   if (users.length === 0) {
     return [];
   }
-  
+
   const usersDTO: UserDTO[] = users.map(user => ({
     id: user.id,
     role: user.role,
@@ -184,13 +184,6 @@ export async function getUsersWithDebt(id: number): Promise<UserDebt[]> {
         const { name, role } = await userDAO.findNameRoleById(user.id_user);
         return { id: user.id_user, name: name, role: role, debt: user.debt };
       }));
-  /* 
-    const usersDebt: UserDebt[] = totalUsersId.map(user => ({
-      id: user.id,
-      name: user.name,
-      role: user.role,
-      debt: user.debt
-    })); */
 
   return usersDebt;
 }

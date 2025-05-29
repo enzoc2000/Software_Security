@@ -5,7 +5,7 @@ import cors from 'cors'
 import jwt from "jsonwebtoken";
 import { getUserById, getUsersExcept, getUsersWithDebt, loginUser, signUpUser } from "../Services/UserService";
 import { authMiddleware } from "../middleware/auth";
-import { getEmissionsByUser, submitEmission } from "../Services/DataService";
+import { getEmissionsAndTresholdByUser, getLatestEmissions, submitEmission } from "../Services/DataService";
 
 
 const app = express();
@@ -146,7 +146,7 @@ app.post(
     const { profileId } = req.body;
     console.log("Attempt to log emissions:", req.body);
     try {
-      const emissions = await getEmissionsByUser(profileId);
+      const emissions = await getEmissionsAndTresholdByUser(profileId);
       res.status(200).json(emissions);
     } catch (err) {
       console.error(err);
@@ -164,6 +164,22 @@ app.post(
     try {
       const listActorsDebts = await getUsersWithDebt(id);
       res.status(200).json(listActorsDebts);
+    }
+    catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Errore interno" });
+    }
+  }
+);
+
+
+app.post(
+  "/api/listActorsLatestEmissions",
+  authMiddleware,
+  async (req: Request, res: Response) => {
+    try {
+      const usersLatestEmissions = await getLatestEmissions();
+      res.status(200).json(usersLatestEmissions);
     }
     catch (err) {
       console.error(err);

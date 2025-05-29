@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import { useVerifyActorsDebts } from "../hooks/useVerifyActorsDebts";
 import Navbar from "./Navbar";
 import { LatestEmissionCard } from "./LatestEmissionCard";
-import { ActorsLatestEmission } from "../../../server/src/Models/ActorsLatestEmission";
+import { UserLatestEmission } from "../../../server/src/Models/UserLatestEmission";
 import { useVerifyLatestEmissions } from "../hooks/useVerifyLatestEmissions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UserDebt } from "../../../server/src/Models/UserDebt";
-import {DebtCard} from "./DebtCard";
+import { DebtCard } from "./DebtCard";
 
 
 
@@ -17,6 +17,18 @@ export function FirstPage() {
   const { latestEmissionData } = useVerifyLatestEmissions();
   const [co2Sum, setCo2Sum] = useState(0);
   const globalThreshold = 400;
+
+  useEffect(() => {
+    // Calcola la somma dei CO2
+    if (latestEmissionData && latestEmissionData.length > 0) {
+      const somma = latestEmissionData
+        .map(e => e.co2_amount)
+        .reduce((acc, cur) => acc + cur, 0);
+      setCo2Sum(somma);
+    } else {
+      setCo2Sum(0);
+    }
+  }, [latestEmissionData]);
 
   if (!profile) {
     // finché non ho caricamento completo
@@ -37,16 +49,6 @@ export function FirstPage() {
     sessionStorage.setItem("dataActorsInDebt", JSON.stringify(item));
   };
 
-  try {
-    latestEmissionData.forEach(element => {
-      const co2 = element.co2_amount;
-      setCo2Sum(co2Sum + co2);
-    });
-  } catch (error) {
-    console.log(error);
-  }
-
-
   return (
     <div className="flex flex-col h-screen w-screen " >
       <Navbar />
@@ -54,23 +56,23 @@ export function FirstPage() {
       <div className="grid grid-colsm-4 text-5xl mt-5">
         <div className="flex">
           <h2 className="text-red-800">User:</h2>
-          <p>{profile.name}</p>
+          <p className="ml-2 font-bold">{profile.name}</p>
         </div>
         <div className="flex ">
           <h2 className=" text-red-800">Role:</h2>
-          <p>{profile.role}</p>
+          <p className="ml-2 font-bold">{profile.role}</p>
         </div>
         <div className="flex">
           <h2 className="text-red-800">City:</h2>
-          <p>{profile.city}</p>
+          <p className="ml-2 font-bold">{profile.city}</p>
         </div>
         <div className="flex">
           <h2 className="text-red-800">Address:</h2>
-          <p>{profile.address}</p>
+          <p className="ml-2 font-bold">{profile.address}</p>
         </div>
         <div className="flex" >
           <h2 className="text-red-800 ">Your wallet balance is:</h2>
-          <p>{profile.wallet_balance}</p>
+          <p className="ml-2 font-bold">{profile.wallet_balance}</p>
         </div>
       </div>
       <h1 className="text-5xl text-red-800 mt-5">
@@ -95,8 +97,8 @@ export function FirstPage() {
       </h1>
       <div className="flex flex-wrap w-screen place-items-center" >
         <div className="flex flex-wrap w-screen place-items-center" >
-          {latestEmissionData.map((item: ActorsLatestEmission) => (
-            <LatestEmissionCard key={item.id_emission} co2_amount={item.co2_amount} date={item.date} id_emission={item.id_emission} actor_name={item.actor_name} />
+          {latestEmissionData.map((item: UserLatestEmission) => (
+            <LatestEmissionCard key={item.id_emission} co2_amount={item.co2_amount} date={item.date} id_emission={item.id_emission} actor_name={item.actor_name} actor_role={item.actor_role} treshold={item.treshold} />
           ))}
         </div>
         <div>
@@ -113,8 +115,8 @@ export function FirstPage() {
                 </h2>
                 <h2
                   className={
-                    `ml-2 ${globalThreshold - co2Sum > 0
-                      ? "text-green-800"
+                    `ml-2 font-bold ${globalThreshold - co2Sum > 0
+                      ? "text-green-500"
                       : "text-red-800"
                     }`}>
                   {co2Sum}
@@ -124,7 +126,7 @@ export function FirstPage() {
                 <h2>
                   Threshold:
                 </h2>
-                <h2 className="ml-2 text-red-800 " >
+                <h2 className="ml-2 font-bold text-red-800 " >
                   {globalThreshold}
                 </h2>
               </div>

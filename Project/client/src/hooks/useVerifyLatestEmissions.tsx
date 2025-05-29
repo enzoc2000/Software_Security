@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "./useAuth";
-import { ActorsLatestEmission } from "../../../server/src/Models/ActorsLatestEmission";
+import { UserLatestEmission } from "../../../server/src/Models/UserLatestEmission";
 
 export function useVerifyLatestEmissions() {
     const API_PORT = import.meta.env.VITE_SERVER_PORT;
     const { token } = useAuth();
-    const [latestEmissionData, setlatestEmissionData] = useState<ActorsLatestEmission[]>([]);
+    const [latestEmissionData, setlatestEmissionData] = useState<UserLatestEmission[]>([]);
 
     useEffect(() => {
         if(!token) return;
 
-        fetch(`http://localhost:${API_PORT}/api/latestEmissions`, {
+        fetch(`http://localhost:${API_PORT}/api/listActorsLatestEmissions`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -21,7 +21,7 @@ export function useVerifyLatestEmissions() {
                 if (!res.ok) throw new Error("Finding Latest Emissions failed");
                 return res.json();
             })
-            .then((data: ActorsLatestEmission[]) => {
+            .then((data: UserLatestEmission[]) => {
                 setlatestEmissionData(data);
             })
             .catch((err) => {
