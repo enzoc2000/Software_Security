@@ -21,7 +21,7 @@ export function EmissionsLog() {
             <h1 className="text-2xl font-bold mb-4">Emissions Log</h1>
             <div className="grid w-screen place-items-center" >
                 {datiEmissioni.map((item: EmissionDTO) => (
-                    <EmissionCard key={item.id_emission} co2_amount={item.co2_amount} date={item.date} id_emission={item.id_emission} />
+                    <EmissionCard key={item.id_emission} co2_amount={item.co2_amount} date={item.date} id_emission={item.id_emission} treshold={item.treshold} />
                 ))}
             </div>
             <button className=" border-2 border-blue-800 p-2 rounded-lg m-5"

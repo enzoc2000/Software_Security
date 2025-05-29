@@ -8,7 +8,7 @@ export function DebtCard(actorDebtData: UserDebt){
                     <h2 >
                         Actor name: 
                     </h2>
-                    <h2 className="text-red-800 ">
+                    <h2 className="font-bold text-red-800 ">
                         {actorDebtData.name}  
                     </h2>
                 </div>
@@ -16,7 +16,7 @@ export function DebtCard(actorDebtData: UserDebt){
                     <h2>
                         Role:
                     </h2>
-                    <h2 className="text-red-800 ">
+                    <h2 className="font-bold text-red-800 ">
                         {actorDebtData.role}
                     </h2>
                 </div>
@@ -24,7 +24,7 @@ export function DebtCard(actorDebtData: UserDebt){
                     <h2>
                         Debt:
                     </h2>
-                    <h2 className="text-red-800 ">
+                    <h2 className="font-bold text-red-800 ">
                         {actorDebtData.debt}
                     </h2>
                 </div>
