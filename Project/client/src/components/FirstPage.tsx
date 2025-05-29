@@ -16,6 +16,7 @@ export function FirstPage() {
   const { dataActorsInDebt } = useVerifyActorsDebts();
   const { latestEmissionData } = useVerifyLatestEmissions();
   const [co2Sum, setCo2Sum] = useState(0);
+  const globalThreshold = 400;
 
   if (!profile) {
     // finché non ho caricamento completo
@@ -110,7 +111,12 @@ export function FirstPage() {
                 <h2>
                   Tons of CO2 emitted:
                 </h2>
-                <h2 className="ml-2 text-red-800 " >
+                <h2
+                  className={
+                    `ml-2 ${globalThreshold - co2Sum > 0
+                      ? "text-green-800"
+                      : "text-red-800"
+                    }`}>
                   {co2Sum}
                 </h2>
               </div>
@@ -119,7 +125,7 @@ export function FirstPage() {
                   Threshold:
                 </h2>
                 <h2 className="ml-2 text-red-800 " >
-                  {400}
+                  {globalThreshold}
                 </h2>
               </div>
             </div>
