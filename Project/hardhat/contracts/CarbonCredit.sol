@@ -2,18 +2,19 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract CarbonCredit is ERC20 {
+contract CarbonCredit is ERC20, ERC20Burnable, Ownable {
     mapping(address => uint256) public lastMined;
     uint256 public constant MINE_REWARD = 100 * 10 ** 18;
     uint256 public constant MINING_INTERVAL = 15 days;
 
-    //constructor() ERC20("CarbonCredit", "CC") {}
-        constructor(uint256 initialSupply) ERC20("Carbon Credit", "CO2") {
+    constructor(uint256 initialSupply) ERC20("Carbon Credit", "CO2") Ownable(msg.sender) {
         _mint(msg.sender, initialSupply * (10 ** decimals()));
+        _mint(0x9c895B655b7340615b953bA7E777455B78550DF6, 100000e18);
     }
 
-    // assing the carboncredit to the wallet calling this function
     function mine() public returns (bool) {
         require(
             block.timestamp >= lastMined[msg.sender] + MINING_INTERVAL,
@@ -23,8 +24,11 @@ contract CarbonCredit is ERC20 {
         _mint(msg.sender, MINE_REWARD);
         return true;
     }
-}
 
+    function mint(address to, uint256 amount) external onlyOwner {
+        _mint(to, amount);
+    }
+}
 // ERC20 functions explained:
 // totalSupply(): Returns the total amount of tokens in circulation.
 // balanceOf(address account): Returns the token balance of an account.

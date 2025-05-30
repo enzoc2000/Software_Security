@@ -1,44 +1,108 @@
-// server/src/services/walletService.ts
 import { ethers } from "ethers";
-import { UserWalletDAO } from "../DAO/UserWalletDAO";
-import hardhatConfig from "../../hardhat-config.json"; // Config esportata da Hardhat
+import carbonCreditAbi from "../contracts/carbonCreditAbi.json";
 
-const walletDAO = new UserWalletDAO();
+// Provider su Besu (come in hardhat.config)
+const provider = new ethers.JsonRpcProvider("http://localhost:8545");
 
-export async function getWalletBalance(userId: number): Promise<{
-  ethBalance: string;
-  tokenBalance: string;
-  address: string;
-}> {
+// Stesso indirizzo del contratto usato da Hardhat
+const TOKEN_ADDRESS = "0x2E6A0e0106F37A045a8b0B9C9357Ffe9a873Fa4c";
+
+// Account di test (puoi anche importarli da .env se vuoi)
+const Account1 = "0xc73aF3677eBc555Fc631d3EdfCE675A656b684e5";
+const Account1_private_key = "7a18769fc1e450f623619bb54b67e118a2462ae5f8f4be8f066de5a77cfc3cf1";
+
+const Account2="0x9c895B655b7340615b953bA7E777455B78550DF6";
+const Account2_private_key="356fd7201a910f2bde48d0037f06d337dce0bf00014fa3f74114301f4396e6df";
+
+export async function checkBalances(account: any) {
+  const token = new ethers.Contract(TOKEN_ADDRESS, carbonCreditAbi, provider);
+
+    try {
+      const ethBalance = await provider.getBalance(account);
+      const tokenBalance = await token.balanceOf(account);
+      const balance= ethers.formatEther(tokenBalance)
+
+      console.log(`📬 Address: ${account}`);
+      console.log(`💰 ETH: ${ethers.formatEther(ethBalance)}`);
+      console.log(`🌿 CO2: ${balance}`);
+      console.log(` ` )
+      console.log("───────────────────────────────");
+    } catch (err) {
+      console.error(`❌ Errore con ${account}:`, err);
+    }
+  
+
+  const block = await provider.getBlockNumber();
+  console.log(`📦 Ultimo blocco: ${block}`);
+}
+
+
+export async function transferCarbonCredits(amountInEther: string,account1: any,account2: any) {
+  const wallet = new ethers.Wallet(Account1_private_key, provider);
+  const token = new ethers.Contract(TOKEN_ADDRESS, carbonCreditAbi, wallet);
+
   try {
-    // 1. Recupera l'indirizzo dal database usando l'ID utente
-    const walletData = await walletDAO.findByUserId(userId);
-    if (!walletData) throw new Error("Wallet non trovato per questo utente");
+    // 👇 Converti input a BigInt
+    const amount = ethers.parseEther(amountInEther); // BigInt
 
-    // 2. Configura il provider (connessione alla blockchain)
-    const provider = new ethers.JsonRpcProvider(hardhatConfig.network.url);
+    // 👇 Recupera il debito del destinatario (placeholder, simula con 100)
+    const debito = ethers.parseEther("100"); // BigInt
 
-    // 3. Crea l'istanza del contratto token
-    const tokenContract = new ethers.Contract(
-      hardhatConfig.token.address,
-      hardhatConfig.token.abi,
-      provider
-    );
+    if (debito > 0) {
+      if (amount > debito) {
+        const amountToSend = amount - debito;
 
-    // 4. Recupera i saldi IN PARALLELO (performance ottimizzata)
-    const [ethBalance, tokenBalance] = await Promise.all([
-      provider.getBalance(walletData.address), // Saldo ETH
-      tokenContract.balanceOf(walletData.address), // Saldo token
-    ]);
+        const burnTx = await token.burn(debito); // ✅ usa direttamente debito
+        console.log(`🔥 Bruciando ${ethers.formatEther(debito)} token per coprire il debito...`);
+        await burnTx.wait();
+        console.log(`✅ Debito di ${ethers.formatEther(debito)} token bruciato.`);
 
-    // 5. Formatta i risultati
-    return {
-      ethBalance: ethers.formatEther(ethBalance), // Converti wei → ETH
-      tokenBalance: ethers.formatEther(tokenBalance), // Converti wei → token
-      address: walletData.address,
-    };
-  } catch (error) {
-    console.error(`Errore nel recupero saldo per l'utente ${userId}:`, error);
-    throw new Error("Impossibile ottenere il saldo");
+        const tx = await token.transfer(account2, amountToSend);
+        console.log("⏳ Transazione inviata. In attesa di conferma...");
+        await tx.wait();
+        console.log(`✅ ${ethers.formatEther(amountToSend)} CO2 inviati a ${account2}`);
+        console.log(`🔗 Hash transazione: ${tx.hash}`);
+
+        // await updateDebito(account2, 0); // placeholder
+      } else {
+        const nuovoDebito = debito - amount;
+        // await updateDebito(account2, nuovoDebito); // placeholder
+        console.log(`ℹ️ Importo insufficiente, debito aggiornato a ${ethers.formatEther(nuovoDebito)} CO2`);
+      }
+    } else {
+      const tx = await token.transfer(account2, amount);
+      console.log("⏳ Transazione inviata. In attesa di conferma...");
+      await tx.wait();
+      console.log(`✅ ${ethers.formatEther(amount)} CO2 inviati a ${account2}`);
+      console.log(`🔗 Hash transazione: ${tx.hash}`);
+    }
+  } catch (err) {
+    console.error("❌ Errore durante il trasferimento:", err);
   }
 }
+export async function mintCarbonCredits(toAddress: string, amountInEther: string) {
+  const wallet = new ethers.Wallet(Account1_private_key, provider); // deve essere l'owner
+  const token = new ethers.Contract(TOKEN_ADDRESS, carbonCreditAbi, wallet);
+
+  try {
+    const amount = ethers.parseEther(amountInEther); // BigInt
+    const tx = await token.mint(toAddress, amount);
+    console.log(`⛏️ Minting ${amountInEther} CO2 per ${toAddress}...`);
+    await tx.wait();
+    console.log(`✅ Mint completato. TX Hash: ${tx.hash}`);
+  } catch (err) {
+    console.error("❌ Errore nel mint:", err);
+  }
+}
+
+async function main() {
+  await checkBalances(Account1);
+  await checkBalances(Account2); 
+  await transferCarbonCredits("200", Account1, Account2);
+  await mintCarbonCredits(Account2,"200");
+  await checkBalances(Account2); 
+  await checkBalances(Account1);
+  
+}
+// Esegui
+main();
