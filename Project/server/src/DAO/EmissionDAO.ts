@@ -13,7 +13,7 @@ export class EmissionDAO {
             `INSERT INTO emissions (id_emission, co2_amount, timestamp, id_user)
             VALUES (?, ?, ?, ?)
             `,
-            [   
+            [
                 emission.id,
                 emission.co2Amount,
                 emission.timestamp,
@@ -28,7 +28,7 @@ export class EmissionDAO {
             `SELECT * FROM emissions`
         );
 
-        if (rows.length === 0) 
+        if (rows.length === 0)
             throw new Error('Emissione non trovata');
 
         return rows.map(this.mapRowToEmission);
@@ -41,10 +41,26 @@ export class EmissionDAO {
             [userId]
         );
 
-        if (rows.length === 0) 
-            throw new Error('Emissione non trovata');
-
+        if (rows.length === 0)
+            return [];
+        
         return rows.map(this.mapRowToEmission);
+    }
+
+    // Recupero dell'emissione più recente per ogni utente
+    async findLatest(): Promise<{id_emission: number, id_user: number, timestamp: Date, co2_amount: number }[]> {
+        const [rows]: any = await db.execute(
+            `SELECT e.* FROM emissions e
+                INNER JOIN (
+                    -- per ogni user prendo il timestamp massimo
+                    SELECT id_user, MAX(\`timestamp\`) AS max_ts
+                    FROM emissions
+                    GROUP BY id_user
+                ) latest ON e.id_user = latest.id_user
+                        AND e.\`timestamp\` = latest.max_ts;`
+        );
+
+        return rows;
     }
 
     // Funzione di utilità per convertire una riga del DB in un oggetto Emission

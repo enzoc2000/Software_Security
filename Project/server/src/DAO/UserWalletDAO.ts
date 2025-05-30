@@ -20,14 +20,14 @@ export class UserWalletDAO {
     }
 
     // Recupero del Wallet per un utente
-    async findByUserId(userId: number): Promise<UserWallet> {
+    async findByUserId(userId: number): Promise<UserWallet | undefined> {
         const [rows]: any = await db.execute(
             `SELECT * FROM wallets WHERE id_user = ?`, 
             [userId]
         );
 
         if (rows.length === 0)
-            throw new Error('Wallet non trovato');
+            return;
 
         const row = rows[0];
         //const wallet = new UserWallet(0,row.balance,'');
@@ -37,14 +37,14 @@ export class UserWalletDAO {
     }
 
     // Recupero del Wallet sulla base dell'indirizzo
-    async findByAddress(address: string): Promise<UserWallet> {
+    async findByAddress(address: string): Promise<UserWallet | undefined> {
         const [rows]: any = await db.execute(
             `SELECT * FROM wallets WHERE address = ?`,
             [address]
         );
 
         if (rows.length === 0)
-            throw new Error('Wallet non trovato');
+            return;
 
         const row = rows[0];
         return this.mapRowToWalletBalance(row);

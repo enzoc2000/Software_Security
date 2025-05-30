@@ -95,7 +95,7 @@ export async function mintCarbonCredits(toAddress: string, amountInEther: string
   }
 }
 
-async function main() {
+/* async function main() {
   await checkBalances(Account1);
   await checkBalances(Account2); 
   await transferCarbonCredits("200", Account1, Account2);
@@ -105,4 +105,4 @@ async function main() {
   
 }
 // Esegui
-main();
+main(); */

@@ -33,14 +33,14 @@ export class UserDAO {
   }
   
   //Recupero di un utente tramite username
-  async findByUsername(username: string): Promise<User> {
+  async findByUsername(username: string): Promise<User | undefined> {
     const [rows]: any = await db.execute(
       `SELECT * FROM users WHERE username = ?`,
       [username]
     );
 
     if (rows.length === 0) 
-      throw new Error('Utente non trovato');
+      return;
 
     const row = rows[0];
     const user: User = this.mapRowToUser(row);
@@ -66,6 +66,18 @@ export class UserDAO {
     const wallet = await walletDAO.findByUserId(userId);
     const row = rows[0];
     return this.mapRowToUser(row, wallet);
+  }
+
+  async findNameRoleById(userId: number): Promise<{name: string, role: string}> {
+    const [rows]: any = await db.execute(
+      `SELECT name, role FROM users WHERE id_user = ?`,
+      [userId]
+    );
+
+    if (rows.length === 0) 
+      throw new Error("Utente non trovato");
+
+    return rows[0];
   }
 
   //Controllo della validità di un seriale code
@@ -128,7 +140,7 @@ export class UserDAO {
     );
 
     if (rows.length === 0) 
-        throw new Error('Utenti non trovati');
+        return [];
 
     const walletDAO = new UserWalletDAO();
     const users: User[] = [];
