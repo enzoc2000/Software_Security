@@ -10,7 +10,7 @@ const config: HardhatUserConfig = {
     besu: {
       url: "http://localhost:8545",
       chainId: 1338,
-      accounts: [process.env.PRIVATE_KEY!],
+      accounts: [process.env.PRIVATE_KEY!,process.env.ACCOUNT_1! ],
       gas: 12_000_000,
       gasPrice: 0x342770c0,
       timeout: 120000
@@ -28,5 +28,5 @@ const config: HardhatUserConfig = {
     }
   }
 };
-
+export const CARBON_CREDIT_ADDRESS = "0x2E6A0e0106F37A045a8b0B9C9357Ffe9a873Fa4c"
 export default config;
