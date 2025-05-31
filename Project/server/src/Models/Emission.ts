@@ -7,12 +7,14 @@ export class Emission {
     //Quantità di CO2 emessa in kg
     private _co2Amount: number;
     private _timestamp: Date;
+    private _carbonCredits: number;
 
-	constructor(id: number, userId: number, co2Amount: number, timestamp: Date) {
+	constructor(id: number, userId: number, co2Amount: number, timestamp: Date, carbonCredits: number) {
 		this._id = id;
 		this._userId = userId;
 		this._co2Amount = co2Amount;
 		this._timestamp = timestamp;
+        this._carbonCredits = carbonCredits;
 	}
 
     /**
@@ -48,6 +50,14 @@ export class Emission {
     }
 
     /**
+     * Getter carbonCredits
+     * @return Quantità di carbon credits associati all'emissione
+     */
+    public get carbonCredits(): number {
+        return this._carbonCredits;
+    }
+
+    /**
      * Setter id
      * @param id Identificativo emissione
      */
@@ -77,5 +87,13 @@ export class Emission {
      */
     public set timestamp(timestamp: Date) {
         this._timestamp = timestamp;
+    }
+
+    /**
+     * Setter carbonCredits
+     * @param carbonCredits Quantità di carbon credits associati all'emissione
+     */
+    public set carbonCredits(carbonCredits: number) {
+        this._carbonCredits = carbonCredits;    
     }
 }
