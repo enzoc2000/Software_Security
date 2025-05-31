@@ -10,14 +10,15 @@ export class EmissionDAO {
     // Salvataggio di un'emissione
     async save(emission: Emission): Promise<void> {
         await db.execute(
-            `INSERT INTO emissions (id_emission, co2_amount, timestamp, id_user)
+            `INSERT INTO emissions (id_emission, co2_amount, timestamp, id_user, carbon_credits)
             VALUES (?, ?, ?, ?)
             `,
             [
                 emission.id,
                 emission.co2Amount,
                 emission.timestamp,
-                emission.userId
+                emission.userId,
+                emission.carbonCredits
             ]
         );
     }
@@ -48,7 +49,7 @@ export class EmissionDAO {
     }
 
     // Recupero dell'emissione più recente per ogni utente
-    async findLatest(): Promise<{id_emission: number, id_user: number, timestamp: Date, co2_amount: number }[]> {
+    async findLatest(): Promise<{id_emission: number, id_user: number, timestamp: Date, co2_amount: number, carbon_credits: number }[]> {
         const [rows]: any = await db.execute(
             `SELECT e.* FROM emissions e
                 INNER JOIN (
@@ -69,7 +70,8 @@ export class EmissionDAO {
             row.id_emission,
             row.id_user,
             row.co2_amount,
-            new Date(row.timestamp)
+            new Date(row.timestamp),
+            row.carbon_credits
         );
     }
 }

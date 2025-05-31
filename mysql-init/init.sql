@@ -65,6 +65,7 @@ CREATE TABLE IF NOT EXISTS `emissions` (
   `co2_amount` double unsigned NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `id_user` int unsigned NOT NULL,
+  'carbon_credits' int NOT NULL,
   PRIMARY KEY (`id_emission`),
   UNIQUE KEY `id_emission_UNIQUE` (`id_emission`),
   CONSTRAINT `id_user_emission` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON UPDATE CASCADE
@@ -107,7 +108,6 @@ CREATE TABLE IF NOT EXISTS `transactions` (
   `sender_wallet_address` varchar(128) NOT NULL,
   `receiver_wallet_address` varchar(128) NOT NULL,
   `amount` int NOT NULL,
-  `transaction_type` varchar(20) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_transaction`),
   UNIQUE KEY `id_transaction_UNIQUE` (`id_transaction`),
