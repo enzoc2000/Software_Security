@@ -1,4 +1,4 @@
-export interface UserDebt {
+export interface UserDebtDTO {
   id: number;
   name: string;
   role: string;

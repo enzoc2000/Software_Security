@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import carbonCreditAbi from "../contracts/carbonCreditAbi.json";
+import { DebtsDAO } from "../DAO/DebtsDAO";
 
 // Provider su Besu (come in hardhat.config)
 const provider = new ethers.JsonRpcProvider("http://localhost:8545");
@@ -14,30 +15,31 @@ const Account1_private_key = "7a18769fc1e450f623619bb54b67e118a2462ae5f8f4be8f06
 const Account2="0x9c895B655b7340615b953bA7E777455B78550DF6";
 const Account2_private_key="356fd7201a910f2bde48d0037f06d337dce0bf00014fa3f74114301f4396e6df";
 
-export async function checkBalances(account: any) {
+const debtsDAO = new DebtsDAO();
+
+export async function checkBalances(account: string) {
   const token = new ethers.Contract(TOKEN_ADDRESS, carbonCreditAbi, provider);
 
-    try {
-      const ethBalance = await provider.getBalance(account);
-      const tokenBalance = await token.balanceOf(account);
-      const balance= ethers.formatEther(tokenBalance)
+  try {
+    const ethBalance = await provider.getBalance(account);
+    const tokenBalance = await token.balanceOf(account);
+    const balance = ethers.formatEther(tokenBalance)
 
-      console.log(`📬 Address: ${account}`);
-      console.log(`💰 ETH: ${ethers.formatEther(ethBalance)}`);
-      console.log(`🌿 CO2: ${balance}`);
-      console.log(` ` )
-      console.log("───────────────────────────────");
-    } catch (err) {
-      console.error(`❌ Errore con ${account}:`, err);
-    }
+    console.log(`📬 Address: ${account}`);
+    console.log(`💰 ETH: ${ethers.formatEther(ethBalance)}`);
+    console.log(`🌿 CO2: ${balance}`);
+    console.log(` ` )
+    console.log("───────────────────────────────");
+  } catch (err) {
+    console.error(`❌ Errore con ${account}:`, err);
+  }
   
-
   const block = await provider.getBlockNumber();
   console.log(`📦 Ultimo blocco: ${block}`);
 }
 
-
-export async function transferCarbonCredits(amountInEther: string,account1: any,account2: any) {
+/*export async function transferCarbonCredits(amountInEther: string, sender: string, receiver: string) {
+  //Qui poi andrà l'account del mittente (sender), ma per ora usiamo Account1
   const wallet = new ethers.Wallet(Account1_private_key, provider);
   const token = new ethers.Contract(TOKEN_ADDRESS, carbonCreditAbi, wallet);
 
@@ -79,20 +81,58 @@ export async function transferCarbonCredits(amountInEther: string,account1: any,
   } catch (err) {
     console.error("❌ Errore durante il trasferimento:", err);
   }
+}*/
+
+// Funzione per mintare i carbon credits, se ho debito minto solo la differenza tra l'importo richiesto 
+// e il debito corrente, aggiornando il debito dell'utente
+export async function mintCarbonCredits(idReceiver: number, receiver: string, amountInEther: number) {
+  //Recupero il debito dell'utente
+  const currentDebts = await debtsDAO.findByUserId(idReceiver);
+
+  // Calcolo l'importo da mintare come differenza tra l'importo richiesto e il debito corrente
+  const amountToMint = amountInEther - currentDebts;
+
+  // Se i token guadagnati non superano il debito, non minto nulla e aggiorno il debito
+  if (amountToMint <= 0) {
+    debtsDAO.update(idReceiver, currentDebts - amountInEther);
+    console.log(`🔥 Bruciati ${Math.abs(amountInEther)} CO2 perchè ${receiver} in debito`);
+  }
+  else {
+    // Se l'utente aveva un debito, lo azzero e minto i token
+    if(currentDebts > 0) {
+      debtsDAO.update(idReceiver, 0);
+      console.log(`🔥 Bruciati ${currentDebts} CO2 perchè ${receiver} in debito`);
+    }
+
+    const wallet = new ethers.Wallet(Account1_private_key, provider); // deve essere l'owner
+    const token = new ethers.Contract(TOKEN_ADDRESS, carbonCreditAbi, wallet);
+
+    try {
+      const amount = ethers.parseEther(amountToMint.toString()); // BigInt
+      const tx = await token.mint(receiver, amount);
+      console.log(`⛏️ Minting ${amountInEther} CO2 per ${receiver}...`);
+      await tx.wait();
+      console.log(`✅ Mint completato. TX Hash: ${tx.hash}`);
+    } 
+    catch (err) {
+      console.error("❌ Errore nel mint:", err);
+    }
+  }
 }
-export async function mintCarbonCredits(toAddress: string, amountInEther: string) {
-  const wallet = new ethers.Wallet(Account1_private_key, provider); // deve essere l'owner
+
+export async function removeCarbonCredits(userId: number, address: string, amountInEther: number) {
+  /*const wallet = new ethers.Wallet(Account1_private_key, provider);
   const token = new ethers.Contract(TOKEN_ADDRESS, carbonCreditAbi, wallet);
 
   try {
     const amount = ethers.parseEther(amountInEther); // BigInt
-    const tx = await token.mint(toAddress, amount);
-    console.log(`⛏️ Minting ${amountInEther} CO2 per ${toAddress}...`);
+    const tx = await token.burn(amount);
+    console.log(`🔥 Bruciando ${amountInEther} CO2 da ${account}...`);
     await tx.wait();
-    console.log(`✅ Mint completato. TX Hash: ${tx.hash}`);
+    console.log(`✅ Burn completato. TX Hash: ${tx.hash}`);
   } catch (err) {
-    console.error("❌ Errore nel mint:", err);
-  }
+    console.error("❌ Errore durante il burn:", err);
+  }*/
 }
 
 /* async function main() {

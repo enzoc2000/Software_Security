@@ -3,10 +3,10 @@ import { EmissionDAO } from '../DAO/EmissionDAO';
 import { isValidCO2Amount } from '../Utils/validation';
 import { RoleThresholdDAO } from '../DAO/RoleThresholdDAO';
 import { UserDAO } from '../DAO/UserDAO';
-import { issueTokens } from './TokenService';
+import { removeCarbonCredits, mintCarbonCredits } from './TokenService';
 import { EmissionDTO } from '../Models/EmissionDTO';
 import { User } from '../Models/User';
-import { UserLatestEmission } from '../Models/UserLatestEmission';
+import { UserLatestEmissionDTO } from '../Models/UserLatestEmissionDTO';
 
 /**
  * Servizio per la gestione delle emissioni.
@@ -44,12 +44,15 @@ export async function submitEmission(userId: number, co2Amount: number): Promise
     throw new Error('Soglia non trovata per il ruolo dell\'utente');
   }
 
-  if (userThreshold - emission.co2Amount >= 0) {
-    //await issueTokens(userId, userThreshold - emission.co2Amount);
+  if (userThreshold - emission.co2Amount >= 0 && user.wallet) {
+    await mintCarbonCredits(user.id, user.wallet?.address, userThreshold - emission.co2Amount);
     console.log(`Carbon credit assegnati (+${userThreshold - emission.co2Amount} tCO₂)`);
-  } else {
-    //await removeTokens(userId, Math.abs(userThreshold - emission.co2Amount)); //Il metotdo removeTokens deve essere implementato in TokenService.ts
-    console.log(`Carbon credit rimossi (-${Math.abs(userThreshold - emission.co2Amount)} tCO₂)`);
+  } 
+  else {
+    if( user.wallet) {
+      await removeCarbonCredits(userId, user.wallet.address, Math.abs(userThreshold - emission.co2Amount));
+      console.log(`Carbon credit rimossi (-${Math.abs(userThreshold - emission.co2Amount)} tCO₂)`);
+    }
   }
   return emission;
 }
@@ -69,6 +72,7 @@ export async function submitEmission(userId: number, co2Amount: number): Promise
   }));
   return emissionsDTO;
 } */
+
 /**
  * Restituisce le emissioni registrate da un utente e il treshold dell'utente
  */
@@ -92,7 +96,7 @@ export async function getEmissionsAndTresholdByUser(userId: number): Promise<Emi
   return emissionsDTO;
 }
 
-export async function getLatestEmissions(): Promise<UserLatestEmission[]> {
+export async function getLatestEmissions(): Promise<UserLatestEmissionDTO[]> {
   const latestEmissions: {id_emission: number, id_user: number, timestamp: Date, co2_amount: number }[] =
     await emissionDAO.findLatest();
 
@@ -106,7 +110,8 @@ export async function getLatestEmissions(): Promise<UserLatestEmission[]> {
         const { name, role } = await userDAO.findNameRoleById(userEmission.id_user);
         const treshold = await roleThresholdDAO.findThresholdByRole(role);
         return { id_emission: userEmission.id_emission, actor_name: name,actor_role: role, co2_amount: userEmission.co2_amount, date: userEmission.timestamp, treshold: treshold };
-      }));
+      })
+    );
 
   return emissions;
 }

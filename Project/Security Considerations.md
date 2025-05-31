@@ -10,3 +10,5 @@ Smart Contract Access: Restrict smart contract functions to prevent unauthorized
 Code Maintenance: Review all code, including with linting tools, to avoid vulnerabilities and consistently follow best programming practices.
 
 Consider implementing true two-factor authentication (e.g. email code), since the public address is potentially accessible to everyone
+
+Verifying access at the network and register the athorized user and implements a script that create the local network on metamask

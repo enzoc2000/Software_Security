@@ -4,7 +4,7 @@ import { UserDAO } from '../DAO/UserDAO';
 import { hashPassword, verifyPassword } from '../Utils/cryptoUtils';
 import { UserWalletDAO } from '../DAO/UserWalletDAO';
 import { UserDTO } from '../Models/UserDTO';
-import { UserDebt } from '../Models/UserDebt';
+import { UserDebtDTO } from '../Models/UserDebtDTO';
 import { DebtsDAO } from '../DAO/DebtsDAO';
 
 /**
@@ -170,7 +170,7 @@ export async function getUsersExcept(id: number): Promise<UserDTO[]> {
 
 }
 
-export async function getUsersWithDebt(id: number): Promise<UserDebt[]> {
+export async function getUsersWithDebt(id: number): Promise<UserDebtDTO[]> {
   // individuo gli utenti con debito eccetto l'utente che sta cercando
   const usersWithDebt = await debtsDAO.findAllExceptUserId(id);
 
