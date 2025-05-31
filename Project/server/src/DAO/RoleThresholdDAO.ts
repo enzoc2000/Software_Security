@@ -12,7 +12,7 @@ export class RoleThresholdDAO {
         ]
         );
     }
-    
+  /*  
     // Recupero di tutti i ruoli e le loro soglie
     async findAll(): Promise<{ role: string; threshold: number }[]> {
         const [rows]: any = await db.execute(
@@ -27,6 +27,7 @@ export class RoleThresholdDAO {
             threshold: row.threshold
         }));
     }
+*/
 
     // Recupero della soglia per un ruolo specifico
     async findThresholdByRole(role: string): Promise<number> {
