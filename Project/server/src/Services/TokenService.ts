@@ -85,7 +85,7 @@ export async function checkBalances(account: string) {
 
 // Funzione per mintare i carbon credits, se ho debito minto solo la differenza tra l'importo richiesto 
 // e il debito corrente, aggiornando il debito dell'utente
-export async function mintCarbonCredits(idReceiver: number, receiver: string, amountInEther: number) {
+export async function mintCarbonCredits(idReceiver: number, receiver: string, amountInEther: number): Promise<number> {
   //Recupero il debito dell'utente
   const currentDebts = await debtsDAO.findByUserId(idReceiver);
 
@@ -118,9 +118,12 @@ export async function mintCarbonCredits(idReceiver: number, receiver: string, am
       console.error("❌ Errore nel mint:", err);
     }
   }
+
+  // Ritorna a prescindere l'importo di carbon credit associato all'emissione
+  return amountInEther;
 }
 
-export async function removeCarbonCredits(userId: number, address: string, amountInEther: number) {
+export async function removeCarbonCredits(userId: number, address: string, amountInEther: number): Promise<number> {
   /*const wallet = new ethers.Wallet(Account1_private_key, provider);
   const token = new ethers.Contract(TOKEN_ADDRESS, carbonCreditAbi, wallet);
 
@@ -133,6 +136,8 @@ export async function removeCarbonCredits(userId: number, address: string, amoun
   } catch (err) {
     console.error("❌ Errore durante il burn:", err);
   }*/
+
+  return amountInEther;
 }
 
 /* async function main() {

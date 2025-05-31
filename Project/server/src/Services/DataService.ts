@@ -22,6 +22,8 @@ const userDAO = new UserDAO();
  * Se validi, li salva e li restituisce per il servizio token.
  */
 export async function submitEmission(userId: number, co2Amount: number): Promise<Emission> {
+  let carbonCredit: number = 0;
+
   if (!isValidCO2Amount(co2Amount)) {
     throw new Error('Valore di CO2 non valido');
   }
@@ -36,12 +38,12 @@ export async function submitEmission(userId: number, co2Amount: number): Promise
   }
 
   if (userThreshold - co2Amount >= 0 && user.wallet) {
-    await mintCarbonCredits(user.id, user.wallet?.address, userThreshold - co2Amount);
+    carbonCredit = await mintCarbonCredits(user.id, user.wallet?.address, userThreshold - co2Amount);
     console.log(`Carbon credit assegnati (+${userThreshold - co2Amount} tCO₂)`);
   } 
   else {
     if( user.wallet) {
-      await removeCarbonCredits(userId, user.wallet.address, Math.abs(userThreshold - co2Amount));
+      carbonCredit = await removeCarbonCredits(userId, user.wallet.address, Math.abs(userThreshold - co2Amount));
       console.log(`Carbon credit rimossi (-${Math.abs(userThreshold - co2Amount)} tCO₂)`);
     }
   }
@@ -51,7 +53,7 @@ export async function submitEmission(userId: number, co2Amount: number): Promise
     userId,
     co2Amount,
     new Date(),
-    userThreshold - co2Amount // Carbon credits associati all'emissione
+    carbonCredit // Carbon credits associati all'emissione
   );
 
   await emissionDAO.save(emission);
