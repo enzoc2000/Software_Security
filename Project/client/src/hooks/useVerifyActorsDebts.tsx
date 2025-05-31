@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { UserDebt } from "../../../server/src/Models/UserDebt";
+import { UserDebtDTO } from "../../../server/src/Models/UserDebtDTO";
 import { useAuth } from "./useAuth";
 
 export function useVerifyActorsDebts(profileId: number) {
     const API_PORT = import.meta.env.VITE_SERVER_PORT;
     const { token } = useAuth();
-    const [dataActorsInDebt, setdatiAttori] = useState<UserDebt[]>([]);
+    const [dataActorsInDebt, setdatiAttori] = useState<UserDebtDTO[]>([]);
 
     useEffect(() => {
         if (profileId <= 0) {
@@ -23,7 +23,7 @@ export function useVerifyActorsDebts(profileId: number) {
                 if (!res.ok) throw new Error("List actors with debt failed");
                 return res.json();
             })
-            .then((data: UserDebt[]) => {
+            .then((data: UserDebtDTO[]) => {
                 setdatiAttori(data);
             })
             .catch((err) => {

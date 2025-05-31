@@ -1,6 +1,6 @@
-import { UserDebt } from "../../../server/src/Models/UserDebt"
+import { UserDebtDTO } from "../../../server/src/Models/UserDebtDTO"
 
-export function DebtCard(actorDebtData: UserDebt){
+export function DebtCard(actorDebtData: UserDebtDTO){
     return(
         <>
             <div className=" m-1 p-1 border-3 rounded-lg text-black text-2xl border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
