@@ -8,7 +8,7 @@ import { UserWallet } from "../Models/UserWallet";
 const provider = new ethers.JsonRpcProvider("http://localhost:8545");
 
 // Stesso indirizzo del contratto usato da Hardhat
-const TOKEN_ADDRESS = "0x2E6A0e0106F37A045a8b0B9C9357Ffe9a873Fa4c";
+const TOKEN_ADDRESS = "0xc28D3a776d696c8FA4E76a147F7AB11D2F4DEB7D";
 
 // Account di test (puoi anche importarli da .env se vuoi)
 const Account1 = "0xc73aF3677eBc555Fc631d3EdfCE675A656b684e5";
@@ -157,10 +157,10 @@ export async function removeCarbonCredits(userId: number, address: string, amoun
 
 /* async function main() {
   await checkBalances(Account1);
-  await checkBalances(Account2); 
-  await transferCarbonCredits("200", Account1, Account2);
-  await mintCarbonCredits(Account2,"200");
-  await checkBalances(Account2); 
+  //await checkBalances(Account2); 
+  //await transferCarbonCredits("200", Account1, Account2);
+  await mintCarbonCredits(Account1,"200");
+ // await checkBalances(Account2); 
   await checkBalances(Account1);
   
 }

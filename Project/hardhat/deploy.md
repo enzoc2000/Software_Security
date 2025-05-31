@@ -1,7 +1,7 @@
 # collegare metamask con la rete privata - add network e inserire
 Network Name	localhost
 New RPC URL	http://localhost:8545
-Chain ID	1337
+Chain ID	1337 (1338)
 
 # file .env dentro hardhat
 PRIVATE_KEY=7a18769fc1e450f623619bb54b67e118a2462ae5f8f4be8f066de5a77cfc3cf1

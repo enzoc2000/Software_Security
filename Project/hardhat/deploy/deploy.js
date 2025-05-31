@@ -20,7 +20,7 @@ async function main() {
       initialSupply, // Unico parametro richiesto dal tuo costruttore
       {
         gasLimit: 5_000_000,
-        nonce: await ethers.provider.getTransactionCount(deployer.address)
+   
       }
     );
     
