@@ -16,17 +16,28 @@ export function FirstPage() {
   const { dataActorsInDebt } = useVerifyActorsDebts(profile.id);
   const { latestEmissionData } = useVerifyLatestEmissions();
   const [co2Sum, setCo2Sum] = useState(0);
-  const globalThreshold = 400;
+  const [globalThreshold, setGlobalThreshold] = useState(0);
 
   useEffect(() => {
     // Calcola la somma dei CO2
     if (latestEmissionData && latestEmissionData.length > 0) {
-      const somma = latestEmissionData
-        .map(e => e.co2_amount)
+      const sommaEmissioni = latestEmissionData
+        .map(e =>
+          e.co2_amount
+        )
         .reduce((acc, cur) => acc + cur, 0);
-      setCo2Sum(somma);
+
+      const sommaTreshold = latestEmissionData
+        .map(e =>
+          e.co2_amount
+        )
+        .reduce((acc, cur) => acc + cur, 0);
+
+      setCo2Sum(sommaEmissioni);
+      setGlobalThreshold(sommaTreshold);
     } else {
       setCo2Sum(0);
+      setGlobalThreshold(0);
     }
   }, [latestEmissionData]);
 
