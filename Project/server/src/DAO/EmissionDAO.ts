@@ -11,7 +11,7 @@ export class EmissionDAO {
     async save(emission: Emission): Promise<void> {
         await db.execute(
             `INSERT INTO emissions (id_emission, co2_amount, timestamp, id_user, carbon_credits)
-            VALUES (?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?)
             `,
             [
                 emission.id,

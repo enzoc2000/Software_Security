@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `emissions` (
   `co2_amount` double unsigned NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `id_user` int unsigned NOT NULL,
-  'carbon_credits' int NOT NULL,
+  `carbon_credits` int NOT NULL,
   PRIMARY KEY (`id_emission`),
   UNIQUE KEY `id_emission_UNIQUE` (`id_emission`),
   CONSTRAINT `id_user_emission` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON UPDATE CASCADE

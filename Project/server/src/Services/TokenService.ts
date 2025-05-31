@@ -8,7 +8,7 @@ import { UserWallet } from "../Models/UserWallet";
 const provider = new ethers.JsonRpcProvider("http://localhost:8545");
 
 // Stesso indirizzo del contratto usato da Hardhat
-const TOKEN_ADDRESS = "0xc28D3a776d696c8FA4E76a147F7AB11D2F4DEB7D";
+const TOKEN_ADDRESS = "0x2E6A0e0106F37A045a8b0B9C9357Ffe9a873Fa4c";
 
 // Account di test (puoi anche importarli da .env se vuoi)
 const Account1 = "0xc73aF3677eBc555Fc631d3EdfCE675A656b684e5";
@@ -27,7 +27,7 @@ export async function checkBalances(account: string, userId: number): Promise<nu
     const ethBalance = await provider.getBalance(account);
     const tokenBalance = await token.balanceOf(account);
     const balance = ethers.formatEther(tokenBalance)
-
+    console.log(`🌿 CO2: ${tokenBalance}`);
     const userWallet = new UserWallet (
       userId,
       parseInt(balance),
@@ -125,7 +125,7 @@ export async function mintCarbonCredits(idReceiver: number, receiver: string, am
     try {
       const amount = ethers.parseEther(amountToMint.toString()); // BigInt
       const tx = await token.mint(receiver, amount);
-      console.log(`⛏️ Minting ${amountInEther} CO2 per ${receiver}...`);
+      console.log(`⛏️ Minting ${amount} CO2 per ${receiver}...`);
       await tx.wait();
       console.log(`✅ Mint completato. TX Hash: ${tx.hash}`);
     } 
