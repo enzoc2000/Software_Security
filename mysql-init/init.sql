@@ -91,12 +91,32 @@ VALUES
   ('$2b$10$xk0iZlC3lw/1g66uOFoy2uIp5YeKBYW6RhczJKuiKjCqhTpsLrtY6'),
   ('$2b$10$p4beN2htyPuRArG/AFLqK.zG0xLm1FQanJL177Z3UsCJjAkE3e8Oy');
 
-
-
 CREATE TABLE IF NOT EXISTS `debts` (
   `id_user` int unsigned NOT NULL AUTO_INCREMENT,
   `debt` int unsigned NOT NULL,
   PRIMARY KEY (`id_user`),
   UNIQUE KEY `id_user_UNIQUE` (`id_user`),
   CONSTRAINT `id_user_debts` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Creazione della tabella "transactions"
+CREATE TABLE IF NOT EXISTS `transactions` (
+  `id_transaction` int unsigned NOT NULL AUTO_INCREMENT,
+  `sender_user_id` int unsigned NOT NULL,
+  `receiver_user_id` int unsigned NOT NULL,
+  `sender_wallet_address` varchar(128) NOT NULL,
+  `receiver_wallet_address` varchar(128) NOT NULL,
+  `amount` int NOT NULL,
+  `transaction_type` varchar(20) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_transaction`),
+  UNIQUE KEY `id_transaction_UNIQUE` (`id_transaction`),
+  UNIQUE KEY `sender_user_id_UNIQUE` (`sender_user_id`),
+  UNIQUE KEY `reciver_user_id_UNIQUE` (`receiver_user_id`),
+  UNIQUE KEY `sender_wallet_address_UNIQUE` (`sender_wallet_address`),
+  UNIQUE KEY `receiver_wallet_address_UNIQUE` (`receiver_wallet_address`),
+  CONSTRAINT `receiver_user_id` FOREIGN KEY (`receiver_user_id`) REFERENCES `users` (`id_user`) ON UPDATE CASCADE,
+  CONSTRAINT `receiver_wallet_address` FOREIGN KEY (`receiver_wallet_address`) REFERENCES `wallets` (`address`) ON UPDATE CASCADE,
+  CONSTRAINT `sender_user_id` FOREIGN KEY (`sender_user_id`) REFERENCES `users` (`id_user`) ON UPDATE CASCADE,
+  CONSTRAINT `sender_wallet_address` FOREIGN KEY (`sender_wallet_address`) REFERENCES `wallets` (`address`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
