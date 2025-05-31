@@ -10,13 +10,15 @@ services:
         --rpc-http-enabled
         --rpc-http-host=0.0.0.0
         --rpc-http-port=8545
-        --rpc-http-api=ETH,NET,WEB3,DEBUG,TXPOOL,ADMIN
+        --rpc-http-api=ETH,NET,WEB3,DEBUG,TXPOOL,ADMIN,CLIQUE,MINER
         --rpc-http-cors-origins="*"
         --host-allowlist="*"
         --miner-enabled
         --miner-coinbase=0xc73aF3677eBc555Fc631d3EdfCE675A656b684e5
-        --min-gas-price=0
+        --node-private-key-file=/opt/besu/key/key
+
     volumes:
+      - ./key:/opt/besu/key
       - besu-data:/opt/besu/data
       - besu-config:/etc/besu
       - ./config:/config
