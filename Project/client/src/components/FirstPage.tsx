@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import { useVerifyActorsDebts } from "../hooks/useVerifyActorsDebts";
 import Navbar from "./Navbar";
 import { LatestEmissionCard } from "./LatestEmissionCard";
-import { UserLatestEmission } from "../../../server/src/Models/UserLatestEmission";
+import { UserLatestEmissionDTO } from "../../../server/src/Models/UserLatestEmissionDTO";
 import { useVerifyLatestEmissions } from "../hooks/useVerifyLatestEmissions";
 import { useEffect, useState } from "react";
-import { UserDebt } from "../../../server/src/Models/UserDebt";
+import { UserDebtDTO } from "../../../server/src/Models/UserDebtDTO";
 import { DebtCard } from "./DebtCard";
 
 
@@ -54,7 +54,7 @@ export function FirstPage() {
     return <div><h1>Loading actors latest emission...</h1></div>;
   }
 
-  const handleCardClick = (item: UserDebt) => {
+  const handleCardClick = (item: UserDebtDTO) => {
     // Store the selected item in sessionStorage.
     // Could be used to pass data to another page.
     sessionStorage.setItem("dataActorsInDebt", JSON.stringify(item));
@@ -93,7 +93,7 @@ export function FirstPage() {
         {`Click on an actor to send credits!`}
       </p>
       <div className="flex flex-wrap w-screen place-items-center" >
-        {dataActorsInDebt.map((item: UserDebt) => (
+        {dataActorsInDebt.map((item: UserDebtDTO) => (
           <Link
             to={`/ExchangePage/${item.id}`}
             key={item.id}
@@ -108,7 +108,7 @@ export function FirstPage() {
       </h1>
       <div className="flex flex-wrap w-screen place-items-center" >
         <div className="flex flex-wrap w-screen place-items-center" >
-          {latestEmissionData.map((item: UserLatestEmission) => (
+          {latestEmissionData.map((item: UserLatestEmissionDTO) => (
             <LatestEmissionCard key={item.id_emission} co2_amount={item.co2_amount} date={item.date} id_emission={item.id_emission} actor_name={item.actor_name} actor_role={item.actor_role} treshold={item.treshold} />
           ))}
         </div>

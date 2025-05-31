@@ -1,6 +1,6 @@
-import { UserLatestEmission } from "../../../server/src/Models/UserLatestEmission";
+import { UserLatestEmissionDTO } from "../../../server/src/Models/UserLatestEmissionDTO";
 
-export function LatestEmissionCard(emission: UserLatestEmission) {
+export function LatestEmissionCard(emission: UserLatestEmissionDTO) {
     const emissionobj = new Date(emission.date);
     const data = emissionobj.toLocaleString('it-IT', {
         year: 'numeric', month: '2-digit', day: '2-digit',

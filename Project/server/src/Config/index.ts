@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import { getUserById, getUsersExcept, getUsersWithDebt, loginUser, signUpUser } from "../Services/UserService";
 import { authMiddleware } from "../middleware/auth";
 import { getEmissionsAndTresholdByUser, getLatestEmissions, submitEmission } from "../Services/DataService";
+import { checkBalances } from "../Services/TokenService";
 
 
 const app = express();
@@ -180,6 +181,23 @@ app.post(
     try {
       const usersLatestEmissions = await getLatestEmissions();
       res.status(200).json(usersLatestEmissions);
+    }
+    catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Errore interno" });
+    }
+  }
+);
+
+
+app.post(
+  "/api/getBalance",
+  authMiddleware,
+  async (req: Request, res: Response) => {
+    const { userAddress } = req.body;
+    try {
+      const userBalance = await checkBalances(userAddress);
+      res.status(200).json(userBalance);
     }
     catch (err) {
       console.error(err);

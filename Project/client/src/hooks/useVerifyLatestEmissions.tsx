@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "./useAuth";
-import { UserLatestEmission } from "../../../server/src/Models/UserLatestEmission";
+import { UserLatestEmissionDTO } from "../../../server/src/Models/UserLatestEmissionDTO";
 
 export function useVerifyLatestEmissions() {
     const API_PORT = import.meta.env.VITE_SERVER_PORT;
     const { token } = useAuth();
-    const [latestEmissionData, setlatestEmissionData] = useState<UserLatestEmission[]>([]);
+    const [latestEmissionData, setlatestEmissionData] = useState<UserLatestEmissionDTO[]>([]);
 
     useEffect(() => {
         if(!token) return;
@@ -21,7 +21,7 @@ export function useVerifyLatestEmissions() {
                 if (!res.ok) throw new Error("Finding Latest Emissions failed");
                 return res.json();
             })
-            .then((data: UserLatestEmission[]) => {
+            .then((data: UserLatestEmissionDTO[]) => {
                 setlatestEmissionData(data);
             })
             .catch((err) => {

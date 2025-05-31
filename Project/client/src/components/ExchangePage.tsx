@@ -2,13 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useVerifyAuth } from "../hooks/useVerifyAuth";
 import { Modal } from "./Modal";
-import { UserDebt } from "../../../server/src/Models/UserDebt";
+import { UserDebtDTO } from "../../../server/src/Models/UserDebtDTO";
 
 export function ExchangePage() {
   const { profile } = useVerifyAuth();
   const navigate = useNavigate();
 
-  const [dataActorsInDebt, setDataActorsInDebt] = useState<UserDebt | null>(null);
+  const [dataActorsInDebt, setDataActorsInDebt] = useState<UserDebtDTO | null>(null);
   const [credits, setCredits] = useState<number>(0);
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -16,7 +16,7 @@ export function ExchangePage() {
     const storedAttore = sessionStorage.getItem("dataActorsInDebt");
 
     if (storedAttore) {
-      setDataActorsInDebt(JSON.parse(storedAttore) as UserDebt);
+      setDataActorsInDebt(JSON.parse(storedAttore) as UserDebtDTO);
     }
 
   }, [profile]);
