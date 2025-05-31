@@ -26,15 +26,6 @@ export async function submitEmission(userId: number, co2Amount: number): Promise
     throw new Error('Valore di CO2 non valido');
   }
 
-  const emission = new Emission(
-    0,
-    userId,
-    co2Amount,
-    new Date()
-  );
-
-  await emissionDAO.save(emission);
-
   const user = await userDAO.findById(userId);
 
   // Recupera soglia associata al ruolo dell'utente
@@ -44,16 +35,27 @@ export async function submitEmission(userId: number, co2Amount: number): Promise
     throw new Error('Soglia non trovata per il ruolo dell\'utente');
   }
 
-  if (userThreshold - emission.co2Amount >= 0 && user.wallet) {
-    await mintCarbonCredits(user.id, user.wallet?.address, userThreshold - emission.co2Amount);
-    console.log(`Carbon credit assegnati (+${userThreshold - emission.co2Amount} tCO₂)`);
+  if (userThreshold - co2Amount >= 0 && user.wallet) {
+    await mintCarbonCredits(user.id, user.wallet?.address, userThreshold - co2Amount);
+    console.log(`Carbon credit assegnati (+${userThreshold - co2Amount} tCO₂)`);
   } 
   else {
     if( user.wallet) {
-      await removeCarbonCredits(userId, user.wallet.address, Math.abs(userThreshold - emission.co2Amount));
-      console.log(`Carbon credit rimossi (-${Math.abs(userThreshold - emission.co2Amount)} tCO₂)`);
+      await removeCarbonCredits(userId, user.wallet.address, Math.abs(userThreshold - co2Amount));
+      console.log(`Carbon credit rimossi (-${Math.abs(userThreshold - co2Amount)} tCO₂)`);
     }
   }
+
+  const emission = new Emission(
+    0,
+    userId,
+    co2Amount,
+    new Date(),
+    userThreshold - co2Amount // Carbon credits associati all'emissione
+  );
+
+  await emissionDAO.save(emission);
+
   return emission;
 }
 
@@ -90,7 +92,8 @@ export async function getEmissionsAndTresholdByUser(userId: number): Promise<Emi
     id_emission: emission.id,
     co2_amount: emission.co2Amount,
     treshold: treshold,
-    date: emission.timestamp
+    date: emission.timestamp,
+    carbonCredits: emission.carbonCredits
   }));
   //console.log(emissionsDTO);
   return emissionsDTO;

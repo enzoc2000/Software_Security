@@ -3,4 +3,5 @@ export interface EmissionDTO {
     co2_amount: number;
     treshold: number;
     date: Date;
+    carbonCredits: number
 }
