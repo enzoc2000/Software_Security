@@ -194,9 +194,9 @@ app.post(
   "/api/getBalance",
   authMiddleware,
   async (req: Request, res: Response) => {
-    const { userAddress } = req.body;
+    const { profileAddress, profileId } = req.body;
     try {
-      const userBalance = await checkBalances(userAddress);
+      const userBalance = await checkBalances(profileAddress, profileId);
       res.status(200).json(userBalance);
     }
     catch (err) {

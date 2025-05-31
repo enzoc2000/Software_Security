@@ -1,6 +1,8 @@
 import { ethers } from "ethers";
 import carbonCreditAbi from "../contracts/carbonCreditAbi.json";
 import { DebtsDAO } from "../DAO/DebtsDAO";
+import { UserWalletDAO } from "../DAO/UserWalletDAO";
+import { UserWallet } from "../Models/UserWallet";
 
 // Provider su Besu (come in hardhat.config)
 const provider = new ethers.JsonRpcProvider("http://localhost:8545");
@@ -16,8 +18,9 @@ const Account2="0x9c895B655b7340615b953bA7E777455B78550DF6";
 const Account2_private_key="356fd7201a910f2bde48d0037f06d337dce0bf00014fa3f74114301f4396e6df";
 
 const debtsDAO = new DebtsDAO();
+const userWalletDAO = new UserWalletDAO();
 
-export async function checkBalances(account: string) {
+export async function checkBalances(account: string, userId: number): Promise<number> {
   const token = new ethers.Contract(TOKEN_ADDRESS, carbonCreditAbi, provider);
 
   try {
@@ -25,17 +28,29 @@ export async function checkBalances(account: string) {
     const tokenBalance = await token.balanceOf(account);
     const balance = ethers.formatEther(tokenBalance)
 
+    const userWallet = new UserWallet (
+      userId,
+      parseInt(balance),
+      account,
+    )
+
+    await userWalletDAO.update( userWallet );
+
+
     console.log(`📬 Address: ${account}`);
     console.log(`💰 ETH: ${ethers.formatEther(ethBalance)}`);
     console.log(`🌿 CO2: ${balance}`);
     console.log(` ` )
     console.log("───────────────────────────────");
+    return parseInt(balance)
   } catch (err) {
     console.error(`❌ Errore con ${account}:`, err);
+    return 0;
   }
   
   const block = await provider.getBlockNumber();
   console.log(`📦 Ultimo blocco: ${block}`);
+  return 0;
 }
 
 /*export async function transferCarbonCredits(amountInEther: string, sender: string, receiver: string) {
