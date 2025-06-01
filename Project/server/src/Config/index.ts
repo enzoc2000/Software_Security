@@ -206,6 +206,23 @@ app.post(
   }
 );
 
+app.post(
+  "/api/sendCredits",
+  authMiddleware,
+  async (req: Request, res: Response) => {
+    const { profileAddress, actorAddress, amountOfCredits } = req.body;
+    try {
+      console.log("Attempt to send credits:", req.body);
+      /* const donationOk = await donateCredits(profileAddress, actorAddress, amountOfCredits);
+      res.status(200).json(donationOk); */
+    }
+    catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Errore interno" });
+    }
+  }
+);
+
 
 app.listen(PORT, () => {
   console.log(`✅ Server backend attivo su http://localhost:${PORT}`);

@@ -4,13 +4,17 @@ import { UserDTO } from '../../../server/src/Models/UserDTO';
 import { useNavigate } from 'react-router-dom';
 
 const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
-async function sendCreditsApi(profileId: number, actorId: number, amount: number): Promise<boolean> {
+async function sendCreditsApi(profileAddress: string, actorAddress: string, amount: number): Promise<boolean> {
   const res = await fetch(`http://localhost:${VITE_SERVER_PORT}/api/sendCredits`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ profileId, actorId, amount }),
+    body: JSON.stringify({ 
+      profileAddress: profileAddress, 
+      actorAddress: actorAddress, 
+      amountOfCredits: amount 
+    }),
   });
   if (!res.ok) {
     const err = await res.json();
@@ -44,16 +48,24 @@ export function Modal({ credits, profile, onClose }: { credits: number, profile:
     //send token to another user
     try {
       console.log("Inizio invio crediti: ", credits);
-      /* const result = await sendCreditsApi(profile.id, datiAttore.id, credits);
+      if (!profile.wallet_address || !dataActorsInDebt.wallet_address) {
+        alert("Wallet address is missing for either the sender or the recipient.");
+        setShowModal(false);
+        return;
+      }
+      const result = await sendCreditsApi(profile.wallet_address, dataActorsInDebt.wallet_address, credits);
       if (!result) {
         alert("Send credits failed: insufficient balance");
+        setShowModal(false);
         return;
-      } */
-      setShowModal(false);
-      alert(`Credits sent successfully: ${credits}`);
-      sessionStorage.removeItem("dataActorsInDebt");
-      onClose();
-      navigate(-1);
+      }
+      else {
+        setShowModal(false);
+        alert(`Credits sent successfully: ${credits}`);
+        sessionStorage.removeItem("dataActorsInDebt");
+        onClose();
+        navigate(-1);
+      }
     }
     catch (error) {
       setShowModal(false);
