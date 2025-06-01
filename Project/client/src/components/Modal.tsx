@@ -55,7 +55,7 @@ export function Modal({ credits, profile, onClose }: { credits: number, profile:
       }
       const result = await sendCreditsApi(profile.wallet_address, dataActorsInDebt.wallet_address, credits);
       if (!result) {
-        alert("Send credits failed: insufficient balance");
+        alert("Not been able to send credits.");
         setShowModal(false);
         return;
       }

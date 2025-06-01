@@ -10,6 +10,7 @@ import { EmissionsLog } from "./components/EmissionsLog";
 import logoSupplyChain from "./components/assets/logoSupplyChain.png"
 import Modal from "./components/Modal";
 import { ListActors } from "./components/ListActors";
+import { TransactionsLog } from "./components/TransactionsLog";
 
 export function App() {
   function PrivateRoute() {
@@ -36,9 +37,10 @@ export function App() {
         {/* altre rotte pubbliche */}
         <Route element={<PrivateRoute />}>
           <Route path="/firstPage" element={<FirstPage />} />
-          <Route path="/listActors" element={<ListActors />} />
+          <Route path="/actorsList" element={<ListActors />} />
           <Route path="/creditsIssuing" element={<CreditsIssuing />} />
           <Route path="/EmissionsLog" element={<EmissionsLog />} />
+          <Route path="/TransactionsLog" element={<TransactionsLog />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/modal" element={<Modal credits={0} profile={{ id: 0, role: "", name: "", city: "", address: "" }} onClose={function (): void {
             throw new Error("Function not implemented.");
