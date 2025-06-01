@@ -2,12 +2,14 @@
 
 ## Requisiti di sistema
 - Docker [get-docker](https://docs.docker.com/get-docker)
+
+### REquisiti di sistema per developers
 - node v23.2.0
 - npm 11.3.0
 - at least 1GB of free space on disk
 - conoscenza base di configurazioni e variabili di ambiente
 
-## Istruzioni d'uso
+## Istruzioni d'uso per developers
 1. Avviare docker compose, su terminale
 
      `cd Besu; docker compose up --build; cd ..`
@@ -21,15 +23,17 @@
     `npm run devall`
 
 
-4. Scrivere http://localhost:5173 sul browser
-5. Registrarsi cliccando il bottone opportuno
-6. Inserire il codice seriale ricevuto
-7. Iniziare ad usare l'applicativo
-
-
 ## Getting started
-### Vedere il proprio saldo
+### Introduzione
 
+1. Scrivere http://localhost:5173 sul browser
+2. Registrarsi cliccando il bottone opportuno
+3. Inserire il codice seriale ricevuto
+4. Iniziare ad usare l'applicativo
+
+### Vedere il proprio saldo
+1. Dopo aver fatto il login si viene reindirizzati nella propria area personale.
+2. In basso si vede il proprio saldo
 
 ### Inviare una dichiarazione di emissioni
 
