@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/Config/index.js",
     "olddev": "nodemon --watch 'src/**/*.ts' --exec ts-node src/index.ts",
     "dev": "ts-node-dev --respawn --transpile-only src/Config/index.ts"
   },
@@ -27,6 +27,7 @@
     "typescript": "^5.8.3"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.18",
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.15.19",

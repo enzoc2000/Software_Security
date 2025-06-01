@@ -1,7 +1,7 @@
 // filepath: src/index.ts
 // api di prova
 import express, { Request, Response } from "express";
-import cors from 'cors'
+import cors from 'cors';
 import jwt from "jsonwebtoken";
 import { getUserById, getUsersExcept, getUsersWithDebt, loginUser, signUpUser } from "../Services/UserService";
 import { authMiddleware } from "../middleware/auth";
