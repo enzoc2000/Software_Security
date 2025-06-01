@@ -1,0 +1,12 @@
+version: '0.1'
+
+services:
+  client:
+    image: fsc-client
+    ports:
+      - "5173:5173"
+
+  server:
+    image: fsc-server
+    ports:
+      - "3010:3010"
