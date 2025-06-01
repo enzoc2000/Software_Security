@@ -169,7 +169,7 @@ export async function removeCarbonCredits(userId: number, address: string, debt:
         data: data
       },
       remainingDebt: newDebt,
-      emissionAmount: amountToBurn
+      emissionAmount: co2Amount
     };
 
     console.log(burnRequest);
