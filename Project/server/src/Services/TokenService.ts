@@ -145,15 +145,19 @@ export async function removeCarbonCredits(userId: number, address: string, debt:
   
   const emissionDAO = new EmissionDAO();
   const balance = await checkBalances(address, userId);
+  console.log(`Quantity of crdits do you have: ${balance}`);
 
   if (balance > 0) {
     const amountToBurn = Math.min(balance, debt);
     const newDebt = debt - amountToBurn;
     const amount = ethers.parseEther(amountToBurn.toString()); // BigInt
 
+    console.log(`amount: ${amount}`)
     // Prepara i dati della transazione da inviare al frontend
     const iface = new ethers.Interface(carbonCreditAbi);
     const data = iface.encodeFunctionData("burn", [amount]);
+
+    console.log(data)
 
     const burnRequest: BurnRequestDTO = {
       requiresBurn: true,
@@ -168,6 +172,8 @@ export async function removeCarbonCredits(userId: number, address: string, debt:
       emissionAmount: amountToBurn
     };
 
+    console.log(burnRequest);
+    
     return burnRequest;
   }
   else {

@@ -6,8 +6,9 @@ import jwt from "jsonwebtoken";
 import { getUserById, getUsersExcept, getUsersWithDebt, loginUser, signUpUser } from "../Services/UserService";
 import { authMiddleware } from "../middleware/auth";
 import { getEmissionsAndTresholdByUser, getLatestEmissions, submitEmission } from "../Services/DataService";
-import { checkBalances } from "../Services/TokenService";
+import { checkBalances, confirmBurn } from "../Services/TokenService";
 import { get } from "http";
+import { BurnRequestDTO } from "../Models/BurnRequestDTO";
 
 
 const app = express();
@@ -129,14 +130,37 @@ app.post(
     const { profileId, co2Amount } = req.body;
     console.log("Attempt to submit emissions:", req.body);
     try {
-      const emission = await submitEmission(profileId, co2Amount);
-      if (!emission) {
-        res.status(404).json({ message: "Emissione non inserita" });
+      const response = await submitEmission(profileId, co2Amount);
+      if (!response) {
+        res.status(404).json({ message: "Nessuna risposta" });
       }
-      res.status(200).json(emission);
+      res.status(200).json(response);
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Errore interno" });
+    }
+  }
+);
+
+app.post(
+  "/api/submitBurn",
+  authMiddleware,
+  async (req: Request, res: Response) => {
+    console.log("Attempt to submit burn:", req.body);
+    try {
+      const burnRequest: BurnRequestDTO = {
+        requiresBurn: req.body.requiresBurn,
+        userId: req.body.userId,
+        carbonCredits: req.body.carbonCredits,
+        remainingDebt: req.body.remainingDebt,
+        emissionAmount: req.body.emissionAmount,
+        tx: req.body.tx 
+      }
+      await confirmBurn(burnRequest);
+      res.status(200).json({ message: "Burn registrato con successo" });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Errore interno durante il submitBurn" });
     }
   }
 );
