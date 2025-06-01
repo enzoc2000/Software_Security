@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { UserDTO } from "../../../server/src/Models/UserDTO";
+import { UserDTO } from "../Models/UserDTO";
 import { useVerifyActors } from "../hooks/useVerifyActors";
 import { useVerifyAuth } from "../hooks/useVerifyAuth";
 import {Card} from "./card";

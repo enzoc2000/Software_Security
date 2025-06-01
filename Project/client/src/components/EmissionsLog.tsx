@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useVerifyAuth } from "../hooks/useVerifyAuth";
-import { EmissionDTO } from "../../../server/src/Models/EmissionDTO";
+import { EmissionDTO } from "../Models/EmissionDTO";
 import { EmissionCard } from "./EmissionCard";
 import { useVerifyEmissions } from "../hooks/useVerifyEmissions";
 

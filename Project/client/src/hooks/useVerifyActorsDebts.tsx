@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { UserDebtDTO } from "../../../server/src/Models/UserDebtDTO";
+import { UserDebtDTO } from "../Models/UserDebtDTO";
 import { useAuth } from "./useAuth";
 
 export function useVerifyActorsDebts(profileId: number) {

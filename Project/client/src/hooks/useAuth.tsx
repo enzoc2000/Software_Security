@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { UserDTO } from "../../../server/src/Models/UserDTO";
+import { UserDTO } from "../Models/UserDTO";
 
 interface Auth {
   user: UserDTO | null;

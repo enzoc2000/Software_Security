@@ -1,4 +1,4 @@
-import { UserDebtDTO } from "../../../server/src/Models/UserDebtDTO"
+import { UserDebtDTO } from "../Models/UserDebtDTO";
 
 export function DebtCard(actorDebtData: UserDebtDTO){
     return(

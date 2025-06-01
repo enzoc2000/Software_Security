@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useVerifyAuth } from "../hooks/useVerifyAuth";
 import { useVerifyTransactions } from "../hooks/useVerifyTransactions";
-import { TransactionDTO } from "../../../server/src/Models/TransactionDTO";
+import { TransactionDTO } from "../Models/TransactionDTO";
 import { TransactionCard } from "./TransactionCard";
 
 export function TransactionsLog() {

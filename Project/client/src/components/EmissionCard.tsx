@@ -1,4 +1,4 @@
-import { EmissionDTO } from "../../../server/src/Models/EmissionDTO";
+import { EmissionDTO } from "../Models/EmissionDTO";
 
 export function EmissionCard(emission: EmissionDTO) {
     const emissionobj = new Date(emission.date);
