@@ -23,7 +23,9 @@ async function sendCreditsApi(profileId: number, actorId: number, amount: number
 
 export function Modal({ credits, profile, onClose }: { credits: number, profile: UserDTO, onClose: () => void }) {
   const [dataActorsInDebt, setdataActorsInDebt] = useState<UserDTO | null>(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
   const navigate = useNavigate();
+
   useEffect(() => {
     const storedAttore = sessionStorage.getItem("dataActorsInDebt");
     if (storedAttore) {
@@ -38,6 +40,7 @@ export function Modal({ credits, profile, onClose }: { credits: number, profile:
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
+    setShowModal(true);
     //send token to another user
     try {
       console.log("Inizio invio crediti: ", credits);
@@ -46,12 +49,14 @@ export function Modal({ credits, profile, onClose }: { credits: number, profile:
         alert("Send credits failed: insufficient balance");
         return;
       } */
+      setShowModal(false);
       alert(`Credits sent successfully: ${credits}`);
       sessionStorage.removeItem("dataActorsInDebt");
       onClose();
       navigate(-1);
-    } 
+    }
     catch (error) {
+      setShowModal(false);
       console.error("Error during credits transfer: ", error);
     }
   }
@@ -68,15 +73,24 @@ export function Modal({ credits, profile, onClose }: { credits: number, profile:
           </h1>
           <button
             className="border-2 px-4 py-2 rounded-lg border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800"
+            disabled={showModal}
             onClick={onClose}>No
           </button>
           <button
             className="border-2 px-4 py-2 rounded-lg border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800"
+            name='submit'
+            disabled={showModal}
             onClick={(e) => handleSubmit(e)}>Yes
           </button>
-
         </div>
       </div>
+      {showModal && (
+        <div className="fixed p-5 inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center">
+          <div className="bg-white p-4 border-2 rounded-lg text-2xl border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
+            <p>Sending credits...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
