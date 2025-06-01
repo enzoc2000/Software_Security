@@ -23,6 +23,7 @@ export function CreditsIssuing() {
     const { profile, token } = useVerifyAuth();
     const navigate = useNavigate();
     const [co2, setCo2] = useState<number>(0);
+    const [showModal, setShowModal] = useState(false);
 
 
     if (!token) {
@@ -37,18 +38,31 @@ export function CreditsIssuing() {
         setCo2(co2Amount);
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
         if (co2 <= 0) {
             alert("Please enter a positive value.");
             return;
         }
-        const emission = await submitEmissionsApi(profile.id, co2, token);
-        console.log(emission);
-        if (!emission) {
+        try {
+            setShowModal(true);
+            const emission = await submitEmissionsApi(profile.id, co2, token);
+            console.log(emission);
+            if (!emission) {
+                setShowModal(false);
+                alert("Emission submission failed.");
+            }
+            else {
+                setShowModal(false);
+                alert("Emission submitted successfully!");
+                navigate(-1);
+            }
+        } catch (err) {
+            console.error(err);
+            setShowModal(false);
             alert("Emission submission failed.");
         }
-        alert("Emission submitted successfully!");
-        navigate(-1);
 
     };
     return (
@@ -58,7 +72,7 @@ export function CreditsIssuing() {
                 <h1 className="text-red-800 mt-5">
                     How many Tons of emissions do you produce?
                 </h1>
-                <div className="flex m-2 pt-5">
+                <form className="flex m-2 pt-5" onSubmit={handleSubmit}>
                     <input className=" p-2 m-2 border-2 border-red-800 rounded-lg"
                         type="number"
                         placeholder="0"
@@ -68,10 +82,18 @@ export function CreditsIssuing() {
                         value={co2}
                     />
                     <button className=" p-2 m-2 border-2 border-red-800 rounded-lg"
-                        onClick={handleSubmit}>
+                        type='submit'
+                        disabled={showModal}>
                         Submit
                     </button>
-                </div>
+                </form>
+                {showModal && (
+                    <div className="fixed p-5 inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center">
+                        <div className="bg-white p-4 border-2 rounded-lg text-2xl border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
+                            <p>Loading...</p>
+                        </div>
+                    </div>
+                )}
             </div>
             <button className=" border-2 border-blue-800 p-2 rounded-lg m-5"
                 onClick={() => {

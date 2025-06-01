@@ -14,9 +14,7 @@ export function Settings() {
                 onClick={() => {
                     sessionStorage.removeItem("datiAttore");
                     navigate(-1)
-                }}
-            >
-                Go Back to first page
+                }}>Go Back to first page
             </button>
         </div>
     );
