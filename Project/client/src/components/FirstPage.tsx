@@ -102,7 +102,7 @@ export function FirstPage() {
             key={item.id}
             onClick={() => handleCardClick(item)}
           >
-            <DebtCard key={item.id} name={item.name} role={item.role} debt={item.debt} id={item.id} />
+            <DebtCard key={item.id} name={item.name} role={item.role} debt={item.debt} id={item.id} wallet_address={item.wallet_address} />
           </Link>
         ))}
       </div>

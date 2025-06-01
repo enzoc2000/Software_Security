@@ -181,8 +181,8 @@ export async function getUsersWithDebt(id: number): Promise<UserDebtDTO[]> {
   const usersDebt = await Promise.all(
     usersWithDebt.map(
       async user => {
-        const { name, role } = await userDAO.findNameRoleById(user.id_user);
-        return { id: user.id_user, name: name, role: role, debt: user.debt };
+        const utente = await userDAO.findById(user.id_user);
+        return { id: user.id_user, name: utente.name, role: utente.role, debt: user.debt, wallet_address: utente.wallet?.address ?? "" };
       }));
 
   return usersDebt;

@@ -2,13 +2,15 @@ import { X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { UserDTO } from '../../../server/src/Models/UserDTO';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
-async function sendCreditsApi(profileAddress: string, actorAddress: string, amount: number): Promise<boolean> {
+async function sendCreditsApi(profileAddress: string, actorAddress: string, amount: number, token: string): Promise<boolean> {
   const res = await fetch(`http://localhost:${VITE_SERVER_PORT}/api/sendCredits`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
     },
     body: JSON.stringify({ 
       profileAddress: profileAddress, 
@@ -28,6 +30,7 @@ async function sendCreditsApi(profileAddress: string, actorAddress: string, amou
 export function Modal({ credits, profile, onClose }: { credits: number, profile: UserDTO, onClose: () => void }) {
   const [dataActorsInDebt, setdataActorsInDebt] = useState<UserDTO | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const { token } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,6 +40,9 @@ export function Modal({ credits, profile, onClose }: { credits: number, profile:
     }
   }, []);
 
+  if (!token){
+    return <div>Loading token...</div>;
+  }
 
   if (!dataActorsInDebt) {
     return <div>No data found.</div>;
@@ -47,13 +53,15 @@ export function Modal({ credits, profile, onClose }: { credits: number, profile:
     setShowModal(true);
     //send token to another user
     try {
+      console.log("Data actors in debt: ", dataActorsInDebt);
+      console.log("Profile: ", profile);
       console.log("Inizio invio crediti: ", credits);
       if (!profile.wallet_address || !dataActorsInDebt.wallet_address) {
         alert("Wallet address is missing for either the sender or the recipient.");
         setShowModal(false);
         return;
       }
-      const result = await sendCreditsApi(profile.wallet_address, dataActorsInDebt.wallet_address, credits);
+      const result = await sendCreditsApi(profile.wallet_address, dataActorsInDebt.wallet_address, credits, token);
       if (!result) {
         alert("Not been able to send credits.");
         setShowModal(false);
@@ -74,7 +82,7 @@ export function Modal({ credits, profile, onClose }: { credits: number, profile:
   }
 
   return (
-    <div className="fixed p-5 inset-0 bg-black/30 backdrop-blur-sm place-items-center-safe">
+    <div className='flex flex-wrap w-1/2 h-screen items-center justify-center'>
       <div className='mt-10 gap-5'>
         <button className='place-self-end' onClick={onClose}>
           <X size={30} />

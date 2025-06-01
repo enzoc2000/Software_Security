@@ -3,4 +3,5 @@ export interface UserDebtDTO {
   name: string;
   role: string;
   debt: number;
+  wallet_address: string;
 }
