@@ -6,10 +6,11 @@
 ' === Context Level ===
 title System Context Diagram for Sustainable Food Supply Chain
 
-System(certification_body, "Certification Body", "Entity responsible for certifying carbon credits and emissions")
+System(certification_body, "Certification System", "Entity responsible for certifying carbon credits and emissions")
 Person(user, "User", "Stakeholders in the food supply chain (eg, Az.Agricola, Az.Trasportatrice, Az.DiTrasformazione, Venditori)")
 
-System(system, "Sustainable Food Supply Chain system", "Manages carbon credits, NFTs, and tracks supply chain activities")
+System(system, "Sustainable Food Supply Chain system", "Manages carbon credits") 
+' , NFTs, and tracks supply chain activities
 
 Rel(user, system, "Interacts with")
 Rel(certification_body, system, "Certifies carbon credits and emissions")
@@ -17,32 +18,15 @@ Rel(certification_body, system, "Certifies carbon credits and emissions")
 ' === Container Level ===
 title Container Diagram for Sustainable Food Supply Chain System
 
-Container(frontend, "Frontend application", "JavaScript: React.js", "Provides a user interface for stakeholders to interact with the system")
-Container(backend, "Backend service", "Python/JavaScript", "Handles business logic, interacts with the blockchain, and manages data")
+Container(frontend, "Frontend application", "TypeScript: React", "Provides a user interface for the users")
+Container(backend, "Backend service", "TypeScript", "Handles business logic and interacts with the blockchain")
+Container(database, "Relational database", "MySQL", "Stores off-chain data (user info, supply chain metadata)")
 Container(blockchain, "Blockchain network", "Hyperledger Besu", "Manages carbon credits (FTs), NFTs, and smart contracts")
-Container(database, "Relational database", "PostgreSQL", "Stores non-sensitive data (user info, supply chain metadata)")
-Container(externaldata, "External Data service", "Python/JavaScript", "Fetches external data (eg, companies' carbon emissions) and feeds it into the blockchain")
 
 Rel(user, frontend, "Uses")
 Rel(frontend, backend, "Sends requests to")
 Rel(backend, database, "Reads/Writes data to")
-Rel(backend, blockchain, "Interacts with smart contracts via web3.js/ethers.js")
-Rel(backend, externaldata, "Fetches external data from")
-Rel(blockchain, externaldata, "Receives external data from")
+Rel(backend, blockchain, "Interacts with smart contracts via ethers.js")
 
-' === Component Level ===
-title Component Diagram for Back-End Service
-
-Component(carbon_service, "Carbon Credit service", "Python/JavaScript", "Manages carbon credit minting, trading, and balancing")
-Component(token_service, "Token service", "Python/JavaScript", "Manages the emission and transfer of FTs and NFTs")
-Component(supply_chain_service, "Supply Chain service", "Python/JavaScript", "Tracks goods and emissions across the supply chain")
-Component(user_service, "User service", "Python/JavaScript", "Manages user roles, permissions, and authentication")
-Component(data_service, "Data service", "Python/JavaScript", "Fetches and validates external data for the blockchain")
-
-Rel(carbon_service, blockchain, "Interacts with smart contracts")
-Rel(token_service, blockchain, "Interacts with smart contracts")
-Rel(supply_chain_service, database, "Reads/Writes data to")
-Rel(user_service, database, "Reads/Writes data to")
-Rel(data_service, blockchain, "Feeds external data into")
 
 @enduml
