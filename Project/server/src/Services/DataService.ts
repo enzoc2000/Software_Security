@@ -7,6 +7,7 @@ import { removeCarbonCredits, mintCarbonCredits } from './TokenService';
 import { EmissionDTO } from '../Models/EmissionDTO';
 import { User } from '../Models/User';
 import { UserLatestEmissionDTO } from '../Models/UserLatestEmissionDTO';
+import { BurnRequestDTO } from '../Models/BurnRequestDTO';
 
 /**
  * Servizio per la gestione delle emissioni.
@@ -21,8 +22,15 @@ const userDAO = new UserDAO();
  * Valida ed elabora i dati di emissione CO2.
  * Se validi, li salva e li restituisce per il servizio token.
  */
-export async function submitEmission(userId: number, co2Amount: number): Promise<Emission> {
-  let carbonCredit: number = 0;
+export async function submitEmission(userId: number, co2Amount: number): Promise<Emission | BurnRequestDTO> {
+
+  let request: BurnRequestDTO = {
+    requiresBurn: false,
+    userId: userId,
+    carbonCredits: 0,
+    remainingDebt: 0,
+    emissionAmount: 0
+  };
 
   if (!isValidCO2Amount(co2Amount)) {
     throw new Error('Valore di CO2 non valido');
@@ -38,27 +46,27 @@ export async function submitEmission(userId: number, co2Amount: number): Promise
   }
 
   if (userThreshold - co2Amount >= 0 && user.wallet) {
-    carbonCredit = await mintCarbonCredits(user.id, user.wallet?.address, userThreshold - co2Amount);
+    const carbonCredit = await mintCarbonCredits(user.id, user.wallet?.address, userThreshold - co2Amount);
     console.log(`Carbon credit assegnati (+${userThreshold - co2Amount} tCO₂)`);
+
+    const emission = new Emission(
+      0,
+      userId,
+      co2Amount,
+      new Date(),
+      carbonCredit // Carbon credits associati all'emissione
+   );
+
+    await emissionDAO.save(emission);
+
+    return emission;
   } 
   else {
-    if( user.wallet) {
-      carbonCredit = await removeCarbonCredits(userId, user.wallet.address, Math.abs(userThreshold - co2Amount));
-      console.log(`Carbon credit rimossi (-${Math.abs(userThreshold - co2Amount)} tCO₂)`);
+    if (user.wallet) {
+      request = await removeCarbonCredits(userId, user.wallet.address, Math.abs(userThreshold - co2Amount), co2Amount);
     }
+    return request
   }
-
-  const emission = new Emission(
-    0,
-    userId,
-    co2Amount,
-    new Date(),
-    carbonCredit // Carbon credits associati all'emissione
-  );
-
-  await emissionDAO.save(emission);
-
-  return emission;
 }
 
 /**

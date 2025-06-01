@@ -3,6 +3,9 @@ import carbonCreditAbi from "../contracts/carbonCreditAbi.json";
 import { DebtsDAO } from "../DAO/DebtsDAO";
 import { UserWalletDAO } from "../DAO/UserWalletDAO";
 import { UserWallet } from "../Models/UserWallet";
+import { BurnRequestDTO } from "../Models/BurnRequestDTO";
+import { Emission } from "../Models/Emission";
+import { EmissionDAO } from "../DAO/EmissionDAO";
 
 // Provider su Besu (come in hardhat.config)
 const provider = new ethers.JsonRpcProvider("http://localhost:8545");
@@ -36,21 +39,21 @@ export async function checkBalances(account: string, userId: number): Promise<nu
 
     await userWalletDAO.update( userWallet );
 
-
     console.log(`📬 Address: ${account}`);
     console.log(`💰 ETH: ${ethers.formatEther(ethBalance)}`);
     console.log(`🌿 CO2: ${balance}`);
     console.log(` ` )
     console.log("───────────────────────────────");
+
     return parseInt(balance)
   } catch (err) {
     console.error(`❌ Errore con ${account}:`, err);
     return 0;
   }
   
-  const block = await provider.getBlockNumber();
+  /*const block = await provider.getBlockNumber();
   console.log(`📦 Ultimo blocco: ${block}`);
-  return 0;
+  return 0;*/
 }
 
 /*export async function transferCarbonCredits(amountInEther: string, sender: string, receiver: string) {
@@ -138,21 +141,101 @@ export async function mintCarbonCredits(idReceiver: number, receiver: string, am
   return amountInEther;
 }
 
-export async function removeCarbonCredits(userId: number, address: string, amountInEther: number): Promise<number> {
-  /*const wallet = new ethers.Wallet(Account1_private_key, provider);
-  const token = new ethers.Contract(TOKEN_ADDRESS, carbonCreditAbi, wallet);
+export async function removeCarbonCredits(userId: number, address: string, debt: number, co2Amount: number): Promise<BurnRequestDTO> {
+  
+  const emissionDAO = new EmissionDAO();
+  const balance = await checkBalances(address, userId);
+
+  if (balance > 0) {
+    const amountToBurn = Math.min(balance, debt);
+    const newDebt = debt - amountToBurn;
+    const amount = ethers.parseEther(amountToBurn.toString()); // BigInt
+
+    // Prepara i dati della transazione da inviare al frontend
+    const iface = new ethers.Interface(carbonCreditAbi);
+    const data = iface.encodeFunctionData("burn", [amount]);
+
+    const burnRequest: BurnRequestDTO = {
+      requiresBurn: true,
+      userId: userId,
+      carbonCredits: debt,
+      tx: {
+        contractAddress: TOKEN_ADDRESS,
+        from: address,
+        data: data
+      },
+      remainingDebt: newDebt,
+      emissionAmount: amountToBurn
+    };
+
+    return burnRequest;
+  }
+  else {
+    // Aggiornamento db con emissione
+    const emission = new Emission(
+      0,
+      userId,
+      co2Amount,
+      new Date(),
+      -debt
+    );
+
+    await emissionDAO.save(emission);
+
+    //Aggiornamento db con debito
+    const oldDebdt = await debtsDAO.findByUserId(userId);
+    await debtsDAO.update(userId, oldDebdt + debt);
+
+    const burnRequest: BurnRequestDTO = {
+      requiresBurn: false,
+      userId: userId,
+      carbonCredits: -debt,
+      remainingDebt: oldDebdt + debt,
+      emissionAmount: co2Amount
+    };
+
+    return burnRequest;
+  }
+}
+
+export async function confirmBurn(burnRequest: BurnRequestDTO): Promise<void> {
+
+  let receipt: ethers.TransactionReceipt | null = null;
+  const emissionDAO = new EmissionDAO();
 
   try {
-    const amount = ethers.parseEther(amountInEther); // BigInt
-    const tx = await token.burn(amount);
-    console.log(`🔥 Bruciando ${amountInEther} CO2 da ${account}...`);
-    await tx.wait();
-    console.log(`✅ Burn completato. TX Hash: ${tx.hash}`);
-  } catch (err) {
-    console.error("❌ Errore durante il burn:", err);
-  }*/
+    //Verifica la transazione
+    if(burnRequest.tx?.hash) {
+        receipt = await provider.waitForTransaction(burnRequest.tx.hash, 1, 60000); // aspetta max 60s
 
-  return amountInEther;
+      if (!receipt || receipt.status !== 1) {
+        throw new Error("Transazione fallita o non trovata");
+      }
+
+      console.log(`✅ Transazione ${burnRequest.tx.hash} confermata`);
+
+      // Aggiornamento db con emissione solo nel caso in cui era una richiesta di burn originariamente
+      if(burnRequest.requiresBurn) {
+        const emission = new Emission(
+          0,
+          burnRequest.userId,
+          burnRequest.emissionAmount,
+          new Date(),
+          burnRequest.carbonCredits
+        );
+
+        await emissionDAO.save(emission);
+      }
+
+      //Aggiornamento db con debito
+      if (burnRequest.remainingDebt > 0)
+        await debtsDAO.update(burnRequest.userId, burnRequest.remainingDebt);
+    }
+  } 
+  catch (err) {
+    console.error("❌ Errore in submitBurn:", err);
+    throw err;
+  }
 }
 
 /* async function main() {
