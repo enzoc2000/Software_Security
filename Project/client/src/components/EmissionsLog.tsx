@@ -26,7 +26,6 @@ export function EmissionsLog() {
             </div>
             <button className=" border-2 border-blue-800 p-2 rounded-lg m-5"
                 onClick={() => {
-                    sessionStorage.removeItem("datiAttore");
                     navigate(-1)
                 }}
             >

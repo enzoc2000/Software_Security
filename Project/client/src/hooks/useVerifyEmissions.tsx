@@ -11,7 +11,7 @@ export function useVerifyEmissions(profileId: number) {
         if (profileId <= 0) {
             return;
         }
-        fetch(`http://localhost:${API_PORT}/api/logEmissions`, {
+        fetch(`http://localhost:${API_PORT}/api/emissionslog`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -20,7 +20,7 @@ export function useVerifyEmissions(profileId: number) {
             body: JSON.stringify({ profileId: profileId }),
         })
             .then((res) => {
-                if (!res.ok) throw new Error("Log Emissions failed");
+                if (!res.ok) throw new Error("Emissions log failed");
                 return res.json();
             })
             .then((data: EmissionDTO[]) => {
@@ -28,7 +28,6 @@ export function useVerifyEmissions(profileId: number) {
             })
             .catch((err) => {
                 console.error(err.message);
-                // se il token è scaduto / invalido, torno al login
             })
     }, [profileId, API_PORT, token]);
 

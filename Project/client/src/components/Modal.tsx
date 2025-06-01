@@ -4,13 +4,17 @@ import { UserDTO } from '../../../server/src/Models/UserDTO';
 import { useNavigate } from 'react-router-dom';
 
 const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
-async function sendCreditsApi(profileId: number, actorId: number, amount: number): Promise<boolean> {
+async function sendCreditsApi(profileAddress: string, actorAddress: string, amount: number): Promise<boolean> {
   const res = await fetch(`http://localhost:${VITE_SERVER_PORT}/api/sendCredits`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ profileId, actorId, amount }),
+    body: JSON.stringify({ 
+      profileAddress: profileAddress, 
+      actorAddress: actorAddress, 
+      amountOfCredits: amount 
+    }),
   });
   if (!res.ok) {
     const err = await res.json();
@@ -23,7 +27,9 @@ async function sendCreditsApi(profileId: number, actorId: number, amount: number
 
 export function Modal({ credits, profile, onClose }: { credits: number, profile: UserDTO, onClose: () => void }) {
   const [dataActorsInDebt, setdataActorsInDebt] = useState<UserDTO | null>(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
   const navigate = useNavigate();
+
   useEffect(() => {
     const storedAttore = sessionStorage.getItem("dataActorsInDebt");
     if (storedAttore) {
@@ -38,20 +44,31 @@ export function Modal({ credits, profile, onClose }: { credits: number, profile:
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
+    setShowModal(true);
     //send token to another user
     try {
       console.log("Inizio invio crediti: ", credits);
-      /* const result = await sendCreditsApi(profile.id, datiAttore.id, credits);
-      if (!result) {
-        alert("Send credits failed: insufficient balance");
+      if (!profile.wallet_address || !dataActorsInDebt.wallet_address) {
+        alert("Wallet address is missing for either the sender or the recipient.");
+        setShowModal(false);
         return;
-      } */
-      alert(`Credits sent successfully: ${credits}`);
-      sessionStorage.removeItem("dataActorsInDebt");
-      onClose();
-      navigate(-1);
-    } 
+      }
+      const result = await sendCreditsApi(profile.wallet_address, dataActorsInDebt.wallet_address, credits);
+      if (!result) {
+        alert("Not been able to send credits.");
+        setShowModal(false);
+        return;
+      }
+      else {
+        setShowModal(false);
+        alert(`Credits sent successfully: ${credits}`);
+        sessionStorage.removeItem("dataActorsInDebt");
+        onClose();
+        navigate(-1);
+      }
+    }
     catch (error) {
+      setShowModal(false);
       console.error("Error during credits transfer: ", error);
     }
   }
@@ -68,15 +85,24 @@ export function Modal({ credits, profile, onClose }: { credits: number, profile:
           </h1>
           <button
             className="border-2 px-4 py-2 rounded-lg border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800"
+            disabled={showModal}
             onClick={onClose}>No
           </button>
           <button
             className="border-2 px-4 py-2 rounded-lg border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800"
+            name='submit'
+            disabled={showModal}
             onClick={(e) => handleSubmit(e)}>Yes
           </button>
-
         </div>
       </div>
+      {showModal && (
+        <div className="fixed p-5 inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center">
+          <div className="bg-white p-4 border-2 rounded-lg text-2xl border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
+            <p>Sending credits...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

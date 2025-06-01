@@ -4,7 +4,7 @@
     "description": "Repository di progetto",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "devall": "(cd client && npm run dev) && (cd server && npm run dev)"
+        "devall": "(cd client && npm run dev&) && (cd server && npm run dev&)"
     },
     "dependencies": {
         "software-security": "file:",

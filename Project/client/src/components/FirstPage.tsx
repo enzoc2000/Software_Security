@@ -31,11 +31,12 @@ export function FirstPage() {
 
       const sommaTreshold = latestEmissionData
         .map(e =>
-          e.co2_amount
+          e.treshold
         )
         .reduce((acc, cur) => acc + cur, 0);
 
       setCo2Sum(sommaEmissioni);
+
       setGlobalThreshold(sommaTreshold);
     } else {
       setCo2Sum(0);

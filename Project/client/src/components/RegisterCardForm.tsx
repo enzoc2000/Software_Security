@@ -89,6 +89,7 @@ function RegisterCardForm() {
     serialCode: "",
     walletAddress: ""
   })
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -117,15 +118,21 @@ function RegisterCardForm() {
       alert("Dati non validi")
       return;
     }
-    if (await signUp(currentUser)) {
-      console.log("Utente: " + currentUser.username + " OK")
-      //Inserire registrazione avvenuta con successo
-      navigate("/")
-      //Passo alla pagina di FirstPage con i dati dell'utente autenticato  
-      alert("Registration successful")
-    }
-    else {
-      alert("Sign up failed")
+    try {
+      setShowModal(true);
+      const success = await signUp(currentUser);
+      if (success) {
+        setShowModal(false);
+        alert("Registration successful");
+        navigate("/");
+      } else {
+        setShowModal(false);
+        alert("Sign up failed");
+      }
+    } catch (err) {
+      console.error(err);
+      setShowModal(false);
+      alert("Errore durante la registrazione");
     }
 
   }
@@ -201,10 +208,18 @@ function RegisterCardForm() {
             readOnly
           ></input>
           <button className="grid p-2 m-1 border-2 border-red-800 text-red-800 font-bold py-2 px-4 rounded-lg"
-            type="submit">
+            type="submit"
+            disabled={showModal}>
             Registration
           </button>
         </form>
+        {showModal && (
+          <div className="fixed p-5 inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center">
+            <div className="bg-white p-4 border-2 rounded-lg text-2xl border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
+              <p>Signing up...</p>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

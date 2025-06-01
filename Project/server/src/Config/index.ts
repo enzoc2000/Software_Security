@@ -7,6 +7,7 @@ import { getUserById, getUsersExcept, getUsersWithDebt, loginUser, signUpUser } 
 import { authMiddleware } from "../middleware/auth";
 import { getEmissionsAndTresholdByUser, getLatestEmissions, submitEmission } from "../Services/DataService";
 import { checkBalances } from "../Services/TokenService";
+import { get } from "http";
 
 
 const app = express();
@@ -141,7 +142,7 @@ app.post(
 );
 
 app.post(
-  "/api/logEmissions",
+  "/api/emissionslog",
   authMiddleware,
   async (req: Request, res: Response) => {
     const { profileId } = req.body;
@@ -149,6 +150,20 @@ app.post(
     try {
       const emissions = await getEmissionsAndTresholdByUser(profileId);
       res.status(200).json(emissions);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Errore interno" });
+    }
+  }
+);
+
+app.post(
+  "/api/transactionslog",
+  authMiddleware,
+  async (req: Request, res: Response) => {
+    try {
+      /* const transactions = await getAllTransactions();
+      res.status(200).json(transactions); */
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Errore interno" });
@@ -198,6 +213,23 @@ app.post(
     try {
       const userBalance = await checkBalances(profileAddress, profileId);
       res.status(200).json(userBalance);
+    }
+    catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Errore interno" });
+    }
+  }
+);
+
+app.post(
+  "/api/sendCredits",
+  authMiddleware,
+  async (req: Request, res: Response) => {
+    const { profileAddress, actorAddress, amountOfCredits } = req.body;
+    try {
+      console.log("Attempt to send credits:", req.body);
+      /* const donationOk = await donateCredits(profileAddress, actorAddress, amountOfCredits);
+      res.status(200).json(donationOk); */
     }
     catch (err) {
       console.error(err);
