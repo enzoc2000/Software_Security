@@ -1,9 +1,12 @@
 # Manuale
 
+[Link to final report](https://www.overleaf.com/read/mdhwjpjjhsgc#758340)
+
+
 ## Requisiti di sistema
 - Docker [get-docker](https://docs.docker.com/get-docker)
 
-### REquisiti di sistema per developers
+### Requisiti di sistema per developers
 - node v23.2.0
 - npm 11.3.0
 - at least 1GB of free space on disk

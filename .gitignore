@@ -9,3 +9,6 @@ dist/
 
 # Ignora file di log
 *.log
+
+# Ignora file macOS
+*.DS_Store
