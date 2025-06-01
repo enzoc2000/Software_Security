@@ -5,7 +5,8 @@ import { useAuth } from "./useAuth";
 export function useVerifyActorsDebts(profileId: number) {
     const API_PORT = import.meta.env.VITE_SERVER_PORT;
     const { token } = useAuth();
-    const [dataActorsInDebt, setdatiAttori] = useState<UserDebtDTO[]>([]);
+    const [dataActorsInDebt, setActorsInDebt] = useState<UserDebtDTO[]>([]);
+    const [userDebt, setUserDebt] = useState<number>(0);
 
     useEffect(() => {
         if (profileId <= 0) {
@@ -23,8 +24,9 @@ export function useVerifyActorsDebts(profileId: number) {
                 if (!res.ok) throw new Error("List actors with debt failed");
                 return res.json();
             })
-            .then((data: UserDebtDTO[]) => {
-                setdatiAttori(data);
+            .then((data: { usersDebt: UserDebtDTO[]; userDebt: number }) => {
+                setActorsInDebt(data.usersDebt);
+                setUserDebt(data.userDebt);
             })
             .catch((err) => {
                 console.error(err.message);
@@ -32,5 +34,5 @@ export function useVerifyActorsDebts(profileId: number) {
             })
     }, [profileId, API_PORT, token]);
 
-    return { dataActorsInDebt };
+    return { dataActorsInDebt, userDebt };
 }

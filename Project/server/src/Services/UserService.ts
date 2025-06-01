@@ -170,22 +170,29 @@ export async function getUsersExcept(id: number): Promise<UserDTO[]> {
 
 }
 
-export async function getUsersWithDebt(id: number): Promise<UserDebtDTO[]> {
+export async function getUsersWithDebt(id: number): Promise<{usersDebt: UserDebtDTO[], userDebt: number}> {
   // individuo gli utenti con debito eccetto l'utente che sta cercando
   const usersWithDebt = await debtsDAO.findAllExceptUserId(id);
+  const userDebt = await debtsDAO.findByUserId(id);
 
+  if (!userDebt) {
+    throw new Error('User debt not found');
+  }
   if (usersWithDebt.length === 0) {
-    return [];
+    return {
+      usersDebt:[],
+      userDebt: 0
+    };
   }
 
-  const usersDebt = await Promise.all(
+  const usersDebt: UserDebtDTO[] = await Promise.all(
     usersWithDebt.map(
       async user => {
         const utente = await userDAO.findById(user.id_user);
         return { id: user.id_user, name: utente.name, role: utente.role, debt: user.debt, wallet_address: utente.wallet?.address ?? "" };
       }));
 
-  return usersDebt;
+  return {usersDebt, userDebt};
 }
 
 

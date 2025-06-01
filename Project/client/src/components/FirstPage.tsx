@@ -15,7 +15,7 @@ import { useVerifyBalance } from "../hooks/useVerifyBalance";
 export function FirstPage() {
   const { profile } = useVerifyAuth();
   const { balance } = useVerifyBalance(profile.wallet_address ?? "", profile.id);
-  const { dataActorsInDebt } = useVerifyActorsDebts(profile.id);
+  const { dataActorsInDebt, userDebt } = useVerifyActorsDebts(profile.id);
   const { latestEmissionData } = useVerifyLatestEmissions();
   const [co2Sum, setCo2Sum] = useState(0);
   const [globalThreshold, setGlobalThreshold] = useState(0);
@@ -87,6 +87,10 @@ export function FirstPage() {
         <div className="flex" >
           <h2 className="text-red-800 ">Your wallet balance is:</h2>
           <p className="ml-2 font-bold">{balance}</p>
+        </div>
+        <div className="flex" >
+          <h2 className="text-red-800 ">Your debt is:</h2>
+          <p className="ml-2 font-bold">{userDebt}</p>
         </div>
       </div>
       <h1 className="text-5xl text-red-800 mt-5">

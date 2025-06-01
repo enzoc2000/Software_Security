@@ -220,8 +220,8 @@ app.post(
     const { id } = req.body;
     console.log("Attempt to list actors debts:", req.body);
     try {
-      const listActorsDebts = await getUsersWithDebt(id);
-      res.status(200).json(listActorsDebts);
+      const { usersDebt, userDebt } = await getUsersWithDebt(id);
+      res.status(200).json({ usersDebt, userDebt } );
     }
     catch (err) {
       console.error(err);
@@ -255,15 +255,11 @@ app.post(
     try {
       const userBalance = await withTimeout(
         checkBalances(profileAddress, profileId),
-        5000,
+        10000,
         "Check balance timed out"
       );
-      if (!userBalance) {
-        res.status(404).json({ message: "No response from getBalance" });
-        return;
-      }
       res.status(200).json(userBalance);
-      return
+      return;
     }
     catch (err: any) {
       console.error(err);
