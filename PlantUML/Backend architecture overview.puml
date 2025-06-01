@@ -1,0 +1,18 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+' === Component Level ===
+title Component Diagram for Back-End Service
+
+Component(token_service, "Token service", "TypeScript", "Manages the emission and transfer of FTs and NFTs")
+Component(user_service, "User service", "TypeScript", "Manages user roles, permissions, and authentication")
+Component(data_service, "Data service", "TypeScript", "Fetches and validates external data for the blockchain")
+
+Rel(token_service, blockchain, "Interacts with smart contracts")
+Rel(user_service, database, "Handles data")
+Rel(data_service, token_service, "Handles carbon credit emissions")
+Rel(data_service, database, "Handles data")
+
+@enduml
