@@ -1,7 +1,7 @@
 # Manuale
 
 ## Requisiti di sistema
-- Docker
+- Docker [get-docker](https://docs.docker.com/get-docker)
 - node v23.2.0
 - npm 11.3.0
 - at least 1GB of free space on disk
