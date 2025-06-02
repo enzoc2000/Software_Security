@@ -23,6 +23,10 @@ if (!JWT_SECRET || !PORT) {
   process.exit(1);
 }
 
+app.get("/", (req: Request, res: Response) => {
+  res.status(200).json({ message: "Server backend attivo" });
+});
+
 app.get(
   "/api/profilo",
   authMiddleware,                    // <— applica il controllo del JWT
