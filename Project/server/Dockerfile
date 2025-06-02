@@ -1,11 +1,11 @@
 # Build stage
-FROM node:20-alpine AS builder
+FROM node:22.16.0-alpine3.22 AS builder
 WORKDIR /app
 COPY . .
 RUN npm ci && npm run build
 
 # Production image
-FROM node:20-alpine
+FROM node:22.16.0-alpine3.22
 WORKDIR /app
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package.json .
