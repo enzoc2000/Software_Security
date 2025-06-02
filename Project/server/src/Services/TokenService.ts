@@ -6,6 +6,7 @@ import { UserWallet } from "../Models/UserWallet";
 import { BurnRequestDTO } from "../Models/BurnRequestDTO";
 import { Emission } from "../Models/Emission";
 import { EmissionDAO } from "../DAO/EmissionDAO";
+import { getUserById } from "./UserService";
 
 // Provider su Besu (come in hardhat.config)
 const provider = new ethers.JsonRpcProvider("http://localhost:8545");
@@ -226,6 +227,47 @@ export async function removeCarbonCredits(userId: number, address: string, debt:
 
     return burnRequest;
   }
+}
+export async function donateCredits( idMandante: number, idRicevente: number,amountInEther: string): Promise<void> {
+  try {
+    // Conversione importo
+    const amountToBurn = ethers.parseEther(amountInEther);
+
+    // Recupero dati utenti e saldi
+    const [mandante, ricevente, debitoRicevente] = await Promise.all([
+      getUserById(idMandante),
+      getUserById(idRicevente),
+      debtsDAO.findByUserId(idRicevente)
+    ]);
+
+    // Calcoli debito
+    const debitoInWei = ethers.parseEther(debitoRicevente.toString());
+    const amountEffective = amountToBurn < debitoInWei ? amountToBurn : debitoInWei;
+    const nuovoDebitoWei = debitoInWei - amountEffective;
+    const nuovoDebito = Number(ethers.formatEther(nuovoDebitoWei));
+
+    // Operazione di burn
+    const burnRequest = await removeCarbonCredits(
+      idMandante,
+      mandante.wallet_address?.toString() || '',
+      Number(debitoInWei),
+      Number(amountInEther)
+    );
+
+    // Aggiornamento debito e log
+    await debtsDAO.update(idRicevente, nuovoDebito);
+    console.log(nuovoDebitoWei <= 0 ?
+      `✅ Debito COMPLETAMENTE saldato per il ricevente ${idRicevente}` :
+      `📉 Debito ridotto a ${nuovoDebito} ETH per il ricevente ${idRicevente}`
+    );
+
+    await confirmBurn(burnRequest);
+
+  } catch (error) {
+    const err = error as Error;
+  console.error(`❌ Errore nella donazione: ${err.message}`);
+  throw error;
+}
 }
 
 export async function confirmBurn(burnRequest: BurnRequestDTO): Promise<void> {
