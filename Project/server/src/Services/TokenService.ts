@@ -12,7 +12,7 @@ const provider = new ethers.JsonRpcProvider("http://localhost:8545");
 
 // Stesso indirizzo del contratto usato da Hardhat
 const TOKEN_ADDRESS = "0x2E6A0e0106F37A045a8b0B9C9357Ffe9a873Fa4c";
-
+const deployerPrivateKey = "7a18769fc1e450f623619bb54b67e118a2462ae5f8f4be8f066de5a77cfc3cf1";
 // Account di test (puoi anche importarli da .env se vuoi)
 const Account1 = "0xc73aF3677eBc555Fc631d3EdfCE675A656b684e5";
 const Account1_private_key = "7a18769fc1e450f623619bb54b67e118a2462ae5f8f4be8f066de5a77cfc3cf1";
@@ -22,7 +22,31 @@ const Account2_private_key="356fd7201a910f2bde48d0037f06d337dce0bf00014fa3f74114
 
 const debtsDAO = new DebtsDAO();
 const userWalletDAO = new UserWalletDAO();
+export async function ethNewUser(
+  userAddress: string, 
+  amount: string = "100.0"
+): Promise<string> {
+  
+  if (!deployerPrivateKey) {
+    throw new Error("Deployer private key not configured");
+  }
 
+  const provider = new ethers.JsonRpcProvider("http://localhost:8545");
+  const deployer = new ethers.Wallet(deployerPrivateKey, provider);
+  
+  try {
+    const tx = await deployer.sendTransaction({
+      to: userAddress,
+      value: ethers.parseEther(amount) // <-- Modifica qui (senza .utils)
+    });
+    
+    console.log(`Funded ${userAddress} with ${amount} ETH. Tx hash: ${tx.hash}`);
+    return tx.hash;
+  } catch (error) {
+    console.error("Error funding new user:", error);
+    throw new Error(`Failed to fund user: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
 export async function checkBalances(account: string, userId: number): Promise<number> {
   const token = new ethers.Contract(TOKEN_ADDRESS, carbonCreditAbi, provider);
 
