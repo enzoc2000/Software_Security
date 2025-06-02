@@ -1,4 +1,4 @@
-import { TransactionDTO } from "../../../server/src/Models/TransactionDTO";
+import { TransactionDTO } from "../Models/TransactionDTO";
 
 export function TransactionCard(transaction: TransactionDTO) {
     const emissionobj = new Date(transaction.timestamp);

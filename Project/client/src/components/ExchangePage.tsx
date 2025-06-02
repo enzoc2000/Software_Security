@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useVerifyAuth } from "../hooks/useVerifyAuth";
 import { Modal } from "./Modal";
-import { UserDebtDTO } from "../../../server/src/Models/UserDebtDTO";
+import { UserDebtDTO } from "../Models/UserDebtDTO";
 
 export function ExchangePage() {
   const { profile } = useVerifyAuth();

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import connectWallet from '../utils/ConnectWallet';
 import { useAuth } from '../hooks/useAuth';
-import { UserDTO } from '../../../server/src/Models/UserDTO';
+import { UserDTO } from '../Models/UserDTO';
 const NO_SYMBOLS = [",", ".", "?", "|", `"`, "'", "=", "&"];
 const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
 

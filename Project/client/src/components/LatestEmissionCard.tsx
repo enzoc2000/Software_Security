@@ -1,4 +1,4 @@
-import { UserLatestEmissionDTO } from "../../../server/src/Models/UserLatestEmissionDTO";
+import { UserLatestEmissionDTO } from "../Models/UserLatestEmissionDTO";
 
 export function LatestEmissionCard(emission: UserLatestEmissionDTO) {
     const emissionobj = new Date(emission.date);

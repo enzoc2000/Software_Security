@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { EmissionDTO } from "../../../server/src/Models/EmissionDTO";
+import { EmissionDTO } from "../Models/EmissionDTO";
 import { useAuth } from "./useAuth";
 
 export function useVerifyEmissions(profileId: number) {

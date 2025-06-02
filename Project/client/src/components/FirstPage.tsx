@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import { useVerifyActorsDebts } from "../hooks/useVerifyActorsDebts";
 import Navbar from "./Navbar";
 import { LatestEmissionCard } from "./LatestEmissionCard";
-import { UserLatestEmissionDTO } from "../../../server/src/Models/UserLatestEmissionDTO";
+import { UserLatestEmissionDTO } from "../Models/UserLatestEmissionDTO";
 import { useVerifyLatestEmissions } from "../hooks/useVerifyLatestEmissions";
 import { useEffect, useState } from "react";
-import { UserDebtDTO } from "../../../server/src/Models/UserDebtDTO";
+import { UserDebtDTO } from "../Models/UserDebtDTO";
 import { DebtCard } from "./DebtCard";
 import { useVerifyBalance } from "../hooks/useVerifyBalance";
 

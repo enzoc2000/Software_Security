@@ -1,5 +1,11 @@
 import { ethers } from "ethers";
 
+declare global {
+  interface Window {
+    ethereum?: any;
+  }
+}
+
 export default async function connectWallet() {
     if (window.ethereum) {
       const provider = new ethers.BrowserProvider(window.ethereum);

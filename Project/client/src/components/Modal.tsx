@@ -1,6 +1,6 @@
 import { X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { UserDTO } from '../../../server/src/Models/UserDTO';
+import { UserDTO } from '../Models/UserDTO';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 

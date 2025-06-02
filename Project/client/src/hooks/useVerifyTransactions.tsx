@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TransactionDTO } from "../../../server/src/Models/TransactionDTO";
+import { TransactionDTO } from "../Models/TransactionDTO";
 import { useAuth } from "./useAuth";
 
 export function useVerifyTransactions() {

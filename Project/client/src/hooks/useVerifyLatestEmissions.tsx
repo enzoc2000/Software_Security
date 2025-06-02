@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "./useAuth";
-import { UserLatestEmissionDTO } from "../../../server/src/Models/UserLatestEmissionDTO";
+import { UserLatestEmissionDTO } from "../Models/UserLatestEmissionDTO";
 
 export function useVerifyLatestEmissions() {
     const API_PORT = import.meta.env.VITE_SERVER_PORT;

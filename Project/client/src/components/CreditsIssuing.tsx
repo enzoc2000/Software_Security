@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useVerifyAuth } from "../hooks/useVerifyAuth";
 import { useState } from "react";
-import { BurnRequestDTO } from "../../../server/src/Models/BurnRequestDTO";
-import { Emission } from "../../../server/src/Models/Emission";
+import { BurnRequestDTO } from "../Models/BurnRequestDTO";
+import { Emission } from "../Models/Emission";
 import { ethers } from "ethers";
 const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
 type SubmitEmissionResponse = Emission | BurnRequestDTO;
