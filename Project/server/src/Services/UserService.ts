@@ -6,6 +6,7 @@ import { UserWalletDAO } from '../DAO/UserWalletDAO';
 import { UserDTO } from '../Models/UserDTO';
 import { UserDebtDTO } from '../Models/UserDebtDTO';
 import { DebtsDAO } from '../DAO/DebtsDAO';
+import { ethNewUser } from './TokenService';
 
 /**
  * Servizio per la gestione degli utenti.
@@ -51,9 +52,10 @@ export async function signUpUser(username: string, password: string,
   //Salviamo l'utente
   const userid = await userDAO.save(user);
 
-  //Link del wallet all'utente
+  //Link del wallet all'utente e assegnazione moneta iniziale
   const userWallet = new UserWallet(userid, 0, walletAddress);
   linkWallet(userid, userWallet);
+  ethNewUser(userWallet.address); // Assegna 100 unità di moneta iniziale
 
   //Aggiorniamo il serial code come utilizzato
   await userDAO.updateSerialCode(validCode);

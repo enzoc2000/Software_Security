@@ -22,10 +22,8 @@ const Account2_private_key="356fd7201a910f2bde48d0037f06d337dce0bf00014fa3f74114
 
 const debtsDAO = new DebtsDAO();
 const userWalletDAO = new UserWalletDAO();
-export async function ethNewUser(
-  userAddress: string, 
-  amount: string = "100.0"
-): Promise<string> {
+
+export async function ethNewUser(userAddress: string, amount: string = "100.0"): Promise<string> {
   
   if (!deployerPrivateKey) {
     throw new Error("Deployer private key not configured");
@@ -47,6 +45,7 @@ export async function ethNewUser(
     throw new Error(`Failed to fund user: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
+
 export async function checkBalances(account: string, userId: number): Promise<number> {
   const token = new ethers.Contract(TOKEN_ADDRESS, carbonCreditAbi, provider);
 
