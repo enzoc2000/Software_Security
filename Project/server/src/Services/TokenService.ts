@@ -8,6 +8,8 @@ import { Emission } from "../Models/Emission";
 import { EmissionDAO } from "../DAO/EmissionDAO";
 import { DonationDAO } from "../DAO/DonationDAO";
 import { Donation } from "../Models/Donation";
+import { TransactionDTO } from "../Models/TransactionDTO";
+import { UserDAO } from "../DAO/UserDAO";
 
 // Provider su Besu (come in hardhat.config)
 const provider = new ethers.JsonRpcProvider("http://localhost:8545");
@@ -19,33 +21,34 @@ const deployerPrivateKey = "7a18769fc1e450f623619bb54b67e118a2462ae5f8f4be8f066d
 const Account1 = "0xc73aF3677eBc555Fc631d3EdfCE675A656b684e5";
 const Account1_private_key = "7a18769fc1e450f623619bb54b67e118a2462ae5f8f4be8f066de5a77cfc3cf1";
 
-const Account2="0x9c895B655b7340615b953bA7E777455B78550DF6";
-const Account2_private_key="356fd7201a910f2bde48d0037f06d337dce0bf00014fa3f74114301f4396e6df";
+const Account2 = "0x9c895B655b7340615b953bA7E777455B78550DF6";
+const Account2_private_key = "356fd7201a910f2bde48d0037f06d337dce0bf00014fa3f74114301f4396e6df";
 
+const userDAO = new UserDAO();
 const debtsDAO = new DebtsDAO();
 const userWalletDAO = new UserWalletDAO();
 const transactionDAO = new DonationDAO();
 const emissionDAO = new EmissionDAO();
 
 export async function ethNewUser(userAddress: string, amount: string = "100.0"): Promise<string> {
-  
+
   if (!deployerPrivateKey) {
     throw new Error("Deployer private key not configured");
   }
 
   const provider = new ethers.JsonRpcProvider("http://localhost:8545");
   const deployer = new ethers.Wallet(deployerPrivateKey, provider);
-  
+
   try {
     const tx = await deployer.sendTransaction({
       to: userAddress,
       value: ethers.parseEther(amount) // <-- Modifica qui (senza .utils)
     });
-    
+
     console.log(`Funded ${userAddress} with ${amount} ETH. Tx hash: ${tx.hash}`);
 
     return tx.hash;
-  } 
+  }
   catch (error) {
     console.error("Error funding new user:", error);
     throw new Error(`Failed to fund user: ${error instanceof Error ? error.message : String(error)}`);
@@ -60,27 +63,27 @@ export async function checkBalances(account: string, userId: number): Promise<nu
     const tokenBalance = await token.balanceOf(account);
     const balance = ethers.formatEther(tokenBalance)
     console.log(`🌿 CO2: ${tokenBalance}`);
-    const userWallet = new UserWallet (
+    const userWallet = new UserWallet(
       userId,
       parseInt(balance),
       account,
     )
 
-    await userWalletDAO.update( userWallet );
+    await userWalletDAO.update(userWallet);
 
     console.log(`📬 Address: ${account}`);
     console.log(`💰 ETH: ${ethers.formatEther(ethBalance)}`);
     console.log(`🌿 CO2: ${balance}`);
-    console.log(` ` )
+    console.log(` `)
     console.log("───────────────────────────────");
 
     return parseInt(balance)
-  } 
+  }
   catch (err) {
     console.error(`❌ Errore con ${account}:`, err);
     return 0;
   }
-  
+
   /*const block = await provider.getBlockNumber();
   console.log(`📦 Ultimo blocco: ${block}`);
   return 0;*/
@@ -102,7 +105,7 @@ export async function mintCarbonCredits(idReceiver: number, receiver: string, am
   }
   else {
     // Se l'utente aveva un debito, lo azzero e minto i token
-    if(currentDebts > 0) {
+    if (currentDebts > 0) {
       debtsDAO.update(idReceiver, 0);
       console.log(`🔥 Bruciati ${currentDebts} CO2 perchè ${receiver} in debito`);
     }
@@ -116,7 +119,7 @@ export async function mintCarbonCredits(idReceiver: number, receiver: string, am
       console.log(`⛏️ Minting ${amount} CO2 per ${receiver}...`);
       await tx.wait();
       console.log(`✅ Mint completato. TX Hash: ${tx.hash}`);
-    } 
+    }
     catch (err) {
       console.error("❌ Errore nel mint:", err);
     }
@@ -128,11 +131,18 @@ export async function mintCarbonCredits(idReceiver: number, receiver: string, am
 
 // Funzione che fa richiesta di burn dei carbon credits al frontend in caso in cui abbia a disposizione balance 
 // sufficiente per coprire il debito, altrimenti aggiorna il db con emissione e debito
-export async function removeCarbonCredits(userId: number, address: string, debt: number, co2Amount: number): Promise<BurnRequestDTO> {
-  
-  const balance = await checkBalances(address, userId);
-  console.log(`Quantity of crdits do you have: ${balance}`);
+export async function removeCarbonCredits(userId: number, address: string, debt: number, co2Amount: number, credits?: number): Promise<BurnRequestDTO> {
 
+  let balance: number;
+  // Verifico se la chiamata sta avvenendo sotto forma di donazione 
+  if (!credits) {
+    balance = await checkBalances(address, userId);
+    console.log(`Quantity of credits do you have: ${balance}`);
+  }
+  else {
+    // prendo solo i crediti della donazione 
+    balance = credits;
+  }
   if (balance > 0) {
     const amountToBurn = Math.min(balance, debt);
     const newDebt = debt - amountToBurn;
@@ -142,8 +152,6 @@ export async function removeCarbonCredits(userId: number, address: string, debt:
     // Prepara i dati della transazione da inviare al frontend
     const iface = new ethers.Interface(carbonCreditAbi);
     const data = iface.encodeFunctionData("burn", [amount]);
-
-    console.log(data)
 
     const burnRequest: BurnRequestDTO = {
       requiresBurn: true,
@@ -160,7 +168,7 @@ export async function removeCarbonCredits(userId: number, address: string, debt:
     };
 
     console.log(burnRequest);
-    
+
     return burnRequest;
   }
   else {
@@ -201,8 +209,8 @@ export async function confirmBurn(burnRequest: BurnRequestDTO): Promise<void> {
 
   try {
     //Verifica la transazione
-    if(burnRequest.tx?.hash) {
-        receipt = await provider.waitForTransaction(burnRequest.tx.hash, 1, 60000); // aspetta max 60s
+    if (burnRequest.tx?.hash) {
+      receipt = await provider.waitForTransaction(burnRequest.tx.hash, 1, 60000); // aspetta max 60s
 
       if (!receipt || receipt.status !== 1) {
         throw new Error("Transazione fallita o non trovata");
@@ -211,9 +219,9 @@ export async function confirmBurn(burnRequest: BurnRequestDTO): Promise<void> {
     }
 
     //Se la transazione è di burn devo aggiornare i dati
-    if(burnRequest.requiresBurn) {
+    if (burnRequest.requiresBurn) {
       //Se non è una transazione aggiorno emissione e debito su db
-      if(!burnRequest.isDonation && burnRequest.emissionAmount) {
+      if (!burnRequest.isDonation && burnRequest.emissionAmount) {
         const emission = new Emission(
           0,
           burnRequest.userId,
@@ -221,6 +229,8 @@ export async function confirmBurn(burnRequest: BurnRequestDTO): Promise<void> {
           new Date(),
           burnRequest.carbonCredits
         );
+
+        console.log(emission);
 
         await emissionDAO.save(emission);
 
@@ -231,9 +241,9 @@ export async function confirmBurn(burnRequest: BurnRequestDTO): Promise<void> {
       //Se è una transazione la salvo e aggiorno il debito del beneficiario
       else {
         // Aggiornamento db con transazione
-        if(burnRequest.idRecipient && burnRequest.tx) {
+        if (burnRequest.idRecipient && burnRequest.tx) {
           const recipientWallet = await userWalletDAO.findByUserId(burnRequest.idRecipient);
-          if(!recipientWallet) {
+          if (!recipientWallet) {
             throw new Error(`Wallet non trovato per l'utente con ID ${burnRequest.idRecipient}`);
           }
 
@@ -247,17 +257,44 @@ export async function confirmBurn(burnRequest: BurnRequestDTO): Promise<void> {
             new Date()
           )
           transactionDAO.save(transaction);
-        }
 
-        //Aggiornamento db con debito
-        await debtsDAO.update(burnRequest.userId, burnRequest.remainingDebt);
+          //Aggiornamento db con debito
+          await debtsDAO.update(burnRequest.idRecipient, burnRequest.remainingDebt);
+        }
       }
     }
-  } 
+  }
   catch (err) {
     console.error("❌ Errore in submitBurn:", err);
     throw err;
   }
+}
+
+export async function getAllTransactions(): Promise<TransactionDTO[]> {
+  const transactions = await transactionDAO.findAll();
+  if (transactions.length === 0) {
+    alert("No transactions found")
+    return [];
+  }
+
+  const transactionAdjusted = await Promise.all(
+    transactions.map(
+      async transaction => {
+        const { name: senderName, role: senderRole } = await userDAO.findNameRoleById(transaction.senderUserId);
+        const { name: receiverName, role: receiverRole } = await userDAO.findNameRoleById(transaction.receiverUserId);
+        return {
+          id: transaction.id,
+          senderName: senderName,
+          senderRole: senderRole,
+          receiverName: receiverName,
+          receiverRole: receiverRole,
+          amount: transaction.amount,
+          timestamp: transaction.timestamp
+        }
+      })
+  );
+  return transactionAdjusted;
+
 }
 
 /* async function main() {

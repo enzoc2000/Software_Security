@@ -6,9 +6,10 @@ import jwt from "jsonwebtoken";
 import { getUserById, getUsersExcept, getUsersWithDebt, loginUser, signUpUser } from "../Services/UserService";
 import { authMiddleware } from "../middleware/auth";
 import { getEmissionsAndTresholdByUser, getLatestEmissions, submitEmission } from "../Services/DataService";
-import { checkBalances, confirmBurn } from "../Services/TokenService";
+import { checkBalances, confirmBurn, getAllTransactions, removeCarbonCredits } from "../Services/TokenService";
 import { BurnRequestDTO } from "../Models/BurnRequestDTO";
 import { withTimeout } from "../Utils/withTimeout";
+import { get } from "http";
 
 
 const app = express();
@@ -155,16 +156,18 @@ app.post(
   "/api/submitBurn",
   authMiddleware,
   async (req: Request, res: Response) => {
-    console.log("Attempt to submit burn:", req.body);
-    try {
-      const burnRequest: BurnRequestDTO = {
+    const burnRequest: BurnRequestDTO = {
         requiresBurn: req.body.requiresBurn,
         userId: req.body.userId,
         carbonCredits: req.body.carbonCredits,
         remainingDebt: req.body.remainingDebt,
         emissionAmount: req.body.emissionAmount,
+        isDonation: req.body.isDonation,
+        idRecipient: req.body.idRecipient,
         tx: req.body.tx
-      }
+      };
+    console.log("Attempt to submit burn:", req.body);
+    try {
       await withTimeout(
         confirmBurn(burnRequest),
         60000,
@@ -176,6 +179,40 @@ app.post(
       console.error(err);
       if (err.message.includes("timed out")) {
         res.status(504).json({ message: "Submit burn timed out" });
+        return;
+      }
+      res.status(500).json({ message: "Errore interno durante il submitBurn" });
+    }
+  }
+);
+
+app.post(
+  "/api/removeCarbonCredits",
+  authMiddleware,
+  async (req: Request, res: Response) => {
+    const {
+      profileId,
+      profileAddress,
+      actorDebt,
+      co2Amount,
+      credits
+    } = req.body;
+    console.log("Attempt to remove carbon credits:", req.body);
+    try {
+      const burnRequest: BurnRequestDTO = await withTimeout(
+        removeCarbonCredits(profileId, profileAddress, actorDebt, co2Amount, credits),
+        60000,
+        "Remove carbon credits timed out"
+      );
+      if (!burnRequest) {
+        res.status(404).json({ message: "Nessuna risposta" });
+        return;
+      }
+      res.status(200).json(burnRequest);
+    } catch (err: any) {
+      console.error(err);
+      if (err.message.includes("timed out")) {
+        res.status(504).json({ message: "Remove carbon credits timed out" });
         return;
       }
       res.status(500).json({ message: "Errore interno durante il submitBurn" });
@@ -204,8 +241,8 @@ app.post(
   authMiddleware,
   async (req: Request, res: Response) => {
     try {
-      /* const transactions = await getAllTransactions();
-      res.status(200).json(transactions); */
+      const transactions = await getAllTransactions();
+      res.status(200).json(transactions);
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Errore interno" });
@@ -221,7 +258,7 @@ app.post(
     console.log("Attempt to list actors debts:", req.body);
     try {
       const { usersDebt, userDebt } = await getUsersWithDebt(id);
-      res.status(200).json({ usersDebt, userDebt } );
+      res.status(200).json({ usersDebt, userDebt });
     }
     catch (err) {
       console.error(err);
@@ -271,37 +308,6 @@ app.post(
     }
   }
 );
-
-app.post(
-  "/api/sendCredits",
-  authMiddleware,
-  async (req: Request, res: Response) => {
-    const { profileAddress, actorAddress, amountOfCredits } = req.body;
-    try {
-      console.log("Attempt to send credits:", req.body);
-      /* const donationOk = await withTimeout(
-      donateCredits(profileAddress, actorAddress, amountOfCredits),
-      30000,
-      "Donation timed out"
-      );
-      if (!donationOk) {
-        res.status(404).json({ message: "No response from donation" });
-        return;
-      }
-        res.status(200).json(donationOk); 
-        return*/
-    }
-    catch (err: any) {
-      console.error(err);
-      if (err.message.includes("timed out")) {
-        res.status(504).json({ message: "Donation timed out" });
-        return;
-      }
-      res.status(500).json({ message: "Errore interno" });
-    }
-  }
-);
-
 
 app.listen(PORT, () => {
   console.log(`✅ Server backend attivo su http://localhost:${PORT}`);

@@ -7,7 +7,7 @@ export class DonationDAO {
     async save(transaction: Donation): Promise<void> {
         await db.execute(
             `INSERT INTO transactions (sender_user_id, receiver_user_id, sender_wallet_address, receiver_wallet_address, amount, timestamp) 
-             VALUES (?, ?, ?, ?, ?)`,
+             VALUES (?, ?, ?, ?, ?, ?)`,
             [
                 transaction.senderUserId,
                 transaction.receiverUserId,
@@ -26,7 +26,7 @@ export class DonationDAO {
         );
 
         if (rows.length === 0)
-            throw new Error('Transazione non trovata');
+            return [];
 
         return rows.map(this.mapRowToDonation);
     }

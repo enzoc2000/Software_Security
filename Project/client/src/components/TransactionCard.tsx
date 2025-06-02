@@ -9,7 +9,7 @@ export function TransactionCard(transaction: TransactionDTO) {
 
     return (
         <>
-            <div className="grid grid-cols-4 text-black text-2xl border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
+            <div className="grid grid-cols-6 text-black text-2xl border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
                 <div className="flex flex-wrap p-2 border-2  border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800  " >
                     <h2 className="ml-2 font-bold" >
                         {data}
@@ -17,12 +17,22 @@ export function TransactionCard(transaction: TransactionDTO) {
                 </div>
                 <div className="flex flex-wrap p-2 border-2  border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800  " >
                     <h2 className="ml-2 font-bold" >
-                        {transaction.senderUserId}
+                        {transaction.senderName}
                     </h2>
                 </div>
                 <div className="flex flex-wrap p-2 border-2  border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800  " >
                     <h2 className="ml-2 font-bold" >
-                        {transaction.receiverUserId}
+                        {transaction.senderRole}
+                    </h2>
+                </div>
+                <div className="flex flex-wrap p-2 border-2  border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800  " >
+                    <h2 className="ml-2 font-bold" >
+                        {transaction.receiverName}
+                    </h2>
+                </div>
+                <div className="flex flex-wrap p-2 border-2  border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800  " >
+                    <h2 className="ml-2 font-bold" >
+                        {transaction.receiverRole}
                     </h2>
                 </div>
                 <div className="flex flex-wrap p-2 border-2  border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800  " >

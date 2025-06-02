@@ -177,13 +177,10 @@ export async function getUsersWithDebt(id: number): Promise<{usersDebt: UserDebt
   const usersWithDebt = await debtsDAO.findAllExceptUserId(id);
   const userDebt = await debtsDAO.findByUserId(id);
 
-  if (!userDebt) {
-    throw new Error('User debt not found');
-  }
   if (usersWithDebt.length === 0) {
     return {
       usersDebt:[],
-      userDebt: 0
+      userDebt: userDebt
     };
   }
 
