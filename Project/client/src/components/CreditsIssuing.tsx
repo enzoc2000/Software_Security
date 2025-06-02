@@ -1,9 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import { useVerifyAuth } from "../hooks/useVerifyAuth";
 import { useState } from "react";
+import { BurnRequestDTO } from "../../../server/src/Models/BurnRequestDTO";
+import { Emission } from "../../../server/src/Models/Emission";
+import { ethers } from "ethers";
 const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
+type SubmitEmissionResponse = Emission | BurnRequestDTO;
 
-async function submitEmissionsApi(profileId: number, co2Amount: number, token: string) {
+function isBurnRequestDTO(response: SubmitEmissionResponse): response is BurnRequestDTO {
+    return response && typeof response === 'object' && 'requiresBurn' in response;
+}
+async function submitEmissionsApi(profileId: number, co2Amount: number, token: string): Promise<SubmitEmissionResponse> {
     const response = await fetch(`http://localhost:${VITE_SERVER_PORT}/api/submitEmissions`, {
         method: "POST",
         headers: {
@@ -19,11 +26,44 @@ async function submitEmissionsApi(profileId: number, co2Amount: number, token: s
     const res = await response.json();
     return res;
 }
+
+async function submitBurnApi(response: BurnRequestDTO, tx: ethers.TransactionResponse, token: string) {
+    const res = await fetch(`http://localhost:${VITE_SERVER_PORT}/api/submitBurn`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+            requiresBurn: response.requiresBurn,
+            userId: response.userId,
+            carbonCredits: response.carbonCredits,
+            remainingDebt: response.remainingDebt,
+            emissionAmount: response.emissionAmount,
+            tx: {
+                hash: tx.hash,
+                contractAddress: response.tx?.contractAddress ?? "",
+                from: response.tx?.from ?? "",
+                data: response.tx?.data ?? "",
+            }
+        })
+    });
+    if (!res.ok) {
+        const err = await res.json();
+        throw new Error("Submit burn failed: " + err.error);
+    }
+    await res.json();
+
+}
+
+
 export function CreditsIssuing() {
     const { profile, token } = useVerifyAuth();
     const navigate = useNavigate();
     const [co2, setCo2] = useState<number>(0);
     const [showModal, setShowModal] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState("Loading...");
+
 
 
     if (!token) {
@@ -46,16 +86,56 @@ export function CreditsIssuing() {
             return;
         }
         try {
+            setLoadingMessage("Submitting emissions...");
             setShowModal(true);
-            const emission = await submitEmissionsApi(profile.id, co2, token);
-            console.log(emission);
-            if (!emission) {
+            const response = await submitEmissionsApi(profile.id, co2, token);
+            console.log(response);
+
+            if (!response) {
                 setShowModal(false);
                 alert("Emission submission failed.");
+                return;
+            }
+
+            if (isBurnRequestDTO(response)) {
+                if (!response.requiresBurn) {
+                    // ✅ Caso in cui NON serve il burn → operazione già salvata lato backend
+                    alert("Emission submitted successfully!");
+                    setShowModal(false);
+                    navigate(-1);
+                    return;
+                }
+
+                // 🔥 Caso in cui serve burn → firma transazione dal frontend
+                setLoadingMessage("Waiting for wallet signature...");
+
+                console.log("TX contract address:", response.tx?.contractAddress);
+                console.log("Expected CO2 contract:", "0x2E6A0e0106F37A045a8b0B9C9357Ffe9a873Fa4c"); // ← copia da deploy script
+
+                const provider = new ethers.BrowserProvider(window.ethereum);
+                const signer = await provider.getSigner();
+
+                const tx = await signer.sendTransaction({
+                    to: response.tx!.contractAddress,
+                    from: response.tx!.from,
+                    data: response.tx!.data,
+                    value: "0x0"
+                });
+
+                setLoadingMessage("Waiting for blockchain confirmation...");
+                await tx.wait();
+
+                // ✅ Invia conferma di transazione al backend
+                setLoadingMessage("Confirming transaction with backend...");
+                await submitBurnApi(response, tx, token);
+
+                alert("Burn transaction completed and saved.");
+                setShowModal(false);
+                navigate(-1);
             }
             else {
-                setShowModal(false);
                 alert("Emission submitted successfully!");
+                setShowModal(false);
                 navigate(-1);
             }
         } catch (err) {
@@ -90,7 +170,7 @@ export function CreditsIssuing() {
                 {showModal && (
                     <div className="fixed p-5 inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center">
                         <div className="bg-white p-4 border-2 rounded-lg text-2xl border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
-                            <p>Loading...</p>
+                            <p>{loadingMessage}</p>
                         </div>
                     </div>
                 )}

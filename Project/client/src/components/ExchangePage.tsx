@@ -31,7 +31,7 @@ export function ExchangePage() {
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    if ((profile.wallet_balance ?? 0) < credits) {
+    if ((profile.wallet_balance ?? 0) < credits || credits <= 0) {
       alert("Send credits failed: insufficient balance");
       return
     }
@@ -80,7 +80,11 @@ export function ExchangePage() {
           </button>
         </div>
       </div>
-      {showModal && <Modal credits={credits} profile={profile} onClose={() => setShowModal(false)} />}
+      {showModal && (
+        <div className="fixed p-5 inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center">
+          <Modal credits={credits} profile={profile} onClose={() => setShowModal(false)} />
+        </div>
+      )}
       <button className=" border-2 border-blue-800 p-2 rounded-lg m-5"
         onClick={() => {
           sessionStorage.removeItem("dataActorsInDebt");

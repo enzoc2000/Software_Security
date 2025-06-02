@@ -9,19 +9,13 @@ export function EmissionCard(emission: EmissionDTO) {
 
     return (
         <>
-            <div className="flex m-2 border-2 rounded-lg text-black text-2xl border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
+            <div className="grid grid-cols-4 text-black text-2xl border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
                 <div className="flex flex-wrap p-2 border-2  border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800  " >
-                    <h2>
-                        Date:
-                    </h2>
                     <h2 className="ml-2 font-bold" >
                         {data}
                     </h2>
                 </div>
                 <div className="flex flex-wrap p-2 border-2 border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800 " >
-                    <h2>
-                        Tons of CO2 emitted:
-                    </h2>
                     <h2 className={
                         `ml-2 font-bold ${emission.treshold - emission.co2_amount > 0
                             ? "text-green-500"
@@ -31,19 +25,12 @@ export function EmissionCard(emission: EmissionDTO) {
                     </h2>
                 </div>
                 <div className="flex flex-wrap p-2 border-2 border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800 " >
-                    <h2>
-                        Threshold:
-                    </h2>
                     <h2 className="ml-2 font-bold" >
                         {emission.treshold}
                     </h2>
                 </div>
                 <div className="flex flex-wrap p-2 border-2 border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800 " >
-                    <h2>
-                        Credit assigned:
-                    </h2>
-                    <h2
-                        className={
+                    <h2 className={
                             `ml-2 font-bold ${emission.treshold - emission.co2_amount > 0
                                 ? "text-green-500"
                                 : "text-red-800"

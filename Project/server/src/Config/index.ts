@@ -6,8 +6,9 @@ import jwt from "jsonwebtoken";
 import { getUserById, getUsersExcept, getUsersWithDebt, loginUser, signUpUser } from "../Services/UserService";
 import { authMiddleware } from "../middleware/auth";
 import { getEmissionsAndTresholdByUser, getLatestEmissions, submitEmission } from "../Services/DataService";
-import { checkBalances } from "../Services/TokenService";
-import { get } from "http";
+import { checkBalances, confirmBurn } from "../Services/TokenService";
+import { BurnRequestDTO } from "../Models/BurnRequestDTO";
+import { withTimeout } from "../Utils/withTimeout";
 
 
 const app = express();
@@ -129,14 +130,55 @@ app.post(
     const { profileId, co2Amount } = req.body;
     console.log("Attempt to submit emissions:", req.body);
     try {
-      const emission = await submitEmission(profileId, co2Amount);
-      if (!emission) {
-        res.status(404).json({ message: "Emissione non inserita" });
+      const response = await withTimeout(
+        submitEmission(profileId, co2Amount),
+        60000,
+        "Submit emissions timed out"
+      );
+      if (!response) {
+        res.status(404).json({ message: "Nessuna risposta" });
+        return;
       }
-      res.status(200).json(emission);
-    } catch (err) {
+      res.status(200).json(response);
+    } catch (err: any) {
       console.error(err);
+      if (err.message.includes("timed out")) {
+        res.status(504).json({ message: "Submit emissions timed out" });
+        return;
+      }
       res.status(500).json({ message: "Errore interno" });
+    }
+  }
+);
+
+app.post(
+  "/api/submitBurn",
+  authMiddleware,
+  async (req: Request, res: Response) => {
+    console.log("Attempt to submit burn:", req.body);
+    try {
+      const burnRequest: BurnRequestDTO = {
+        requiresBurn: req.body.requiresBurn,
+        userId: req.body.userId,
+        carbonCredits: req.body.carbonCredits,
+        remainingDebt: req.body.remainingDebt,
+        emissionAmount: req.body.emissionAmount,
+        tx: req.body.tx
+      }
+      await withTimeout(
+        confirmBurn(burnRequest),
+        60000,
+        "Submit burn timed out"
+      );
+      res.status(200).json({ message: "Burn registrato con successo" });
+      return;
+    } catch (err: any) {
+      console.error(err);
+      if (err.message.includes("timed out")) {
+        res.status(504).json({ message: "Submit burn timed out" });
+        return;
+      }
+      res.status(500).json({ message: "Errore interno durante il submitBurn" });
     }
   }
 );
@@ -178,8 +220,8 @@ app.post(
     const { id } = req.body;
     console.log("Attempt to list actors debts:", req.body);
     try {
-      const listActorsDebts = await getUsersWithDebt(id);
-      res.status(200).json(listActorsDebts);
+      const { usersDebt, userDebt } = await getUsersWithDebt(id);
+      res.status(200).json({ usersDebt, userDebt } );
     }
     catch (err) {
       console.error(err);
@@ -211,11 +253,20 @@ app.post(
   async (req: Request, res: Response) => {
     const { profileAddress, profileId } = req.body;
     try {
-      const userBalance = await checkBalances(profileAddress, profileId);
+      const userBalance = await withTimeout(
+        checkBalances(profileAddress, profileId),
+        10000,
+        "Check balance timed out"
+      );
       res.status(200).json(userBalance);
+      return;
     }
-    catch (err) {
+    catch (err: any) {
       console.error(err);
+      if (err.message.includes("timed out")) {
+        res.status(504).json({ message: "Check balance timed out" });
+        return;
+      }
       res.status(500).json({ message: "Errore interno" });
     }
   }
@@ -228,11 +279,24 @@ app.post(
     const { profileAddress, actorAddress, amountOfCredits } = req.body;
     try {
       console.log("Attempt to send credits:", req.body);
-      /* const donationOk = await donateCredits(profileAddress, actorAddress, amountOfCredits);
-      res.status(200).json(donationOk); */
+      /* const donationOk = await withTimeout(
+      donateCredits(profileAddress, actorAddress, amountOfCredits),
+      30000,
+      "Donation timed out"
+      );
+      if (!donationOk) {
+        res.status(404).json({ message: "No response from donation" });
+        return;
+      }
+        res.status(200).json(donationOk); 
+        return*/
     }
-    catch (err) {
+    catch (err: any) {
       console.error(err);
+      if (err.message.includes("timed out")) {
+        res.status(504).json({ message: "Donation timed out" });
+        return;
+      }
       res.status(500).json({ message: "Errore interno" });
     }
   }

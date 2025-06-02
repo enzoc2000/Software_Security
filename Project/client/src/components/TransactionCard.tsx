@@ -9,36 +9,24 @@ export function TransactionCard(transaction: TransactionDTO) {
 
     return (
         <>
-            <div className="flex m-2 border-2 rounded-lg text-black text-2xl border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
+            <div className="grid grid-cols-4 text-black text-2xl border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
                 <div className="flex flex-wrap p-2 border-2  border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800  " >
-                    <h2>
-                        Date:
-                    </h2>
                     <h2 className="ml-2 font-bold" >
                         {data}
                     </h2>
                 </div>
-                <div className="flex flex-wrap p-2 border-2 border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800 " >
-                    <h2>
-                        Sender:
-                    </h2>
-                    <h2 className="ml-2 font-bold">
+                <div className="flex flex-wrap p-2 border-2  border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800  " >
+                    <h2 className="ml-2 font-bold" >
                         {transaction.senderUserId}
                     </h2>
                 </div>
-                <div className="flex flex-wrap p-2 border-2 border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800 " >
-                    <h2>
-                        Receiver:
-                    </h2>
+                <div className="flex flex-wrap p-2 border-2  border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800  " >
                     <h2 className="ml-2 font-bold" >
                         {transaction.receiverUserId}
                     </h2>
                 </div>
-                <div className="flex flex-wrap p-2 border-2 border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800 " >
-                    <h2>
-                        Amount sended:
-                    </h2 >
-                    <h2 className="ml-2 font-bold">
+                <div className="flex flex-wrap p-2 border-2  border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800  " >
+                    <h2 className="ml-2 font-bold" >
                         {transaction.amount}
                     </h2>
                 </div>
