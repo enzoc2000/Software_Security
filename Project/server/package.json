@@ -22,7 +22,6 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.14.1",
-    "mysql2-promise": "^0.1.4",
     "server": "file:",
     "typescript": "^5.8.3"
   },
