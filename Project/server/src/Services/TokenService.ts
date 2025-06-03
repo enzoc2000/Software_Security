@@ -251,9 +251,10 @@ export async function confirmBurn(burnRequest: BurnRequestDTO): Promise<void> {
             burnRequest.idRecipient,
             burnRequest.tx?.from,
             recipientWallet.address,
-            burnRequest.carbonCredits,
+            burnRequest.carbonCredits - burnRequest.remainingDebt,
             new Date()
           )
+          console.log(transaction);
           transactionDAO.save(transaction);
 
           //Aggiornamento db con debito
