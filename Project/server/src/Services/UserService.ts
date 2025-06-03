@@ -27,15 +27,24 @@ export async function signUpUser(username: string, password: string, email: stri
     throw new Error('Username già in uso');
   }
   const passwordHash = await hashPassword(password);
+
+  //Controllo se l'email è già in uso
+  const existingEmail = await userDAO.findByEmail(email);
+  if (existingEmail) {
+    throw new Error('Email già in uso');
+  }
+  //Creazione dell'utente
   const user = new User(
     0,
     username,
     passwordHash,
+    email,
     role,
     name,
     city,
     address,
   );
+
   //Controllo se walletAddress è già in uso
   const existingWallet = await userWalletDAO.findByAddress(walletAddress);
   if (existingWallet) {
@@ -55,7 +64,8 @@ export async function signUpUser(username: string, password: string, email: stri
   //Link del wallet all'utente e assegnazione moneta iniziale
   const userWallet = new UserWallet(userid, 0, walletAddress);
   linkWallet(userid, userWallet);
-  ethNewUser(userWallet.address); // Assegna 100 unità di moneta iniziale
+  //Assegna 100 unità di moneta iniziale
+  ethNewUser(userWallet.address);
 
   //Aggiorniamo il serial code come utilizzato
   await userDAO.updateSerialCode(validCode);
@@ -90,6 +100,7 @@ export async function loginUser(username: string, password: string, walletAddres
   // Mappa User → DTO
   const userDTO: UserDTO = {
     id: user.id,
+    email: user.email,
     role: user.role,
     name: user.name,
     city: user.city,
@@ -118,6 +129,7 @@ export async function linkWallet(userId: number, wallet: UserWallet): Promise<Us
   // Mappa User → DTO
   const userDTO: UserDTO = {
     id: user.id,
+    email: user.email,
     role: user.role,
     name: user.name,
     city: user.city,
@@ -140,6 +152,7 @@ export async function getUserById(userId: number): Promise<UserDTO> {
   // Mappa User → DTO
   const userDTO: UserDTO = {
     id: user.id,
+    email: user.email,
     role: user.role,
     name: user.name,
     city: user.city,
@@ -160,6 +173,7 @@ export async function getUsersExcept(id: number): Promise<UserDTO[]> {
 
   const usersDTO: UserDTO[] = users.map(user => ({
     id: user.id,
+    email: user.email,
     role: user.role,
     name: user.name,
     city: user.city,
@@ -193,5 +207,3 @@ export async function getUsersWithDebt(id: number): Promise<{usersDebt: UserDebt
 
   return {usersDebt, userDebt};
 }
-
-
