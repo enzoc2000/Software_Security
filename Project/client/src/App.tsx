@@ -4,7 +4,7 @@ import { Login } from "./components/Login";
 import { FirstPage } from "./components/FirstPage";
 import { ExchangePage } from "./components/ExchangePage";
 import { Registration } from "./components/Registration";
-import { Settings } from "lucide-react";
+import { Settings } from "./components/Settings";
 import { CreditsIssuing } from "./components/CreditsIssuing";
 import { EmissionsLog } from "./components/EmissionsLog";
 import logoSupplyChain from "./components/assets/logoSupplyChain.png"
@@ -42,7 +42,7 @@ export function App() {
           <Route path="/EmissionsLog" element={<EmissionsLog />} />
           <Route path="/TransactionsLog" element={<TransactionsLog />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/modal" element={<Modal credits={0} profile={{ id: 0, role: "", name: "", city: "", address: "" }} onClose={function (): void {
+          <Route path="/modal" element={<Modal credits={0} profile={{ id: 0, email: "", role: "", name: "", city: "", address: "" }} onClose={function (): void {
             throw new Error("Function not implemented.");
           }} />} />
           <Route path="/exchangePage/:idAttore" element={<ExchangePage />} />

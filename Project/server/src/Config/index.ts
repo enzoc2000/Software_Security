@@ -3,7 +3,7 @@
 import express, { Request, Response } from "express";
 import cors from 'cors';
 import jwt from "jsonwebtoken";
-import { getUserById, getUsersExcept, getUsersWithDebt, loginUser, signUpUser } from "../Services/UserService";
+import { getUserById, getUsersExcept, getUsersWithDebt, loginUser, modifyUser, signUpUser } from "../Services/UserService";
 import { authMiddleware } from "../middleware/auth";
 import { getEmissionsAndTresholdByUser, getLatestEmissions, submitEmission } from "../Services/DataService";
 import { checkBalances, confirmBurn, getAllTransactions, removeCarbonCredits } from "../Services/TokenService";
@@ -11,6 +11,7 @@ import { BurnRequestDTO } from "../Models/BurnRequestDTO";
 import { withTimeout } from "../Utils/withTimeout";
 import { sendOTPEmail } from "../Utils/sendOtpEmail";
 import { get } from "http";
+import { UserDAO } from "../DAO/UserDAO";
 const app = express();
 app.use(cors()); // Consenti al frontend di fare richieste
 app.use(express.json());
@@ -37,9 +38,10 @@ app.get(
         res.status(404).json({ message: "Utente non trovato" });
       }
       // ritorna solo i campi “pubblici” del profilo
-      const { id, role, name, city, address, wallet_address, wallet_balance } = user;
+      const { id, email, role, name, city, address, wallet_address, wallet_balance } = user;
       res.status(200).json({
         id,
+        email,
         role,
         name,
         city,
@@ -53,6 +55,24 @@ app.get(
     }
   }
 );
+
+app.post("/api/updateProfile", authMiddleware, async (req: Request, res: Response) => {
+  const { userData, userCredentials } = req.body;
+  try {
+    const user = await loginUser(userCredentials.username, userCredentials.password, userCredentials.walletAddress);
+    if (!user) {
+      res.status(404).json({ message: "Not valid credentials" });
+    }
+    const updated = await modifyUser(userData);
+    if (!updated) {
+      res.status(404).json({ message: "Modification failed" });
+    }
+    res.status(200).json(updated);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Errore interno" });
+  }
+})
 
 app.post("/api/login", async (req: Request, res: Response) => {
   const { username, password, walletAddress } = req.body;

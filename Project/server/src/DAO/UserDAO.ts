@@ -134,6 +134,23 @@ export class UserDAO {
       ]
     );
   }
+  async mofify(user: User): Promise<void> {
+    await db.execute(
+      `UPDATE users SET 
+        name = ?, 
+        city = ?, 
+        address = ?,
+        email = ?
+      WHERE id_user = ?`,
+      [
+        user.name,
+        user.city,
+        user.address,
+        user.email,
+        user.id
+      ]
+    );
+  }
 
   // Fuznione che recupera di tutti gli utenti tranne quello con lo username specificato
   async findAllExceptUserId(id: number): Promise<User[]> {

@@ -112,6 +112,21 @@ export async function loginUser(username: string, password: string, walletAddres
   return userDTO;
 }
 
+export async function modifyUser(user: UserDTO): Promise<boolean> {
+  const existingUser = await userDAO.findById(user.id);
+  if (!existingUser) {
+    throw new Error('Utente non trovato');
+  }
+  console.log(existingUser);
+  console.log(user);
+  existingUser.name = user.name;
+  existingUser.email = user.email;
+  existingUser.city = user.city;
+  existingUser.address = user.address;
+  await userDAO.mofify(existingUser);
+  return true;
+}
+
 /**
  * Collega un indirizzo wallet a un utente esistente.
  * @throws Error se l'utente non viene trovato.
