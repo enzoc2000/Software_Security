@@ -97,8 +97,6 @@ function LoginCardForm() {
     });
 
     if (userOK(currentUser)) {
-      console.log("Utente: " + currentUser.username + " OK")
-
       try {
         //Chiamata al backend (UserService) e autenticazione
         const { utenteAutenticato, token } = await loginApi(datiUtente);       //const utenteLinkato = await linkWallet(strutturaWallet.userId, strutturaWallet);

@@ -19,7 +19,7 @@ const debtsDAO = new DebtsDAO();
 /**
  * Inizializza gli utenti di default nel sistema se non esistono già facendo riferimento al seedUsers.
  */
-export async function signUpUser(username: string, password: string,
+export async function signUpUser(username: string, password: string, email: string,
   role: string, name: string, city: string, address: string, walletAddress: string, serialCode: string):
   Promise<Boolean> {
   const existingUser = await userDAO.findByUsername(username);
