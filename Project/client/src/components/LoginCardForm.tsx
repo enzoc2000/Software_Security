@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import connectWallet from '../utils/ConnectWallet';
-import { useAuth } from '../hooks/useAuth';
-import { UserDTO } from '../Models/UserDTO';
 const NO_SYMBOLS = [",", ".", "?", "|", `"`, "'", "=", "&"];
 const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
 
@@ -43,7 +40,7 @@ interface Utente {
 }
 
 
-async function loginApi(utente: Utente): Promise<{ utenteAutenticato: UserDTO, token: string }> {
+async function loginApi(utente: Utente) {
   const res = await fetch(`http://localhost:${VITE_SERVER_PORT}/api/login`, {
     method: "POST",
     headers: {
@@ -55,22 +52,22 @@ async function loginApi(utente: Utente): Promise<{ utenteAutenticato: UserDTO, t
     const err = await res.json();
     throw new Error("Login failed: " + err.error);
   }
-
-  const data = await res.json();
-  return data;
+  const userId = await res.json();
+  return userId;
 }
 
+interface Props {
+  onOtpSent: (userId: number) => void;
+}
 
-function LoginCardForm() {
+function LoginCardForm({ onOtpSent }: Props) {
   const [datiUtente, setDatiUtente] = useState<Utente>({
     username: "",
     password: "",
     walletAddress: ""
   })
-
-  const navigate = useNavigate();
-  const { login } = useAuth();
-
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [loadingMessage, setLoadingMessage] = useState<string>("Loading...");
 
   const buttonConnectWallet = async () => {
     const objPromise = connectWallet();
@@ -98,16 +95,15 @@ function LoginCardForm() {
 
     if (userOK(currentUser)) {
       try {
-        //Chiamata al backend (UserService) e autenticazione
-        const { utenteAutenticato, token } = await loginApi(datiUtente);       //const utenteLinkato = await linkWallet(strutturaWallet.userId, strutturaWallet);
-
-        login(token, utenteAutenticato);
-
-        //Passo alla pagina di FirstPage con i dati dell'utente autenticato 
-        navigate("/firstPage");
-
+        setLoadingMessage("Redirection...");
+        setShowModal(true);
+        //Chiamata al backend (UserService) e richiesta codice Otp
+        const userId = await loginApi(currentUser);
+        onOtpSent(userId);
+        setShowModal(false);
       } catch (error) {
         alert("Login fallito: " + error);
+        setShowModal(false);
       }
     }
     else {
@@ -147,13 +143,21 @@ function LoginCardForm() {
             readOnly
           ></input>
           <button className="grid p-2 m-1 border-2 border-red-800 text-red-800 font-bold py-2 px-4 rounded-lg"
-            type="submit">
+            type="submit"
+            disabled={showModal}>
             Login
           </button>
         </form>
+        {showModal && (
+          <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-500 bg-opacity-50">
+            <div className="bg-white p-4 rounded-lg">
+              <p>{loadingMessage}</p>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
 }
 
-export default LoginCardForm;    
+export default LoginCardForm;

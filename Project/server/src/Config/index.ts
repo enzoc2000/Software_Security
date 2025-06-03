@@ -9,9 +9,8 @@ import { getEmissionsAndTresholdByUser, getLatestEmissions, submitEmission } fro
 import { checkBalances, confirmBurn, getAllTransactions, removeCarbonCredits } from "../Services/TokenService";
 import { BurnRequestDTO } from "../Models/BurnRequestDTO";
 import { withTimeout } from "../Utils/withTimeout";
+import { sendOTPEmail } from "../Utils/sendOtpEmail";
 import { get } from "http";
-
-
 const app = express();
 app.use(cors()); // Consenti al frontend di fare richieste
 app.use(express.json());
@@ -23,6 +22,8 @@ if (!JWT_SECRET || !PORT) {
   console.error("❌ SERVER_PORT o JWT_SECRET non definiti in .env");
   process.exit(1);
 }
+
+const otps = new Map<number, { code: string; expires: number }>();
 
 app.get(
   "/api/profilo",
@@ -57,30 +58,61 @@ app.post("/api/login", async (req: Request, res: Response) => {
   const { username, password, walletAddress } = req.body;
 
   try {
+    // 1. Verifica le credenziali con loginUser
     const user = await loginUser(username, password, walletAddress);
 
     if (!user) {
       // Login fallito
-      res
-        .status(401)
-        .json({ message: "Credenziali non valide" });
+      res.status(401).json({ message: "Credenziali non valide" });
     }
-    // Login riuscito
-    // Genera un token JWT
-    const payload = { userId: user.id, role: user.role };
-    // Firmiamo il token, valido per 2 ore
-    const token = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: "2h" });
+    // 2. Genera un OTP casuale a 6 cifre e ne calcola la scadenza (5 minuti)
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expires = Date.now() + 5 * 60 * 1000; // scade in 5 minuti
 
-    res
-      .status(200)
-      .json({ user, token });
+    // 3. Salva l’OTP in memoria (Map)
+    otps.set(user.id, { code: otp, expires });
 
+    // 4. Invia l’email con il codice OTP
+    await sendOTPEmail(user.email, otp);
+    console.log("OTP inviato");
+    console.log(user.id);
+    // 5. Rispondi al client “OTP inviato”
+    res.status(200).json(user.id);
+    return;
   } catch (error: any) {
     console.error("Errore durante il login:", error);
-    res
-      .status(500)
-      .json({ message: "Errore interno del server" });
+    res.status(500).json({ message: "Errore interno del server" });
   }
+});
+
+app.post("/api/verify-otp", async (req: Request, res: Response) => {
+  const { userId, code } = req.body as { userId: number, code: string };
+  const entry = otps.get(userId);
+
+  // 1. OTP mancante, errato o scaduto
+  if (!entry || entry.code !== code || Date.now() > entry.expires) {
+    res.status(401).json({ message: "OTP non valido o scaduto" });
+    return;
+  }
+
+  // 2. OTP valido: recupera i dati utente veri (di solito fai loginUser di nuovo o tieni già i dati)
+  //    Qui si assume che loginUser(username, ..., ...) restituisca ancora “user”
+  const user = await getUserById(userId);
+  if (!user) {
+    res.status(404).json({ message: "Utente inesistente" });
+    return;
+  }
+
+  // 3. Crea il payload e il JWT
+  const payload = { userId: user.id, role: user.role };
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "2h" });
+
+  // 4. Cancella l’OTP dalla Map: non riutilizzarlo
+  otps.delete(userId);
+
+  // 5. Ritorna token + dati utente
+  res.status(200).json({ utenteAutenticato: user, token });
+  return;
 });
 
 app.post("/api/signUp", async (req: Request, res: Response) => {
@@ -158,15 +190,15 @@ app.post(
   authMiddleware,
   async (req: Request, res: Response) => {
     const burnRequest: BurnRequestDTO = {
-        requiresBurn: req.body.requiresBurn,
-        userId: req.body.userId,
-        carbonCredits: req.body.carbonCredits,
-        remainingDebt: req.body.remainingDebt,
-        emissionAmount: req.body.emissionAmount,
-        isDonation: req.body.isDonation,
-        idRecipient: req.body.idRecipient,
-        tx: req.body.tx
-      };
+      requiresBurn: req.body.requiresBurn,
+      userId: req.body.userId,
+      carbonCredits: req.body.carbonCredits,
+      remainingDebt: req.body.remainingDebt,
+      emissionAmount: req.body.emissionAmount,
+      isDonation: req.body.isDonation,
+      idRecipient: req.body.idRecipient,
+      tx: req.body.tx
+    };
     console.log("Attempt to submit burn:", req.body);
     try {
       await withTimeout(
