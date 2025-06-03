@@ -158,14 +158,14 @@ export class UserDAO {
   }
 
   //Funzione che recupera l'utente associato all'email passata come parametro
-  async findByEmail(email: string): Promise<User> {
+  async findByEmail(email: string): Promise<User | undefined> {
     const [rows]: any = await db.execute(
       `SELECT * FROM users WHERE email = ?`,
       [email]
     );
 
     if (rows.length === 0) 
-      throw new Error("Utente non trovato");
+      return ;
 
     const row = rows[0];
     const user: User = this.mapRowToUser(row);

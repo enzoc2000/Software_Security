@@ -149,8 +149,8 @@ function LoginCardForm({ onOtpSent }: Props) {
           </button>
         </form>
         {showModal && (
-          <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-500 bg-opacity-50">
-            <div className="bg-white p-4 rounded-lg">
+          <div className="fixed p-5 inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center">
+            <div className="bg-white p-4 border-2 rounded-lg text-2xl border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
               <p>{loadingMessage}</p>
             </div>
           </div>
