@@ -16,15 +16,16 @@ export class UserDAO {
   async save(user: User): Promise<number> {
     const [result]: any = await db.execute(
     `INSERT INTO users 
-      (username, password_hash, role, name, city, address) 
-      VALUES (?, ?, ?, ?, ?, ?)`,
+      (username, password_hash, role, name, city, address, email) 
+      VALUES (?, ?, ?, ?, ?, ?, ?)`,
     [
       user.username,
       user.passwordHash,
       user.role,
       user.name,
       user.city,
-      user.address
+      user.address,
+      user.email
     ]
     );
 
@@ -118,7 +119,8 @@ export class UserDAO {
         role = ?, 
         name = ?, 
         city = ?, 
-        address = ?
+        address = ?,
+        email = ?
       WHERE id_user = ?`,
       [
         user.username,
@@ -127,6 +129,7 @@ export class UserDAO {
         user.name,
         user.city,
         user.address,
+        user.email,
         user.id
       ]
     );
@@ -154,12 +157,33 @@ export class UserDAO {
     return users; 
   }
 
+  //Funzione che recupera l'utente associato all'email passata come parametro
+  async findByEmail(email: string): Promise<User> {
+    const [rows]: any = await db.execute(
+      `SELECT * FROM users WHERE email = ?`,
+      [email]
+    );
+
+    if (rows.length === 0) 
+      throw new Error("Utente non trovato");
+
+    const row = rows[0];
+    const user: User = this.mapRowToUser(row);
+    // Se l'utente ha un wallet associato, lo recupero
+    const walletDAO = new UserWalletDAO();
+    const wallet = await walletDAO.findByUserId(user.id);
+    if (wallet)
+      user.wallet = wallet;
+    return user;
+  }
+
   // Funzione di utilità per convertire una riga del DB in un oggetto User
   private mapRowToUser(row: any, wallet?: UserWallet): User {
     return new User(
       row.id_user,
       row.username,
       row.password_hash,
+      row.email,
       row.role,
       row.name,
       row.city,
