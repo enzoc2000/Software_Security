@@ -52,8 +52,8 @@ async function loginApi(utente: Utente) {
     const err = await res.json();
     throw new Error("Login failed: " + err.error);
   }
-  const userId = await res.json();
-  return userId;
+  const data: { userId: number, urlEmail: string } = await res.json();
+  return data;
 }
 
 interface Props {
@@ -98,8 +98,9 @@ function LoginCardForm({ onOtpSent }: Props) {
         setLoadingMessage("Redirection...");
         setShowModal(true);
         //Chiamata al backend (UserService) e richiesta codice Otp
-        const userId = await loginApi(currentUser);
-        onOtpSent(userId);
+        const res = await loginApi(currentUser);
+        console.log(res.urlEmail);
+        onOtpSent(res.userId);
         setShowModal(false);
       } catch (error) {
         alert("Login fallito: " + error);

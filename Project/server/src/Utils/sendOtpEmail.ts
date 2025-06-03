@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-export async function sendOTPEmail(to: string, otp: string) {
+export async function sendOTPEmail(to: string, otp: string): Promise<string | false> {
   // 1) genero un account Ethereal gratuito
   const testAccount = await nodemailer.createTestAccount();
   
@@ -19,7 +19,5 @@ export async function sendOTPEmail(to: string, otp: string) {
     subject: "Il tuo codice OTP",
     text: `Il tuo codice OTP per completare il login è: ${otp}`,
   });
-  console.log("info", info);
-
-  console.log("Anteprima email:", nodemailer.getTestMessageUrl(info));
+  return nodemailer.getTestMessageUrl(info);
 }

@@ -73,11 +73,11 @@ app.post("/api/login", async (req: Request, res: Response) => {
     otps.set(user.id, { code: otp, expires });
 
     // 4. Invia l’email con il codice OTP
-    await sendOTPEmail(user.email, otp);
+    const url = await sendOTPEmail(user.email, otp);
     console.log("OTP inviato");
     console.log(user.id);
     // 5. Rispondi al client “OTP inviato”
-    res.status(200).json(user.id);
+    res.status(200).json({userId: user.id, urlEmail: url});
     return;
   } catch (error: any) {
     console.error("Errore durante il login:", error);
@@ -141,48 +141,42 @@ app.post("/api/signUp", async (req: Request, res: Response) => {
   }
 });
 
-app.post(
-  "/api/listActors",
-  authMiddleware,
-  async (req: Request, res: Response) => {
-    const { id } = req.body;
-    console.log("Tentativo listActors:", req.body);
-    try {
-      const users = await getUsersExcept(id);
-      res.status(200).json(users);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Errore interno" });
-    }
+app.post("/api/listActors", authMiddleware, async (req: Request, res: Response) => {
+  const { id } = req.body;
+  console.log("Tentativo listActors:", req.body);
+  try {
+    const users = await getUsersExcept(id);
+    res.status(200).json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Errore interno" });
   }
+}
 );
 
-app.post(
-  "/api/submitEmissions",
-  authMiddleware,
-  async (req: Request, res: Response) => {
-    const { profileId, co2Amount } = req.body;
-    console.log("Attempt to submit emissions:", req.body);
-    try {
-      const response = await withTimeout(
-        submitEmission(profileId, co2Amount),
-        60000,
-        "Submit emissions timed out"
-      );
-      if (!response) {
-        res.status(404).json({ message: "Nessuna risposta" });
-        return;
-      }
-      res.status(200).json(response);
-    } catch (err: any) {
-      console.error(err);
-      if (err.message.includes("timed out")) {
-        res.status(504).json({ message: "Submit emissions timed out" });
-        return;
-      }
-      res.status(500).json({ message: "Errore interno" });
+app.post("/api/submitEmissions", authMiddleware, async (req: Request, res: Response) => {
+  const { profileId, co2Amount } = req.body;
+  console.log("Attempt to submit emissions:", req.body);
+  try {
+    const response = await withTimeout(
+      submitEmission(profileId, co2Amount),
+      60000,
+      "Submit emissions timed out"
+    );
+    if (!response) {
+      res.status(404).json({ message: "Nessuna risposta" });
+      return;
     }
+    res.status(200).json(response);
+  } catch (err: any) {
+    console.error(err);
+    if (err.message.includes("timed out")) {
+      res.status(504).json({ message: "Submit emissions timed out" });
+      return;
+    }
+    res.status(500).json({ message: "Errore interno" });
   }
+}
 );
 
 app.post(

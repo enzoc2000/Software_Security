@@ -90,7 +90,6 @@ export function CreditsIssuing() {
             setLoadingMessage("Submitting emissions...");
             setShowModal(true);
             const response = await submitEmissionsApi(profile.id, co2, token);
-            console.log(response);
 
             if (!response) {
                 setShowModal(false);
