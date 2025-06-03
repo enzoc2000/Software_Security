@@ -117,8 +117,6 @@ export async function modifyUser(user: UserDTO): Promise<boolean> {
   if (!existingUser) {
     throw new Error('Utente non trovato');
   }
-  console.log(existingUser);
-  console.log(user);
   existingUser.name = user.name;
   existingUser.email = user.email;
   existingUser.city = user.city;
