@@ -63,7 +63,15 @@ app.post("/api/updateProfile", authMiddleware, async (req: Request, res: Respons
     if (!user) {
       res.status(404).json({ message: "Not valid credentials" });
     }
-    const updated = await modifyUser(userData);
+    const updated = await modifyUser(
+      userData.username,
+      userData.password,
+      userData.email,
+      userData.name,
+      userData.city,
+      userData.address,
+      user.id
+    );
     if (!updated) {
       res.status(404).json({ message: "Modification failed" });
     }
@@ -97,7 +105,7 @@ app.post("/api/login", async (req: Request, res: Response) => {
     console.log("OTP inviato");
     console.log(user.id);
     // 5. Rispondi al client “OTP inviato”
-    res.status(200).json({userId: user.id, urlEmail: url});
+    res.status(200).json({ userId: user.id, urlEmail: url });
     return;
   } catch (error: any) {
     console.error("Errore durante il login:", error);

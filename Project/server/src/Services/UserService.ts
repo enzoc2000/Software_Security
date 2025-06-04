@@ -112,16 +112,23 @@ export async function loginUser(username: string, password: string, walletAddres
   return userDTO;
 }
 
-export async function modifyUser(user: UserDTO): Promise<boolean> {
-  const existingUser = await userDAO.findById(user.id);
+export async function modifyUser(username: string, password: string, email: string, name: string, city: string, address: string, userId: number): Promise<boolean> {
+  const existingUser = await userDAO.findById(userId);
   if (!existingUser) {
-    throw new Error('Utente non trovato');
+    return false;
   }
-  existingUser.name = user.name;
-  existingUser.email = user.email;
-  existingUser.city = user.city;
-  existingUser.address = user.address;
-  await userDAO.mofify(existingUser);
+  let newPassword;
+  if (password !== '') {
+    newPassword = await hashPassword(password);
+  }
+  if (username !== ''){
+    existingUser.username = username
+  }
+  existingUser.name = name;
+  existingUser.email = email;
+  existingUser.city = city;
+  existingUser.address = address;
+  await userDAO.mofify(existingUser, newPassword);
   return true;
 }
 
@@ -199,14 +206,14 @@ export async function getUsersExcept(id: number): Promise<UserDTO[]> {
 
 }
 
-export async function getUsersWithDebt(id: number): Promise<{usersDebt: UserDebtDTO[], userDebt: number}> {
+export async function getUsersWithDebt(id: number): Promise<{ usersDebt: UserDebtDTO[], userDebt: number }> {
   // individuo gli utenti con debito eccetto l'utente che sta cercando
   const usersWithDebt = await debtsDAO.findAllExceptUserId(id);
   const userDebt = await debtsDAO.findByUserId(id);
 
   if (usersWithDebt.length === 0) {
     return {
-      usersDebt:[],
+      usersDebt: [],
       userDebt: userDebt
     };
   }
@@ -218,5 +225,5 @@ export async function getUsersWithDebt(id: number): Promise<{usersDebt: UserDebt
         return { id: user.id_user, name: utente.name, role: utente.role, debt: user.debt, wallet_address: utente.wallet?.address ?? "" };
       }));
 
-  return {usersDebt, userDebt};
+  return { usersDebt, userDebt };
 }

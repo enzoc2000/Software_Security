@@ -134,15 +134,19 @@ export class UserDAO {
       ]
     );
   }
-  async mofify(user: User): Promise<void> {
+  async mofify(user: User, newPassword?: string): Promise<void> {
     await db.execute(
       `UPDATE users SET 
+        username = ?, 
+        password_hash = ?, 
         name = ?, 
         city = ?, 
         address = ?,
         email = ?
       WHERE id_user = ?`,
       [
+        user.username,
+        newPassword ? newPassword : user.passwordHash,
         user.name,
         user.city,
         user.address,

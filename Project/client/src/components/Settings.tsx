@@ -1,10 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useVerifyAuth } from "../hooks/useVerifyAuth";
-import { UserDTO } from "../Models/UserDTO";
 import { useEffect, useState } from "react";
 import connectWallet from "../utils/ConnectWallet";
 
-const NO_SYMBOLS = [",", ".", "?", "|", `"`, "'", "=", "&"];
+const NO_SYMBOLS = [",", ".", "?", "|", `"`, "'", "="];
 const API_PORT = import.meta.env.VITE_SERVER_PORT;
 
 function hasForbiddenSymbol(value: string): boolean {
@@ -15,10 +14,16 @@ function isLengthValid(value: string, min = 3, max = 50): boolean {
     return value.length >= min && value.length <= max;
 }
 
-
 function isFieldOK(value: string): boolean {
     return isLengthValid(value) && !hasForbiddenSymbol(value);
 }
+
+
+function isPasswordValid(password: string): boolean {
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+  return passwordRegex.test(password);
+}
+
 function userOK(user: { username: string, password: string, walletAddress: string }): boolean {
     const { username, password, walletAddress } = user;
 
@@ -37,7 +42,7 @@ function userOK(user: { username: string, password: string, walletAddress: strin
     return allFieldsValid && allDistinct;
 }
 
-async function updateProfile(datiUtente: UserDTO, user: Utente, token: string): Promise<boolean> {
+async function updateProfile(datiUtente: DatiUtente, user: Utente, token: string): Promise<boolean> {
     const res = await fetch(`http://localhost:${API_PORT}/api/updateProfile`, {
         method: "POST",
         headers: {
@@ -59,27 +64,52 @@ interface Utente {
     walletAddress: string;
 }
 
+interface DatiUtente {
+    username: string;
+    password: string;
+    email: string;
+    name: string;
+    city: string;
+    address: string;
+}
+
 export function Settings() {
     const { profile, token } = useVerifyAuth();
     const navigate = useNavigate();
-    const [datiUtente, setDatiUtente] = useState<UserDTO>();
+    const [datiUtente, setDatiUtente] = useState<DatiUtente>({
+        username: "",
+        password: "",
+        email: "",
+        name: "",
+        city: "",
+        address: ""
+    });
     const [user, setUser] = useState<Utente>({
         username: "",
         password: "",
         walletAddress: ""
     });
+    const [enabledUsername, setEnabledUsername] = useState(false);
+    const [enabledPassword, setEnabledPassword] = useState(false);
     const [enabledName, setEnabledName] = useState(false);
     const [enabledEmail, setEnabledEmail] = useState(false);
     const [enabledAddress, setEnabledAddress] = useState(false);
     const [enabledCity, setEnabledCity] = useState(false);
-
     useEffect(() => {
         if (!profile) return;
         if (!token) return;
-        setDatiUtente(profile)
+
+        setDatiUtente({
+            username: "",
+            password: "",
+            email: profile.email,
+            name: profile.name,
+            city: profile.city,
+            address: profile.address
+        })
     }, [profile, token]);
 
-    if (!profile || !token || !datiUtente) {
+    if (!profile || !token) {
         return <div>Loading profile...</div>;
     }
 
@@ -111,7 +141,9 @@ export function Settings() {
             profile.name === datiUtente.name &&
             profile.email === datiUtente.email &&
             profile.city === datiUtente.city &&
-            profile.address === datiUtente.address;
+            profile.address === datiUtente.address &&
+            datiUtente.username === '' &&
+            datiUtente.password === '';
 
         if (isSame) {
             alert("Nothing to update");
@@ -123,6 +155,20 @@ export function Settings() {
             password: "",
             walletAddress: ""
         })
+
+        if (datiUtente.username.length > 0) {
+            if (!isFieldOK(datiUtente.username)) {
+                alert("Username not valid");
+                return;
+            }
+        }
+        if (datiUtente.password.length > 0) {
+            if (!isFieldOK(datiUtente.password) || !isPasswordValid(datiUtente.password)) {
+                alert("Password not valid: deve avere almeno 8 caratteri, almeno una lettera maiuscola, almeno una lettera minuscola e almeno un numero");
+                return;
+            }
+        }
+
         if (!userOK(userCredentials)) {
             alert("Not valid credentials");
             return;
@@ -149,6 +195,36 @@ export function Settings() {
             <div className="grid text-3xl w-[80%] m-2 p-2 border-2  border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
                 Your new information:
                 <p className="text-sm">Select the checkbox if you want to change the information</p>
+                <div className="grid flex-wrap m-1 text-2xl items-center-safe " >
+                    <p>UserName:</p>
+                    <input className="border-2 border-blue-800 p-2 rounded-lg m-1"
+                        type="text"
+                        name="userName"
+                        placeholder="insert new username"
+                        value={datiUtente.username}
+                        disabled={!enabledUsername}
+                        onChange={(e) => handleInputChange("username", e.target.value)} />
+                    <input className="peer"
+                        type="checkbox"
+                        checked={enabledUsername}
+                        onChange={() => setEnabledUsername(!enabledUsername)}>
+                    </input>
+                </div>
+                <div className="grid flex-wrap m-1 text-2xl items-center-safe " >
+                    <p>Password:</p>
+                    <input className="border-2 border-blue-800 p-2 rounded-lg m-1"
+                        type="password"
+                        name="password"
+                        placeholder="insert new password"
+                        value={datiUtente.password}
+                        disabled={!enabledPassword}
+                        onChange={(e) => handleInputChange("password", e.target.value)} />
+                    <input className="peer"
+                        type="checkbox"
+                        checked={enabledPassword}
+                        onChange={() => setEnabledPassword(!enabledPassword)}>
+                    </input>
+                </div>
                 <div className="grid flex-wrap m-1 text-2xl items-center-safe " >
                     <p>Name:</p>
                     <input className="border-2 border-blue-800 p-2 rounded-lg m-1"
