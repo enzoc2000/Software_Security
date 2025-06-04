@@ -13,5 +13,6 @@ COPY --from=builder /app/vite.config.ts .
 COPY --from=builder /app/tsconfig.tsbuildinfo .
 COPY --from=builder /app/index.html .
 RUN npm install --omit=dev
+
 EXPOSE 5173
-CMD ["npm", "run", "preview"]
+CMD ["vite", "preview", "--host", "--port", "5173"]
