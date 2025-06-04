@@ -32,7 +32,7 @@ async function main() {
     await new Promise(resolve => setTimeout(resolve, 10000));
 
     // Build the server Dockerfile
-    await runCommand("docker", ["build", "-t", "fsc-server1", "server"]);
+    await runCommand("docker", ["build", "-t", "fsc-server", "server"]);
 
     // Deploy contracts using the Hardhat deploy script with retry logic
     const retryIntervals = [1000, 1500, 3000]; // Retry intervals in milliseconds
