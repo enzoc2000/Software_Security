@@ -5,16 +5,24 @@
 
 ## Requisiti di sistema
 - Docker [get-docker](https://docs.docker.com/get-docker)
+- at least 2GB of free space on disk
+- at least 8GB of RAM
 
-### Requisiti di sistema per developers
+### Requisiti di sistema per utente finale
 - Docker [get-docker](https://docs.docker.com/get-docker)
-- node v23.2.0
-- npm 11.3.0
-- at least 1GB of free space on disk
+- node v22.16.0^
+- npm 11.3.0^
 - conoscenza base di configurazioni e variabili di ambiente
 
-## Istruzioni d'uso per developers
-1. Avviare docker compose, su terminale
+## Istruzioni d'uso semplificate per l'utente finale
+1. Entrare nella cartella Project
+2. sul terminale lanciare il comando `node launcher.js`
+3. accedere al programma via [http:/localhost:5173/](http:/localhost:5173/)
+
+## Istruzioni d'uso approfondite per developers
+0. Creare i file .env nelle stesse cartelle dei file `.env.placeholder` e inserire le proprie variabili di ambiente e i secret necessari
+
+1. Avviare docker compose, su terminale per avviare la rete Besu e il database MySQL
 
      `cd Besu; docker compose up --build; cd ..`
 

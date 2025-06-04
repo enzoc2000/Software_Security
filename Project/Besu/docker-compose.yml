@@ -44,12 +44,12 @@ services:
     image: mysql:8.0
     container_name: app-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-software_security}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-food_supply_chain}
+      MYSQL_USER: ${MYSQL_USER:-appuser}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-apppassword}
     ports:
-      - ${HOST_PORT}:${DB_PORT}
+      - ${HOST_PORT:-3306}:${DB_PORT:-3306}
     volumes:
       - mysql_data:/var/lib/mysql
       - ../mysql-init:/docker-entrypoint-initdb.d
