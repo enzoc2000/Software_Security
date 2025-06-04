@@ -15,9 +15,24 @@
 - conoscenza base di configurazioni e variabili di ambiente
 
 ## Istruzioni d'uso semplificate per l'utente finale
+con node installato:
+
 1. Entrare nella cartella Project
 2. sul terminale lanciare il comando `node launcher.js`
 3. accedere al programma via [http:/localhost:5173/](http:/localhost:5173/)
+
+oppure:
+
+per Windows
+1. Entrare nella cartella Project
+2. `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
+3. `./launcher.ps1` 
+
+per Unix
+1. Entrare nella cartella Project
+2. `chmod +x launcher.sh`
+3. `./launcher.sh`
+
 
 ## Istruzioni d'uso approfondite per developers
 0. Creare i file .env nelle stesse cartelle dei file `.env.placeholder` e inserire le proprie variabili di ambiente e i secret necessari
