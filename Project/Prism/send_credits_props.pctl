@@ -1,0 +1,5 @@
+// Safety: non si inviano 2 crediti consecutivi
+P>=1 [ G ( (state != 1) | (X (state != 1)) ) ]
+
+// Guarantee: ogni invio termina con successo o fallimento
+P>=1 [ (state=1) => (true U (state=2 | state=3)) ]
