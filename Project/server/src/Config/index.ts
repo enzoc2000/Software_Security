@@ -26,6 +26,10 @@ if (!JWT_SECRET || !PORT) {
 
 const otps = new Map<number, { code: string; expires: number }>();
 
+app.get("/", (req: Request, res: Response) => {
+  res.status(200).json({ message: "Server backend attivo" });
+});
+
 app.get(
   "/api/profilo",
   authMiddleware,                    // <— applica il controllo del JWT
