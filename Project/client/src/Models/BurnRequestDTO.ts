@@ -8,6 +8,8 @@ export interface BurnRequestDTO {
         from: string,
         data: string
     };
+    isDonation: boolean;
+    idRecipient?: number;
     remainingDebt: number;
-    emissionAmount: number
+    emissionAmount?: number
 }

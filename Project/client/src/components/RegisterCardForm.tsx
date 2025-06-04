@@ -17,14 +17,22 @@ function isLengthValid(value: string, min = 3, max = 50): boolean {
 function isFieldOK(value: string): boolean {
   return isLengthValid(value) && !hasForbiddenSymbol(value);
 }
+function isEmailValid(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+function isPasswordValid(password: string): boolean {
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+  return passwordRegex.test(password);
+}
 
 function userOK(user: DatiUtente): boolean {
-  const { username, password, role, name, city, address, serialCode, walletAddress } = user;
+  const { username, password, email, role, name, city, address, serialCode, walletAddress } = user;
 
   // Tutti e tre i campi devono essere “OK”
   const allFieldsValid =
     isFieldOK(username) &&
-    isFieldOK(password) &&
     isFieldOK(role) &&
     isFieldOK(name) &&
     isFieldOK(city) &&
@@ -32,17 +40,20 @@ function userOK(user: DatiUtente): boolean {
     isFieldOK(serialCode) &&
     isFieldOK(walletAddress);
 
-  // E devono essere tutti distinti
-  /* const allDistinct =
-    username !== password &&
-    username !== walletAddress &&
-    password !== walletAddress;
-
-  if(!allDistinct){
-    alert("I campi devono essere distinti");
-  } */
   if (!allFieldsValid) {
-    alert("Valori proibiti: " + NO_SYMBOLS.join(", ") + "\n Lunghezza minima 3, Lunghezza massima 20");
+    alert("Valori proibiti: " + NO_SYMBOLS.join(", ") + "\n Lunghezza minima 3, Lunghezza massima 50");
+    return false;
+  }
+  
+
+  if(!isEmailValid(email)){
+    alert("Email non valida: inserire un indirizzo email valido");
+    return false;
+  }
+
+  if(!isPasswordValid(password)){
+    alert("Password non valida: deve avere almeno 8 caratteri, almeno una lettera maiuscola, almeno una lettera minuscola e almeno un numero");
+    return false;
   }
 
   return allFieldsValid;
@@ -51,6 +62,7 @@ function userOK(user: DatiUtente): boolean {
 interface DatiUtente {
   username: string;
   password: string;
+  email: string;
   role: string;
   name: string;
   city: string;
@@ -67,7 +79,6 @@ async function signUp(utente: DatiUtente): Promise<boolean> {
     },
     body: JSON.stringify(utente),
   });
-  console.log(res)
 
   if (!res.ok) {
     const err = await res.json();
@@ -82,6 +93,7 @@ function RegisterCardForm() {
   const [datiUtente, setDatiUtente] = useState<DatiUtente>({
     username: "",
     password: "",
+    email: "",
     role: "",
     name: "",
     city: "",
@@ -90,7 +102,7 @@ function RegisterCardForm() {
     walletAddress: ""
   })
   const [showModal, setShowModal] = useState<boolean>(false);
-
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
   const navigate = useNavigate();
 
 
@@ -109,10 +121,18 @@ function RegisterCardForm() {
     });
   }
 
+  const handleConfirmPassword = (confirmPassword: string) => {
+    setConfirmPassword(confirmPassword);
+  }
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if(datiUtente.password !== confirmPassword){
+      alert("Le password non corrispondono");
+      return;
+    }
     const currentUser = { ...datiUtente! };
     if (!userOK(currentUser)) {
       alert("Dati non validi")
@@ -159,6 +179,20 @@ function RegisterCardForm() {
             placeholder='password'
             value={datiUtente.password}
             onChange={(e) => handleInputChange("password", e.target.value)}
+          ></input>
+          <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
+            type="password"
+            name="confirmPassword"
+            placeholder='ConfirmPassword'
+            value={confirmPassword}
+            onChange={(e) => handleConfirmPassword(e.target.value)}
+          ></input>
+          <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
+            type="email"
+            name="email"
+            placeholder='email'
+            value={datiUtente.email}
+            onChange={(e) => handleInputChange("email", e.target.value)}
           ></input>
           <select className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
             name="role"

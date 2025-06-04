@@ -10,6 +10,7 @@ export function useVerifyAuth() {
 
     const [profile, setProfile] = useState<UserDTO>({
         id: -1,
+        email: "",
         name: "",
         role: "",
         city: "",

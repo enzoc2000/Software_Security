@@ -28,6 +28,7 @@ export async function submitEmission(userId: number, co2Amount: number): Promise
     requiresBurn: false,
     userId: userId,
     carbonCredits: 0,
+    isDonation: false,
     remainingDebt: 0,
     emissionAmount: 0
   };

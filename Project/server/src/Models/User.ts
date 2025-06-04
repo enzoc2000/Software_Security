@@ -7,6 +7,7 @@ export class User {
     private _id: number;
     private _username: string;
     private _passwordHash: string;
+    private _email: string;
     //(Azienda trasportatrice, agricola, rivenditore, ecc.)
     private _role: string;
     private _name: string;
@@ -15,11 +16,12 @@ export class User {
     //Facoltativo in attesa di capire come gestirlo (se presente o meno in fase di registrazione)
     private _wallet?: UserWallet;
   
-    constructor(id: number, username: string, password: string, role: string, name: string, city: string, 
-        address: string, wallet?: UserWallet) {
+    constructor(id: number, username: string, password: string, email: string, role: string, name: string, 
+        city: string, address: string, wallet?: UserWallet) {
       this._id = id;
       this._username = username;
       this._passwordHash = password;
+      this._email = email;
       this._role = role;
       this._name = name;
       this._city = city;
@@ -50,6 +52,14 @@ export class User {
 	public get passwordHash(): string {
 		return this._passwordHash;
 	}
+
+    /**
+     * Getter email
+     * @return Email utente
+     */
+    public get email(): string {
+        return this._email;
+    }
 
     /**
      * Getter role
@@ -114,6 +124,14 @@ export class User {
 	public set passwordhash(password: string) {
 		this._passwordHash = password;
 	}
+
+    /**
+     * Setter email
+     * @param {string} email
+     */
+    public set email(email: string) {
+        this._email = email;
+    }
 
     /**
      * Setter role

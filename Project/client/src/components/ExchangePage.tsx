@@ -13,7 +13,7 @@ export function ExchangePage() {
   const [showModal, setShowModal] = useState<boolean>(false);
 
   useEffect(() => {
-    const storedAttore = sessionStorage.getItem("dataActorsInDebt");
+    const storedAttore = sessionStorage.getItem("dataActorInDebt");
 
     if (storedAttore) {
       setDataActorsInDebt(JSON.parse(storedAttore) as UserDebtDTO);
@@ -70,7 +70,7 @@ export function ExchangePage() {
             type="number"
             placeholder="0"
             min={0}
-            max={profile.wallet_balance && dataActorsInDebt.debt}
+            max={(profile.wallet_balance ?? 0) > dataActorsInDebt.debt ? dataActorsInDebt.debt : (profile.wallet_balance ?? 0)}
             onChange={handleInputChange}
             value={credits}
           />
@@ -87,7 +87,7 @@ export function ExchangePage() {
       )}
       <button className=" border-2 border-blue-800 p-2 rounded-lg m-5"
         onClick={() => {
-          sessionStorage.removeItem("dataActorsInDebt");
+          sessionStorage.removeItem("dataActorInDebt");
           navigate(-1)
         }}>
         Go Back to first page

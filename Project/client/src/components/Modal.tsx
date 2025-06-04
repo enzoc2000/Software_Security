@@ -3,77 +3,138 @@ import { useEffect, useState } from 'react';
 import { UserDTO } from '../Models/UserDTO';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { ethers } from 'ethers';
+import { BurnRequestDTO } from '../Models/BurnRequestDTO';
+import { UserDebtDTO } from '../Models/UserDebtDTO';
 
 const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
-async function sendCreditsApi(profileAddress: string, actorAddress: string, amount: number, token: string): Promise<boolean> {
-  const res = await fetch(`http://localhost:${VITE_SERVER_PORT}/api/sendCredits`, {
+
+async function removeCarbonCreditsApi(profileId: number, profileAddress: string, actorDebt: number, co2Amount: number, credits: number, token: string): Promise<BurnRequestDTO> {
+  const response = await fetch(`http://localhost:${VITE_SERVER_PORT}/api/removeCarbonCredits`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ 
-      profileAddress: profileAddress, 
-      actorAddress: actorAddress, 
-      amountOfCredits: amount 
+    body: JSON.stringify({
+      profileId: profileId,
+      profileAddress: profileAddress,
+      actorDebt: actorDebt,
+      co2Amount: co2Amount,
+      credits: credits
     }),
+  });
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error("Remove carbon credits failed: " + err.error);
+  }
+  const res = await response.json();
+  return res;
+}
+
+async function submitBurnApi(response: BurnRequestDTO, tx: ethers.TransactionResponse, token: string) {
+  const res = await fetch(`http://localhost:${VITE_SERVER_PORT}/api/submitBurn`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      requiresBurn: response.requiresBurn,
+      userId: response.userId,
+      carbonCredits: response.carbonCredits,
+      remainingDebt: response.remainingDebt,
+      emissionAmount: response.emissionAmount,
+      isDonation: response.isDonation,
+      idRecipient: response.idRecipient,
+      tx: {
+        hash: tx.hash,
+        contractAddress: response.tx?.contractAddress ?? "",
+        from: response.tx?.from ?? "",
+        data: response.tx?.data ?? "",
+      }
+    })
   });
   if (!res.ok) {
     const err = await res.json();
-    throw new Error("Send credits failed: " + err.error);
+    throw new Error("Submit burn failed: " + err.error);
   }
-
-  const data = await res.json();
-  return data;
+  await res.json();
 }
 
 export function Modal({ credits, profile, onClose }: { credits: number, profile: UserDTO, onClose: () => void }) {
-  const [dataActorsInDebt, setdataActorsInDebt] = useState<UserDTO | null>(null);
+  const [dataActorsInDebt, setdataActorsInDebt] = useState<UserDebtDTO | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   const { token } = useAuth();
+  const [loadingMessage, setLoadingMessage] = useState("Sending credits...");
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedAttore = sessionStorage.getItem("dataActorsInDebt");
+    const storedAttore = sessionStorage.getItem("dataActorInDebt");
     if (storedAttore) {
-      setdataActorsInDebt(JSON.parse(storedAttore) as UserDTO);
+      setdataActorsInDebt(JSON.parse(storedAttore) as UserDebtDTO);
     }
   }, []);
 
-  if (!token){
+  if (!token) {
     return <div>Loading token...</div>;
   }
 
   if (!dataActorsInDebt) {
-    return <div>No data found.</div>;
+    return <div>No data actor found.</div>;
   }
-
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    setShowModal(true);
-    //send token to another user
+    //burn token to send credits to another user
     try {
-      console.log("Data actors in debt: ", dataActorsInDebt);
-      console.log("Profile: ", profile);
-      console.log("Inizio invio crediti: ", credits);
       if (!profile.wallet_address || !dataActorsInDebt.wallet_address) {
         alert("Wallet address is missing for either the sender or the recipient.");
         setShowModal(false);
         return;
       }
-      const result = await sendCreditsApi(profile.wallet_address, dataActorsInDebt.wallet_address, credits, token);
-      if (!result) {
-        alert("Not been able to send credits.");
+      if (!profile.wallet_balance || profile.wallet_balance <= 0) {
+        alert("Insufficient balance.");
         setShowModal(false);
         return;
       }
-      else {
+      setLoadingMessage("Sending credits...");
+      setShowModal(true);
+      const response = await removeCarbonCreditsApi(profile.id, profile.wallet_address, dataActorsInDebt.debt, 0, credits, token);
+      console.log(response);
+
+      if (!response) {
         setShowModal(false);
-        alert(`Credits sent successfully: ${credits}`);
-        sessionStorage.removeItem("dataActorsInDebt");
-        onClose();
-        navigate(-1);
+        alert("Sending credits failed.");
+        return;
       }
+
+      // 🔥 Caso in cui serve burn → firma transazione dal frontend
+      setLoadingMessage("Waiting for wallet signature...");
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+
+      const tx = await signer.sendTransaction({
+        to: response.tx!.contractAddress,
+        from: response.tx!.from,
+        data: response.tx!.data,
+        value: "0x0"
+      });
+
+      response.idRecipient = dataActorsInDebt.id;
+      response.isDonation = true;
+
+      setLoadingMessage("Waiting for blockchain confirmation...");
+      await tx.wait();
+
+      // ✅ Invia conferma di transazione al backend
+      setLoadingMessage("Confirming transaction with backend...");
+      await submitBurnApi(response, tx, token);
+
+      alert(`Credits sent successfully: ${credits}`);
+      sessionStorage.removeItem("dataActorInDebt");
+      onClose();
+      navigate(-1);
     }
     catch (error) {
       setShowModal(false);
@@ -107,7 +168,7 @@ export function Modal({ credits, profile, onClose }: { credits: number, profile:
       {showModal && (
         <div className="fixed p-5 inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center">
           <div className="bg-white p-4 border-2 rounded-lg text-2xl border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
-            <p>Sending credits...</p>
+            <p>{loadingMessage}</p>
           </div>
         </div>
       )}

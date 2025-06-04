@@ -1,10 +1,9 @@
 export interface TransactionDTO {
     id: number;
-    senderUserId: number;
-    receiverUserId: number;
-    senderWalletAddress: string;
-    receiverWalletAddress: string;
+    senderName: string;
+    senderRole: string;
+    receiverName: string;
+    receiverRole: string;
     amount: number;
-    transactionType: string;
     timestamp: Date;
 }

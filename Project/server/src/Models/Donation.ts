@@ -1,22 +1,20 @@
-export class Transaction {
+export class Donation {
     private _id: number;
     private _senderUserId: number;
     private _receiverUserId: number;
     private _senderWalletAddress: string;
     private _receiverWalletAddress: string;
     private _amount: number;
-    private _transactionType: string;
     private _timestamp: Date;
 
     constructor(id: number, senderUserId: number, receiverUserId: number, senderWalletAddress: string, 
-                receiverWalletAddress: string, amount: number, transactionType: string, timestamp: Date) {
+                receiverWalletAddress: string, amount: number, timestamp: Date) {
         this._id = id;
         this._senderUserId = senderUserId;
         this._receiverUserId = receiverUserId;
         this._senderWalletAddress = senderWalletAddress;
         this._receiverWalletAddress = receiverWalletAddress;
         this._amount = amount;
-        this._transactionType = transactionType;
         this._timestamp = timestamp;
     }
 
@@ -42,10 +40,6 @@ export class Transaction {
 
     public get amount(): number {
         return this._amount;
-    }
-
-    public get transactionType(): string {
-        return this._transactionType;
     }
 
     public get timestamp(): Date {
@@ -74,10 +68,6 @@ export class Transaction {
 
     public set amount(value: number) {
         this._amount = value;
-    }
-
-    public set transactionType(value: string) {
-        this._transactionType = value;
     }
 
     public set timestamp(value: Date) {

@@ -40,6 +40,8 @@ async function submitBurnApi(response: BurnRequestDTO, tx: ethers.TransactionRes
             carbonCredits: response.carbonCredits,
             remainingDebt: response.remainingDebt,
             emissionAmount: response.emissionAmount,
+            isDonation: response.isDonation,
+            idRecipient: response.idRecipient,
             tx: {
                 hash: tx.hash,
                 contractAddress: response.tx?.contractAddress ?? "",
@@ -53,7 +55,6 @@ async function submitBurnApi(response: BurnRequestDTO, tx: ethers.TransactionRes
         throw new Error("Submit burn failed: " + err.error);
     }
     await res.json();
-
 }
 
 
@@ -89,7 +90,6 @@ export function CreditsIssuing() {
             setLoadingMessage("Submitting emissions...");
             setShowModal(true);
             const response = await submitEmissionsApi(profile.id, co2, token);
-            console.log(response);
 
             if (!response) {
                 setShowModal(false);
@@ -108,9 +108,6 @@ export function CreditsIssuing() {
 
                 // 🔥 Caso in cui serve burn → firma transazione dal frontend
                 setLoadingMessage("Waiting for wallet signature...");
-
-                console.log("TX contract address:", response.tx?.contractAddress);
-                console.log("Expected CO2 contract:", "0x2E6A0e0106F37A045a8b0B9C9357Ffe9a873Fa4c"); // ← copia da deploy script
 
                 const provider = new ethers.BrowserProvider(window.ethereum);
                 const signer = await provider.getSigner();

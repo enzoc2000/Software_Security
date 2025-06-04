@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import connectWallet from '../utils/ConnectWallet';
-import { useAuth } from '../hooks/useAuth';
-import { UserDTO } from '../Models/UserDTO';
 const NO_SYMBOLS = [",", ".", "?", "|", `"`, "'", "=", "&"];
 const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
 
@@ -43,7 +40,7 @@ interface Utente {
 }
 
 
-async function loginApi(utente: Utente): Promise<{ utenteAutenticato: UserDTO, token: string }> {
+async function loginApi(utente: Utente) {
   const res = await fetch(`http://localhost:${VITE_SERVER_PORT}/api/login`, {
     method: "POST",
     headers: {
@@ -55,22 +52,22 @@ async function loginApi(utente: Utente): Promise<{ utenteAutenticato: UserDTO, t
     const err = await res.json();
     throw new Error("Login failed: " + err.error);
   }
-
-  const data = await res.json();
+  const data: { userId: number, urlEmail: string } = await res.json();
   return data;
 }
 
+interface Props {
+  onOtpSent: (userId: number) => void;
+}
 
-function LoginCardForm() {
+function LoginCardForm({ onOtpSent }: Props) {
   const [datiUtente, setDatiUtente] = useState<Utente>({
     username: "",
     password: "",
     walletAddress: ""
   })
-
-  const navigate = useNavigate();
-  const { login } = useAuth();
-
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [loadingMessage, setLoadingMessage] = useState<string>("Loading...");
 
   const buttonConnectWallet = async () => {
     const objPromise = connectWallet();
@@ -97,19 +94,17 @@ function LoginCardForm() {
     });
 
     if (userOK(currentUser)) {
-      console.log("Utente: " + currentUser.username + " OK")
-
       try {
-        //Chiamata al backend (UserService) e autenticazione
-        const { utenteAutenticato, token } = await loginApi(datiUtente);       //const utenteLinkato = await linkWallet(strutturaWallet.userId, strutturaWallet);
-
-        login(token, utenteAutenticato);
-
-        //Passo alla pagina di FirstPage con i dati dell'utente autenticato 
-        navigate("/firstPage");
-
+        setLoadingMessage("Redirection...");
+        setShowModal(true);
+        //Chiamata al backend (UserService) e richiesta codice Otp
+        const res = await loginApi(currentUser);
+        console.log(res.urlEmail);
+        onOtpSent(res.userId);
+        setShowModal(false);
       } catch (error) {
         alert("Login fallito: " + error);
+        setShowModal(false);
       }
     }
     else {
@@ -149,13 +144,21 @@ function LoginCardForm() {
             readOnly
           ></input>
           <button className="grid p-2 m-1 border-2 border-red-800 text-red-800 font-bold py-2 px-4 rounded-lg"
-            type="submit">
+            type="submit"
+            disabled={showModal}>
             Login
           </button>
         </form>
+        {showModal && (
+          <div className="fixed p-5 inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center">
+            <div className="bg-white p-4 border-2 rounded-lg text-2xl border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800">
+              <p>{loadingMessage}</p>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
 }
 
-export default LoginCardForm;    
+export default LoginCardForm;

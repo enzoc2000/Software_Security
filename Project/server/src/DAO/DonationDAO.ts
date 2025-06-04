@@ -1,20 +1,12 @@
-import { Transaction } from '../Models/Transaction';
+import { Donation } from '../Models/Donation';
 import { db } from '../Config/db';
 
-export class TransactionDAO {
+export class DonationDAO {
 
     // Salvataggio di una transazione
-    async save(transaction: {
-        senderUserId: number;
-        receiverUserId: number;
-        senderWalletAddress: string;
-        receiverWalletAddress: string;
-        amount: number;
-        transactionType: string;
-        timestamp: Date;
-    }): Promise<void> {
+    async save(transaction: Donation): Promise<void> {
         await db.execute(
-            `INSERT INTO transactions (sender_user_id, receiver_user_id, sender_wallet_address, receiver_wallet_address, amount, transaction_type, timestamp) 
+            `INSERT INTO transactions (sender_user_id, receiver_user_id, sender_wallet_address, receiver_wallet_address, amount, timestamp) 
              VALUES (?, ?, ?, ?, ?, ?)`,
             [
                 transaction.senderUserId,
@@ -22,36 +14,33 @@ export class TransactionDAO {
                 transaction.senderWalletAddress,
                 transaction.receiverWalletAddress,
                 transaction.amount,
-                transaction.transactionType,
                 transaction.timestamp
             ]
         );
     }
 
     // Recupero di tutte le transazioni
-    async findAll(): Promise<Transaction[]> {
+    async findAll(): Promise<Donation[]> {
         const [rows]: any = await db.execute(
             `SELECT * FROM transactions`
         );
 
         if (rows.length === 0)
-            throw new Error('Transazione non trovata');
+            return [];
 
-        return rows.map(this.mapRowToTransaction);
+        return rows.map(this.mapRowToDonation);
     }
 
      // Funzione di utilità per convertire una riga del DB in un oggetto Transaction
-    private mapRowToTransaction(row: any): Transaction {
-        return new Transaction(
+    private mapRowToDonation(row: any): Donation {
+        return new Donation(
             row.id,
             row.sender_user_id,
             row.receiver_user_id,
             row.sender_wallet_address,
             row.receiver_wallet_address,
             row.amount,
-            row.transaction_type,
             new Date(row.timestamp)
         );
     }
-
 }

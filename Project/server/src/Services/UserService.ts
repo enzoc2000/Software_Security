@@ -6,6 +6,7 @@ import { UserWalletDAO } from '../DAO/UserWalletDAO';
 import { UserDTO } from '../Models/UserDTO';
 import { UserDebtDTO } from '../Models/UserDebtDTO';
 import { DebtsDAO } from '../DAO/DebtsDAO';
+import { ethNewUser } from './TokenService';
 
 /**
  * Servizio per la gestione degli utenti.
@@ -18,7 +19,7 @@ const debtsDAO = new DebtsDAO();
 /**
  * Inizializza gli utenti di default nel sistema se non esistono già facendo riferimento al seedUsers.
  */
-export async function signUpUser(username: string, password: string,
+export async function signUpUser(username: string, password: string, email: string,
   role: string, name: string, city: string, address: string, walletAddress: string, serialCode: string):
   Promise<Boolean> {
   const existingUser = await userDAO.findByUsername(username);
@@ -26,15 +27,24 @@ export async function signUpUser(username: string, password: string,
     throw new Error('Username già in uso');
   }
   const passwordHash = await hashPassword(password);
+
+  //Controllo se l'email è già in uso
+  const existingEmail = await userDAO.findByEmail(email);
+  if (existingEmail) {
+    throw new Error('Email già in uso');
+  }
+  //Creazione dell'utente
   const user = new User(
     0,
     username,
     passwordHash,
+    email,
     role,
     name,
     city,
     address,
   );
+
   //Controllo se walletAddress è già in uso
   const existingWallet = await userWalletDAO.findByAddress(walletAddress);
   if (existingWallet) {
@@ -51,9 +61,11 @@ export async function signUpUser(username: string, password: string,
   //Salviamo l'utente
   const userid = await userDAO.save(user);
 
-  //Link del wallet all'utente
+  //Link del wallet all'utente e assegnazione moneta iniziale
   const userWallet = new UserWallet(userid, 0, walletAddress);
   linkWallet(userid, userWallet);
+  //Assegna 100 unità di moneta iniziale
+  ethNewUser(userWallet.address);
 
   //Aggiorniamo il serial code come utilizzato
   await userDAO.updateSerialCode(validCode);
@@ -88,6 +100,7 @@ export async function loginUser(username: string, password: string, walletAddres
   // Mappa User → DTO
   const userDTO: UserDTO = {
     id: user.id,
+    email: user.email,
     role: user.role,
     name: user.name,
     city: user.city,
@@ -97,6 +110,26 @@ export async function loginUser(username: string, password: string, walletAddres
   };
 
   return userDTO;
+}
+
+export async function modifyUser(username: string, password: string, email: string, name: string, city: string, address: string, userId: number): Promise<boolean> {
+  const existingUser = await userDAO.findById(userId);
+  if (!existingUser) {
+    return false;
+  }
+  let newPassword;
+  if (password !== '') {
+    newPassword = await hashPassword(password);
+  }
+  if (username !== ''){
+    existingUser.username = username
+  }
+  existingUser.name = name;
+  existingUser.email = email;
+  existingUser.city = city;
+  existingUser.address = address;
+  await userDAO.mofify(existingUser, newPassword);
+  return true;
 }
 
 /**
@@ -116,6 +149,7 @@ export async function linkWallet(userId: number, wallet: UserWallet): Promise<Us
   // Mappa User → DTO
   const userDTO: UserDTO = {
     id: user.id,
+    email: user.email,
     role: user.role,
     name: user.name,
     city: user.city,
@@ -138,6 +172,7 @@ export async function getUserById(userId: number): Promise<UserDTO> {
   // Mappa User → DTO
   const userDTO: UserDTO = {
     id: user.id,
+    email: user.email,
     role: user.role,
     name: user.name,
     city: user.city,
@@ -158,6 +193,7 @@ export async function getUsersExcept(id: number): Promise<UserDTO[]> {
 
   const usersDTO: UserDTO[] = users.map(user => ({
     id: user.id,
+    email: user.email,
     role: user.role,
     name: user.name,
     city: user.city,
@@ -170,18 +206,15 @@ export async function getUsersExcept(id: number): Promise<UserDTO[]> {
 
 }
 
-export async function getUsersWithDebt(id: number): Promise<{usersDebt: UserDebtDTO[], userDebt: number}> {
+export async function getUsersWithDebt(id: number): Promise<{ usersDebt: UserDebtDTO[], userDebt: number }> {
   // individuo gli utenti con debito eccetto l'utente che sta cercando
   const usersWithDebt = await debtsDAO.findAllExceptUserId(id);
   const userDebt = await debtsDAO.findByUserId(id);
 
-  if (!userDebt) {
-    throw new Error('User debt not found');
-  }
   if (usersWithDebt.length === 0) {
     return {
-      usersDebt:[],
-      userDebt: 0
+      usersDebt: [],
+      userDebt: userDebt
     };
   }
 
@@ -192,7 +225,5 @@ export async function getUsersWithDebt(id: number): Promise<{usersDebt: UserDebt
         return { id: user.id_user, name: utente.name, role: utente.role, debt: user.debt, wallet_address: utente.wallet?.address ?? "" };
       }));
 
-  return {usersDebt, userDebt};
+  return { usersDebt, userDebt };
 }
-
-
