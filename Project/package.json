@@ -2,11 +2,13 @@
     "name": "software-security",
     "version": "0.0.1",
     "description": "Repository di progetto",
+    "type": "module",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "devall": "(cd client && npm run dev&) && (cd server && npm run dev&)"
     },
     "dependencies": {
+        "child_process": "^1.0.2",
         "software-security": "file:",
         "vite": "^6.3.5"
     }
