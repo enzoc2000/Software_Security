@@ -34,7 +34,7 @@ export async function ethNewUser(userAddress: string, amount: string = "100.0"):
     throw new Error("Deployer private key not configured");
   }
 
-  const provider = new ethers.JsonRpcProvider("http://localhost:8545");
+  //const provider = new ethers.JsonRpcProvider("http://localhost:8545");
   const deployer = new ethers.Wallet(deployerPrivateKey, provider);
 
   try {

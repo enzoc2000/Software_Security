@@ -66,4 +66,5 @@ volumes:
 # 👇 Add this section to define the network
 networks:
   besu_net:
+    name: besu_net 
     driver: bridge

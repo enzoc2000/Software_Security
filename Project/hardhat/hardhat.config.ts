@@ -10,7 +10,7 @@ const config: HardhatUserConfig = {
     besu: {
       url: "http://localhost:8545",
       chainId: 1338,
-      accounts: [process.env.PRIVATE_KEY!],
+      accounts: [process.env.DEPLOYER_PRIVATE_KEY!],
       gas: 12_000_000,
       gasPrice: 0x342770c0,
       timeout: 120000

@@ -108,7 +108,7 @@ function Deploy-Contracts {
     try {
         Set-Location "hardhat"
 
-        Write-Info "Installing npm dependencies..."
+        Write-Info "Installing hardhat npm dependencies..."
         Invoke-Command-Safe "npm.cmd" @("install")
         
         for ($i = 0; $i -lt $retryIntervals.Count; $i++) {
@@ -143,13 +143,34 @@ function Deploy-Contracts {
 }
 
 # Function to start preview process
+function Start-Server {
+    $originalLocation = Get-Location
+    
+    try {
+        Set-Location "server"
+        
+        Write-Info "Installing server npm dependencies..."
+        Invoke-Command-Safe "npm.cmd" @("install")
+        Write-Info "Server process started with PID: $($script:PreviewProcess.Id)"
+        return $true
+    }
+    catch {
+        Write-Error-Custom "Failed to start server process: $($_.Exception.Message)"
+        throw
+    }
+    finally {
+        Set-Location $originalLocation
+    }
+}
+
+# Function to start preview process
 function Start-Preview {
     $originalLocation = Get-Location
     
     try {
         Set-Location "client"
         
-        Write-Info "Installing npm dependencies..."
+        Write-Info "Installing client npm dependencies..."
         Invoke-Command-Safe "npm.cmd" @("install")
         
         Write-Info "Building Vite project..."
@@ -250,6 +271,8 @@ function Invoke-Main {
         Write-Info "Starting remaining services..."
         Invoke-Command-Safe "docker" @("compose", "-f", "docker-compose.yml", "up", "-d")
         
+        # Start the server
+        Start-Server
         # Start the preview process
         Start-Preview
         
