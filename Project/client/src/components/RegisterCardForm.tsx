@@ -44,14 +44,14 @@ function userOK(user: DatiUtente): boolean {
     alert("Valori proibiti: " + NO_SYMBOLS.join(", ") + "\n Lunghezza minima 3, Lunghezza massima 50");
     return false;
   }
-  
 
-  if(!isEmailValid(email)){
+
+  if (!isEmailValid(email)) {
     alert("Email non valida: inserire un indirizzo email valido");
     return false;
   }
 
-  if(!isPasswordValid(password)){
+  if (!isPasswordValid(password)) {
     alert("Password non valida: deve avere almeno 8 caratteri, almeno una lettera maiuscola, almeno una lettera minuscola e almeno un numero");
     return false;
   }
@@ -62,8 +62,8 @@ function userOK(user: DatiUtente): boolean {
 interface DatiUtente {
   username: string;
   password: string;
-  email: string;
   role: string;
+  email: string;
   name: string;
   city: string;
   address: string;
@@ -77,7 +77,17 @@ async function signUp(utente: DatiUtente): Promise<boolean> {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(utente),
+    body: JSON.stringify({
+      username: utente.username,
+      password: utente.password,
+      role: utente.role,
+      email: utente.email,
+      name: utente.name,
+      city: utente.city,
+      address: utente.address,
+      walletAddress: utente.walletAddress,
+      serialCode: utente.serialCode
+    }),
   });
 
   if (!res.ok) {
@@ -129,7 +139,7 @@ function RegisterCardForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if(datiUtente.password !== confirmPassword){
+    if (datiUtente.password !== confirmPassword) {
       alert("Le password non corrispondono");
       return;
     }

@@ -40,6 +40,7 @@ async function main() {
 
     for (let i = 0; i < retryIntervals.length; i++) {
         process.chdir("hardhat");
+        await runCommand("npm", ["install"]);
       try {
         await runCommand("npx", ["hardhat", "run", "deploy/deploy.js", "--network", "besu"]);
         success = true;
@@ -61,7 +62,12 @@ async function main() {
     // Start the remaining services via the root docker-compose file and npm script
     await runCommand("docker", ["compose", "-f", "docker-compose.yml", "up", "-d"]);
     process.chdir("client");
-    //await runCommand("npm", ["run", "preview"]);
+
+    // Install client dependencies
+    console.log("\nInstalling client dependencies...");
+    await runCommand("npm", ["install"]);
+    console.log("\nBuild binaries...");
+    await runCommand("npm", ["run", "build"]);
     // Extract the PID of the process running the "npm run preview" command
     const previewProcess = execFile("npm", ["run", "preview"]);
     console.log(`Vite Preview process started with PID: ${previewProcess.pid}`);

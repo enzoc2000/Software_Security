@@ -80,6 +80,10 @@ deploy_contracts() {
         print_error "Failed to change to hardhat directory"
         return 1
     }
+
+    # Install dependencies in the hardhat folder
+    print_info "Installing dependencies in the hardhat folder..."
+    run_command "npm" "install"
     
     for i in "${!retry_intervals[@]}"; do
         local attempt=$((i + 1))
@@ -121,7 +125,11 @@ start_preview() {
         return 1
     }
     
+    print_info "Installing dependencies in the hardhat folder..."
+    run_command "npm" "install"
+
     print_info "Starting Vite preview process..."
+    run_command "npm" "run" "build"
     npm run preview &
     PREVIEW_PID=$!
     
@@ -182,7 +190,7 @@ main() {
     
     # Build the server Dockerfile
     print_info "Building server Docker image..."
-    run_command "docker" "build" "-t" "fsc-server" "server"
+    #  run_command "docker" "build" "-t" "fsc-server" "server"
     
     # Deploy contracts using the Hardhat deploy script with retry logic
     print_info "Deploying contracts..."

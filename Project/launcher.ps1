@@ -107,13 +107,16 @@ function Deploy-Contracts {
     
     try {
         Set-Location "hardhat"
+
+        Write-Info "Installing npm dependencies..."
+        Invoke-Command-Safe "npm.cmd" @("install")
         
         for ($i = 0; $i -lt $retryIntervals.Count; $i++) {
             $attempt = $i + 1
             Write-Info "Deployment attempt $attempt..."
             
             try {
-                Invoke-Command-Safe "npx" @("hardhat", "run", "deploy/deploy.js", "--network", "besu")
+                Invoke-Command-Safe "npx.cmd" @("hardhat", "run", "deploy/deploy.js", "--network", "besu")
                 $success = $true
                 break
             }
@@ -146,10 +149,16 @@ function Start-Preview {
     try {
         Set-Location "client"
         
+        Write-Info "Installing npm dependencies..."
+        Invoke-Command-Safe "npm.cmd" @("install")
+        
+        Write-Info "Building Vite project..."
+        Invoke-Command-Safe "npm.cmd" @("run", "build")
+        
         Write-Info "Starting Vite preview process..."
         
         $processParams = @{
-            FilePath = "npm"
+            FilePath = "npm.cmd"
             ArgumentList = @("run", "preview")
             PassThru = $true
             NoNewWindow = $false
