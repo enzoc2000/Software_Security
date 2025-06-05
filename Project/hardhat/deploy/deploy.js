@@ -29,8 +29,8 @@ async function main() {
     
     setTimeout(async () => {
       const blockAfter = await ethers.provider.getBlockNumber();
-      console.log("Block after 30s:", blockAfter);
-    }, 30000);
+      console.log("Block after 5s:", blockAfter);
+    }, 5000);
     
   // 5. Attendi la conferma
   console.log(`\n⏳ Waiting for deployment confirmation...`);

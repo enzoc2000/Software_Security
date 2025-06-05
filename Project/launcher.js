@@ -40,6 +40,7 @@ async function main() {
 
     for (let i = 0; i < retryIntervals.length; i++) {
         process.chdir("hardhat");
+        await runCommand("npm", ["install"]);
       try {
         await runCommand("npx", ["hardhat", "run", "deploy/deploy.js", "--network", "besu"]);
         success = true;

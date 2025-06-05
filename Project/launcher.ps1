@@ -107,6 +107,9 @@ function Deploy-Contracts {
     
     try {
         Set-Location "hardhat"
+
+        Write-Info "Installing npm dependencies..."
+        Invoke-Command-Safe "npm" @("install")
         
         for ($i = 0; $i -lt $retryIntervals.Count; $i++) {
             $attempt = $i + 1
