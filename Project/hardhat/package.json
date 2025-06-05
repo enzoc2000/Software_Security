@@ -1,6 +1,6 @@
 {
   "name": "hardhat",
-  "version": "^2.23.0",
+  "version": "1.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "@nomicfoundation/hardhat-ethers": "^3.0.8",
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "ethers": "^6.13.7",
-    "hardhat": "file:"
+    "hardhat": "^2.24.1"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.3.0"
