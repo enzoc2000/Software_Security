@@ -66,6 +66,8 @@ async function main() {
     // Install client dependencies
     console.log("\nInstalling client dependencies...");
     await runCommand("npm", ["install"]);
+    console.log("\nBuild binaries...");
+    await runCommand("npm", ["run", "build"]);
     // Extract the PID of the process running the "npm run preview" command
     const previewProcess = execFile("npm", ["run", "preview"]);
     console.log(`Vite Preview process started with PID: ${previewProcess.pid}`);
