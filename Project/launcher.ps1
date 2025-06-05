@@ -149,10 +149,13 @@ function Start-Preview {
     try {
         Set-Location "client"
         
+        Write-Info "Installing npm dependencies..."
+        Invoke-Command-Safe "npm.cmd" @("install")
+        
         Write-Info "Starting Vite preview process..."
         
         $processParams = @{
-            FilePath = "npm"
+            FilePath = "npm.cmd"
             ArgumentList = @("run", "preview")
             PassThru = $true
             NoNewWindow = $false
