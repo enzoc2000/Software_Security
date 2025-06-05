@@ -10,6 +10,7 @@
 
 ### Requisiti di sistema per utente finale
 - Docker [get-docker](https://docs.docker.com/get-docker)
+- Metmask estensione per browser [ink1](), [link2]()
 - node v22.16.0^
 - npm 11.3.0^
 - conoscenza base di configurazioni e variabili di ambiente
@@ -51,6 +52,16 @@ per Unix
 
 
 ## Getting started
+### Configurazione Metamask
+1. Installare l'estensione di Metamask sul browser
+2. Aggiungere rete custom http://localhost:8545
+3. Inserire nel campo chain_id il valore 1338
+4. 
+2. Importare il token CO2
+3. Inserire nel campo indirizzo contratto il valore presente nei log dello script di installazione
+
+<img src="token.png" alt="Esempio di token" width="600px">
+
 ### Introduzione
 
 1. Scrivere http://localhost:5173 sul browser

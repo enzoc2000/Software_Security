@@ -129,6 +129,7 @@ start_preview() {
     run_command "npm" "install"
 
     print_info "Starting Vite preview process..."
+    run_command "npm" "run" "build"
     npm run preview &
     PREVIEW_PID=$!
     
