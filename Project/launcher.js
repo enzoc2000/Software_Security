@@ -62,7 +62,10 @@ async function main() {
     // Start the remaining services via the root docker-compose file and npm script
     await runCommand("docker", ["compose", "-f", "docker-compose.yml", "up", "-d"]);
     process.chdir("client");
-    //await runCommand("npm", ["run", "preview"]);
+
+    // Install client dependencies
+    console.log("\nInstalling client dependencies...");
+    await runCommand("npm", ["install"]);
     // Extract the PID of the process running the "npm run preview" command
     const previewProcess = execFile("npm", ["run", "preview"]);
     console.log(`Vite Preview process started with PID: ${previewProcess.pid}`);
