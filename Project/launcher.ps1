@@ -152,6 +152,9 @@ function Start-Preview {
         Write-Info "Installing npm dependencies..."
         Invoke-Command-Safe "npm.cmd" @("install")
         
+        Write-Info "Building Vite project..."
+        Invoke-Command-Safe "npm.cmd" @("run", "build")
+        
         Write-Info "Starting Vite preview process..."
         
         $processParams = @{
