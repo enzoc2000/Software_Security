@@ -80,7 +80,7 @@ deploy_contracts() {
         print_error "Failed to change to hardhat directory"
         return 1
     }
-    
+
     # Install dependencies in the hardhat folder
     print_info "Installing dependencies in the hardhat folder..."
     run_command "npm" "install"
@@ -125,6 +125,9 @@ start_preview() {
         return 1
     }
     
+    print_info "Installing dependencies in the hardhat folder..."
+    run_command "npm" "install"
+
     print_info "Starting Vite preview process..."
     npm run preview &
     PREVIEW_PID=$!
