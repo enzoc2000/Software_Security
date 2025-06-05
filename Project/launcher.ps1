@@ -109,14 +109,14 @@ function Deploy-Contracts {
         Set-Location "hardhat"
 
         Write-Info "Installing npm dependencies..."
-        Invoke-Command-Safe "npm" @("install")
+        Invoke-Command-Safe "npm.cmd" @("install")
         
         for ($i = 0; $i -lt $retryIntervals.Count; $i++) {
             $attempt = $i + 1
             Write-Info "Deployment attempt $attempt..."
             
             try {
-                Invoke-Command-Safe "npx" @("hardhat", "run", "deploy/deploy.js", "--network", "besu")
+                Invoke-Command-Safe "npx.cmd" @("hardhat", "run", "deploy/deploy.js", "--network", "besu")
                 $success = $true
                 break
             }
