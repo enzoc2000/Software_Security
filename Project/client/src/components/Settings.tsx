@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import connectWallet from "../utils/ConnectWallet";
 
 const NO_SYMBOLS = [",", ".", "?", "|", `"`, "'", "="];
-const API_PORT = import.meta.env.VITE_SERVER_PORT;
+const API_PORT = import.meta.env.VITE_SERVER_PORT ?? 3010; // Default port if not set
 
 function hasForbiddenSymbol(value: string): boolean {
     return NO_SYMBOLS.some(sym => value.includes(sym));

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { BurnRequestDTO } from "../Models/BurnRequestDTO";
 import { Emission } from "../Models/Emission";
 import { ethers } from "ethers";
-const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
+const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT ?? 3010; // Default port if not set
 type SubmitEmissionResponse = Emission | BurnRequestDTO;
 
 function isBurnRequestDTO(response: SubmitEmissionResponse): response is BurnRequestDTO {

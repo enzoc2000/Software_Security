@@ -11,7 +11,7 @@ export function OtpForm({ userId }: Props) {
   const [code, setCode] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
-  const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
+  const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT ?? 3010; // Default port if not set
 
   async function handleVerify(e: React.FormEvent) {
     e.preventDefault();
