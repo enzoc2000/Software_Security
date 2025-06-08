@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import connectWallet from '../utils/ConnectWallet';
 
 const NO_SYMBOLS = [",", ".", "?", "|", `"`, "'", "=", "&"];
-const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT ?? 3010; // Default port if not set
+const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT || 3010; // Default port if not set
 const MAX_RETRY_ATTEMPTS = 3;
 const LOCKOUT_DURATION = 30; // seconds
 

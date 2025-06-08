@@ -5,9 +5,9 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 export const db = mysql.createPool({
-  host: process.env.DB_HOST,
+  host: process.env.DB_HOST || '127.0.0.1',
   port: parseInt(process.env.DB_PORT || '3306'),
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  user: process.env.DB_USER || 'appuser', // Default user if not set
+  password: process.env.DB_PASSWORD || 'apppassword', // Default password if not set
+  database: process.env.DB_NAME || 'food_supply_chain', // Default database if not set
 });

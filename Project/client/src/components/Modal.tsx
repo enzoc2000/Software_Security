@@ -7,7 +7,7 @@ import { ethers } from 'ethers';
 import { BurnRequestDTO } from '../Models/BurnRequestDTO';
 import { UserDebtDTO } from '../Models/UserDebtDTO';
 
-const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT ?? 3010; // Default port if not set
+const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT || 3010; // Default port if not set
 
 async function removeCarbonCreditsApi(profileId: number, profileAddress: string, actorDebt: number, co2Amount: number, credits: number, token: string): Promise<BurnRequestDTO> {
   const response = await fetch(`http://localhost:${VITE_SERVER_PORT}/api/removeCarbonCredits`, {
@@ -49,9 +49,9 @@ async function submitBurnApi(response: BurnRequestDTO, tx: ethers.TransactionRes
       idRecipient: response.idRecipient,
       tx: {
         hash: tx.hash,
-        contractAddress: response.tx?.contractAddress ?? "",
-        from: response.tx?.from ?? "",
-        data: response.tx?.data ?? "",
+        contractAddress: response.tx?.contractAddress || "",
+        from: response.tx?.from || "",
+        data: response.tx?.data || "",
       }
     })
   });

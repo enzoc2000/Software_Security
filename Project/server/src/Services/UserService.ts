@@ -222,7 +222,7 @@ export async function getUsersWithDebt(id: number): Promise<{ usersDebt: UserDeb
     usersWithDebt.map(
       async user => {
         const utente = await userDAO.findById(user.id_user);
-        return { id: user.id_user, name: utente.name, role: utente.role, debt: user.debt, wallet_address: utente.wallet?.address ?? "" };
+        return { id: user.id_user, name: utente.name, role: utente.role, debt: user.debt, wallet_address: utente.wallet?.address || "" };
       }));
 
   return { usersDebt, userDebt };

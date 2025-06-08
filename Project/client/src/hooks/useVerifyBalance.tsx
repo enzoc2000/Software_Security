@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "./useAuth";
 
 export function useVerifyBalance(profileAddress: string, profileId: number) {
-    const API_PORT = import.meta.env.VITE_SERVER_PORT ?? 3010; // Default port if not set
+    const API_PORT = import.meta.env.VITE_SERVER_PORT || 3010; // Default port if not set
     const { token } = useAuth();
     const [balance, setBalance] = useState(0);
     useEffect(() => {

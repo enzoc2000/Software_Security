@@ -3,7 +3,7 @@ import { UserDebtDTO } from "../Models/UserDebtDTO";
 import { useAuth } from "./useAuth";
 
 export function useVerifyActorsDebts(profileId: number) {
-    const API_PORT = import.meta.env.VITE_SERVER_PORT ?? 3010; // Default port if not set
+    const API_PORT = import.meta.env.VITE_SERVER_PORT || 3010; // Default port if not set
     const { token } = useAuth();
     const [dataActorsInDebt, setActorsInDebt] = useState<UserDebtDTO[]>([]);
     const [userDebt, setUserDebt] = useState<number>(0);

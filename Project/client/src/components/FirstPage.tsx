@@ -14,7 +14,7 @@ import { useVerifyBalance } from "../hooks/useVerifyBalance";
 
 export function FirstPage() {
   const { profile } = useVerifyAuth();
-  const { balance } = useVerifyBalance(profile.wallet_address ?? "", profile.id);
+  const { balance } = useVerifyBalance(profile.wallet_address || "", profile.id);
   const { dataActorsInDebt, userDebt } = useVerifyActorsDebts(profile.id);
   const { latestEmissionData } = useVerifyLatestEmissions();
   const [co2Sum, setCo2Sum] = useState(0);

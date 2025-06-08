@@ -31,7 +31,7 @@ export function ExchangePage() {
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    if ((profile.wallet_balance ?? 0) < credits || credits <= 0) {
+    if ((profile.wallet_balance || 0) < credits || credits <= 0) {
       alert("Send credits failed: insufficient balance");
       return
     }
@@ -70,7 +70,7 @@ export function ExchangePage() {
             type="number"
             placeholder="0"
             min={0}
-            max={(profile.wallet_balance ?? 0) > dataActorsInDebt.debt ? dataActorsInDebt.debt : (profile.wallet_balance ?? 0)}
+            max={(profile.wallet_balance || 0) > dataActorsInDebt.debt ? dataActorsInDebt.debt : (profile.wallet_balance || 0)}
             onChange={handleInputChange}
             value={credits}
           />

@@ -11,9 +11,9 @@ import { Donation } from "../Models/Donation";
 import { TransactionDTO } from "../Models/TransactionDTO";
 import { UserDAO } from "../DAO/UserDAO";
 
-const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
-const TOKEN_ADDRESS = process.env.TOKEN_ADDRESS!;
-const deployerPrivateKey = process.env.DEPLOYER_PRIVATE_KEY!;
+const provider = new ethers.JsonRpcProvider(process.env.RPC_URL || "http://ledger-besu:8545");
+const TOKEN_ADDRESS = process.env.TOKEN_ADDRESS || "0x2E6A0e0106F37A045a8b0B9C9357Ffe9a873Fa4c"; // Indirizzo del contratto dei carbon credits da sostuire con il tuo nel file .env
+const deployerPrivateKey = process.env.DEPLOYER_PRIVATE_KEY || "7a18769fc1e450f623619bb54b67e118a2462ae5f8f4be8f066de5a77cfc3cf1"; // Chiave privata del deployer, da sostituire con la tua nel file .env
 
 // Account di test (puoi anche importarli da .env se vuoi)
 const Account1 = "0xc73aF3677eBc555Fc631d3EdfCE675A656b684e5";

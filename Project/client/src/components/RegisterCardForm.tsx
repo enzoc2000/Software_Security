@@ -4,7 +4,7 @@ import connectWallet from '../utils/ConnectWallet';
 //import { loginUser } from '../../../../BackEnd/services/UserService';
 
 const NO_SYMBOLS = [",", ".", "?", "|", `"`, "'", "="];
-const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT ?? 3010; // Default port if not set
+const VITE_SERVER_PORT = import.meta.env.VITE_SERVER_PORT || 3010; // Default port if not set
 
 function hasForbiddenSymbol(value: string): boolean {
   return NO_SYMBOLS.some(sym => value.includes(sym));
