@@ -16,8 +16,8 @@ const app = express();
 app.use(cors()); // Consenti al frontend di fare richieste
 app.use(express.json());
 
-const PORT = process.env.SERVER_PORT;
-const JWT_SECRET = process.env.JWT_SECRET
+const PORT = process.env.SERVER_PORT ?? 3010; // Imposta un valore di default per SERVER_PORT
+const JWT_SECRET = process.env.JWT_SECRET ?? "your_jwt_secret"; // Imposta un valore di default per JWT_SECRET
 
 if (!JWT_SECRET || !PORT) {
   console.error("❌ SERVER_PORT o JWT_SECRET non definiti in .env");
