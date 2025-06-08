@@ -6,7 +6,7 @@ import { UserDTO } from "../Models/UserDTO";
 export function useVerifyAuth() {
     const { token } = useAuth();
     const navigate = useNavigate();
-    const API_PORT = import.meta.env.VITE_SERVER_PORT;
+    const API_PORT = import.meta.env.VITE_SERVER_PORT ?? 3010; // Default port if not set
 
     const [profile, setProfile] = useState<UserDTO>({
         id: -1,

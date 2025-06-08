@@ -3,7 +3,7 @@ import { TransactionDTO } from "../Models/TransactionDTO";
 import { useAuth } from "./useAuth";
 
 export function useVerifyTransactions() {
-    const API_PORT = import.meta.env.VITE_SERVER_PORT;
+    const API_PORT = import.meta.env.VITE_SERVER_PORT ?? 3010; // Default port if not set
     const { token } = useAuth();
     const [transactions, setTransactions] = useState<TransactionDTO[]>([]);
 

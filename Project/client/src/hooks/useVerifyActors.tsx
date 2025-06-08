@@ -3,7 +3,7 @@ import { UserDTO } from "../Models/UserDTO";
 import { useAuth } from "./useAuth";
 
 export function useVerifyActors(profileId: number) {
-    const API_PORT = import.meta.env.VITE_SERVER_PORT;
+    const API_PORT = import.meta.env.VITE_SERVER_PORT ?? 3010; // Default port if not set
     const { token } = useAuth();
     const [datiAttori, setdatiAttori] = useState<UserDTO[]>([]);
 

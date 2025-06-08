@@ -3,7 +3,7 @@ import { useAuth } from "./useAuth";
 import { UserLatestEmissionDTO } from "../Models/UserLatestEmissionDTO";
 
 export function useVerifyLatestEmissions() {
-    const API_PORT = import.meta.env.VITE_SERVER_PORT;
+    const API_PORT = import.meta.env.VITE_SERVER_PORT ?? 3010; // Default port if not set
     const { token } = useAuth();
     const [latestEmissionData, setlatestEmissionData] = useState<UserLatestEmissionDTO[]>([]);
 
