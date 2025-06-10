@@ -18,11 +18,11 @@ CREATE TABLE IF NOT EXISTS `role_thresholds` (
 
 INSERT INTO role_thresholds (role, threshold) 
 VALUES 
-  ('farmer', 100),
-  ('carrier', 100),
-  ('producer', 100),
-  ('seller', 100);
-
+  ('azienda_agricola', 100),
+  ('controllore_qualita', 100),
+  ('azienda_trasformazione', 100),
+  ('trasportatore', 100),
+  ('rivenditore', 100)
 
 -- Creazione della tabella "users"
 CREATE TABLE IF NOT EXISTS `users` (

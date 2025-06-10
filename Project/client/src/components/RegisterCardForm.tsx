@@ -210,10 +210,11 @@ function RegisterCardForm() {
             onChange={(e) => handleInputChange("role", e.target.value)}
           >
             <option value="" disabled>Select role</option>
-            <option value="farmer">farmer</option>
-            <option value="carrier">carrier</option>
-            <option value="producer">producer</option>
-            <option value="seller">seller</option>
+            <option value="azienda_agricola">azienda agricola</option>
+            <option value="controllore_qualita">controllore qualità</option>
+            <option value="azienda_trasformazione">azienda trasformazione</option>
+            <option value="trasportatore">trasportatore</option>
+            <option value="rivenditore">rivenditore</option>
           </select>
           <input className='text-red-800 border-1 border-red-800 rounded-lg p-1 m-1'
             type="text"
