@@ -22,7 +22,7 @@ VALUES
   ('controllore_qualita', 100),
   ('azienda_trasformazione', 100),
   ('trasportatore', 100),
-  ('rivenditore', 100)
+  ('rivenditore', 100);
 
 -- Creazione della tabella "users"
 CREATE TABLE IF NOT EXISTS `users` (
