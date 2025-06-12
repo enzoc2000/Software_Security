@@ -8,7 +8,7 @@ MYSQL_DATABASE=<db_name>
 MYSQL_USER=<appuser>
 MYSQL_PASSWORD=<appuser_password>
  
-DB_HOST=127.0.0.1
+DB_HOST=mysql
 DB_PORT=3306
 HOST_PORT=3307 
 ## oppure 3306 a seconda della porta locale che si utilizza
@@ -20,7 +20,7 @@ DB_PASSWORD=<appuser_password>
 # .env nella cartella server
 # -- crearlo se non lo si ha --
 
-DB_HOST=127.0.0.1
+DB_HOST=mysql
 DB_PORT=3307
 ## oppure 3306 a seconda della porta locale che si utilizza
 DB_PORT=3306
