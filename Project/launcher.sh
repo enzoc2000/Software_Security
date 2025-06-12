@@ -190,7 +190,7 @@ main() {
     
     # Build the server Dockerfile
     print_info "Building server Docker image..."
-    #  run_command "docker" "build" "-t" "fsc-server" "server"
+    run_command "docker" "build" "-t" "fsc-server" "server"
     
     # Deploy contracts using the Hardhat deploy script with retry logic
     print_info "Deploying contracts..."
