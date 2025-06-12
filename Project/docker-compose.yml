@@ -11,7 +11,7 @@ services:
   server:
     image: fsc-server:latest
     environment:
-      - DB_HOST=${DB_HOST:-mysql}
+      - DB_HOST=${DB_HOST:-127.0.0.1}
       - DB_PORT=${DB_PORT:-3306}
       - DB_NAME=${DB_NAME:-food_supply_chain}
       - DB_USER=${DB_USER:-appuser}
