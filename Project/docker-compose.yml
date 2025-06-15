@@ -19,7 +19,7 @@ services:
       - SERVER_PORT=${SERVER_PORT:-3010}
       - VITE_SERVER_PORT=${VITE_SERVER_PORT:-3010}
       - JWT_SECRET=${JWT_SECRET:-your_jwt_secret}
-      - RPC_URL=${RPC_URL:-http://besu:8545}
+      - RPC_URL=${RPC_URL:-http://ledger-besu:8545}
       - TOKEN_ADDRESS=${TOKEN_ADDRESS:-0x2E6A0e0106F37A045a8b0B9C9357Ffe9a873Fa4c}
       - DEPLOYER_PRIVATE_KEY=${DEPLOYER_PRIVATE_KEY:-7a18769fc1e450f623619bb54b67e118a2462ae5f8f4be8f066de5a77cfc3cf1}
     ports:
