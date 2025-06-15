@@ -52,16 +52,6 @@ CREATE TABLE IF NOT EXISTS `wallets` (
   CONSTRAINT `id_user_wallet` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Creazione della tabella "system_wallet"
-CREATE TABLE IF NOT EXISTS `system_wallet` (
-  `id_system_wallet` int unsigned NOT NULL AUTO_INCREMENT,
-  `address` varchar(50) NOT NULL,
-  `balance` bigint NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_system_wallet`),
-  UNIQUE KEY `id_system_wallet_UNIQUE` (`id_system_wallet`),
-  UNIQUE KEY `address_UNIQUE` (`address`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 -- Creazione della tabella "emissions"
 CREATE TABLE IF NOT EXISTS `emissions` (
   `id_emission` int unsigned NOT NULL AUTO_INCREMENT,
