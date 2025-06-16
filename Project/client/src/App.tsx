@@ -7,7 +7,7 @@ import { Registration } from "./components/Registration";
 import { Settings } from "./components/Settings";
 import { CreditsIssuing } from "./components/CreditsIssuing";
 import { EmissionsLog } from "./components/EmissionsLog";
-import logoSupplyChain from "./components/assets/logoSupplyChain.png"
+import logoSupplyChain from "./components/assets/logoSupplyChain2_transparent.png";
 import Modal from "./components/Modal";
 import { ListActors } from "./components/ListActors";
 import { TransactionsLog } from "./components/TransactionsLog";

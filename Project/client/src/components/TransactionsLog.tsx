@@ -39,7 +39,7 @@ export function TransactionsLog() {
                     Amount Sended:
                 </div>
             </div>
-            <div className="grid w-[80%] border-2 text-black text-2xl border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800" >
+            <div className="grid w-[80%] border-2 text-black text-sm border-b-blue-900 border-t-red-800 border-r-red-800 border-l-blue-800" >
                 {transactions.map((item: TransactionDTO) => (
                     <TransactionCard key={item.id} senderName={item.senderName} receiverName={item.receiverName} senderRole={item.senderRole} receiverRole={item.receiverRole} timestamp={item.timestamp} id={item.id} amount={item.amount} />
                 ))}
