@@ -268,7 +268,6 @@ export async function confirmBurn(burnRequest: BurnRequestDTO): Promise<void> {
 export async function getAllTransactions(): Promise<TransactionDTO[]> {
   const transactions = await transactionDAO.findAll();
   if (transactions.length === 0) {
-    alert("No transactions found")
     return [];
   }
 
