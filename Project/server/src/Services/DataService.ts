@@ -71,22 +71,6 @@ export async function submitEmission(userId: number, co2Amount: number): Promise
 }
 
 /**
- * Restituisce le emissioni registrate da un utente.
- */
-/* export async function getEmissionsByUser(userId: number): Promise<EmissionDTO[]> {
-  const emissions = await emissionDAO.findByUserId(userId);
-  if (emissions.length === 0) {
-    return [];
-  }
-  const emissionsDTO: EmissionDTO[] = emissions.map(emission => ({
-    id_emission: emission.id,
-    co2_amount: emission.co2Amount,
-    date: emission.timestamp
-  }));
-  return emissionsDTO;
-} */
-
-/**
  * Restituisce le emissioni registrate da un utente e il treshold dell'utente
  */
 export async function getEmissionsAndTresholdByUser(userId: number): Promise<EmissionDTO[]> {

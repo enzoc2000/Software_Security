@@ -81,10 +81,6 @@ export async function checkBalances(account: string, userId: number): Promise<nu
     console.error(`❌ Errore con ${account}:`, err);
     return 0;
   }
-
-  /*const block = await provider.getBlockNumber();
-  console.log(`📦 Ultimo blocco: ${block}`);
-  return 0;*/
 }
 
 // Funzione per mintare i carbon credits, se ho debito minto solo la differenza tra l'importo richiesto 
@@ -295,15 +291,3 @@ export async function getAllTransactions(): Promise<TransactionDTO[]> {
   return transactionAdjusted;
 
 }
-
-/* async function main() {
-  await checkBalances(Account1);
-  //await checkBalances(Account2); 
-  //await transferCarbonCredits("200", Account1, Account2);
-  await mintCarbonCredits(Account1,"200");
- // await checkBalances(Account2); 
-  await checkBalances(Account1);
-  
-}
-// Esegui
-main(); */
