@@ -91,5 +91,5 @@ per Unix
 ### Inviare dei crediti ad un altro utente
 1. Cliccare sull'utente in debito
 2. Selezionare la quantità
-3. Confermare operaione su Metamask
+3. Confermare operazione su Metamask
 
