@@ -40,25 +40,26 @@ per Unix
 
 1. Avviare docker compose, su terminale per avviare la rete Besu e il database MySQL
 
-     `cd Besu; docker compose up --build; cd ..`
+     `cd Project; cd Besu; docker compose up --build; cd ..`
 
-2. Avviare scripts su terminale per deploy smart contract. Questo passaggio mandata una transazione sulla rete Besu.
+2. Avviare scripts su terminale per deploy smart contract. Questo passaggio mandata una transazione sulla rete Besu
 
     `cd Project; cd hardhat; npx hardhat run deploy/deploy.js --network besu; cd ..`
 
-3. Avviare script su terminale
+3. Avviare script su terminale per avviare sia client che server
 
-    `npm run devall`
+   `cd client; npm run preview`
+   in un secondo terminale
+   `cd server; npm run start`
 
 
 ## Getting started
 ### Configurazione Metamask
-1. Installare l'estensione di Metamask sul browser
+1. Installare l'estensione di Metamask sul browser [download](https://metamask.io/download)
 2. Aggiungere rete custom http://localhost:8545
 3. Inserire nel campo chain_id il valore 1338
-4. 
-2. Importare il token CO2
-3. Inserire nel campo indirizzo contratto il valore presente nei log dello script di installazione
+4. Importare il token nella rete con il simbolo CO2
+5. Inserire nel campo indirizzo contratto il valore presente nei log dello script di installazione
 
 <img src="token.png" alt="Esempio di token" width="600px">
 
@@ -66,17 +67,29 @@ per Unix
 
 1. Scrivere http://localhost:5173 sul browser
 2. Registrarsi cliccando il bottone opportuno
-3. Inserire il codice seriale ricevuto
-4. Iniziare ad usare l'applicativo
+3. Inserire i propri dati personali
+4. Inserire il codice seriale ricevuto
+5. Inserire le proprie credenziali di accesso nella pagina login
+6. Inserire il codice OTP ricevuto sulla mail fittizia (console del browser)
 
 ### Vedere il proprio saldo
 1. Dopo aver fatto il login si viene reindirizzati nella propria area personale.
-2. In basso si vede il proprio saldo
+2. Si vedono il proprio saldo
+3. Si vedono le dichiarazioni di emissioni precedenti
+4. Si vedono gli utenti in debito
 
 ### Inviare una dichiarazione di emissioni
+1. Cliccare sul bottone `credit issuing`
+2. Inserire la quantità di emissioni da dichiarare
 
+### Visualizzare storico emissioni
+1. CLiccare usl bottone `emissions log`
+
+### Visualizzare storico scambio crediti
+1. CLiccare usl bottone `transactions log`
 
 ### Inviare dei crediti ad un altro utente
+1. Cliccare sull'utente in debito
+2. Selezionare la quantità
+3. Confermare operaione su Metamask
 
-
-### 
