@@ -17,7 +17,7 @@ const userWalletDAO = new UserWalletDAO();
 const debtsDAO = new DebtsDAO();
 
 /**
- * Inizializza gli utenti di default nel sistema se non esistono già facendo riferimento al seedUsers.
+ * Funzione per la registrazione di un nuovo utente.
  */
 export async function signUpUser(username: string, password: string, email: string,
   role: string, name: string, city: string, address: string, walletAddress: string, serialCode: string):

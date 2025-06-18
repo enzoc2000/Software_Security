@@ -159,7 +159,10 @@ app.post("/api/signUp", async (req: Request, res: Response) => {
     serialCode
   } = req.body;
 
-  console.log("Tentativo signUp:", req.body);
+  console.log("Tentativo signUp:", "\n", "Username: ", req.body.username, "\n", "Email: ", req.body.email, "\n", 
+           "Role: ", req.body.role, "\n", "Name: ",  req.body.name, "\n", 
+           "City: ", req.body.city, "\n", "Address: ", req.body.address, "\n", 
+           "Wallet Address: ", req.body.walletAddress, "\n", "Serial Code: ", req.body.serialCode);
   try {
     const okUser = await signUpUser(username, password, email, role, name, city, address, walletAddress, serialCode);
     if (okUser) {
