@@ -87,8 +87,6 @@ export class UserDAO {
     const [rows]: any = await db.execute(
       `SELECT * FROM serial_codes WHERE is_used = FALSE`
     );
-    console.log(serialCode);
-    console.log(rows);
 
     if (rows.length === 0) 
       return false;

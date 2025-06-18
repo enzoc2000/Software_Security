@@ -53,7 +53,6 @@ export async function signUpUser(username: string, password: string, email: stri
 
   //Controllo validità del serial code
   const validCode = await userDAO.checkSerialCode(serialCode);
-  console.log(validCode);
   if (!validCode) {
     throw new Error('Serial code non valido');
   }
