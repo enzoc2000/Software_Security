@@ -12,11 +12,6 @@ export const seedUsers = [
         name: 'Azienda Agricola Rossi',
         city: 'Roma',
         address: 'Via Roma 1',
-        /*wallet: {
-            id: 1,
-            address: '0x1234567890abcdef1234567890abcdef12345678',
-            balance: 0,
-        },*/
         walletAddress: '0x829CB82CCa7C9471aB05c668031f34E67C2dfFeb',
     },
     {
@@ -28,11 +23,6 @@ export const seedUsers = [
         name: 'Azienda Trasporti Bianchi',
         city: 'Milano',
         address: 'Via Milano 1',
-        /*wallet: {
-            id: 2,
-            address: '0xabcdef1234567890abcdef1234567890abcdef12',
-            balance: 0,
-        },*/
         walletAddress: '0x31B8281FeC25A6afbfAF3b8693516DbA891Ab526',
     },
     {
@@ -44,11 +34,6 @@ export const seedUsers = [
         name: 'Azienda Rivenditore Verdi',
         city: 'Torino',
         address: 'Via Torino 1',
-        /*wallet: {
-            id: 3,
-            address: '0x7890abcdef1234567890abcdef1234567890abcd',
-            balance: 0,
-        },*/
         walletAddress: '0x7890abcdef1234567890abcdef1234567890abcd',
     },
   ];
