@@ -34,6 +34,7 @@ per Unix
 2. `chmod +x launcher.sh`
 3. `./launcher.sh`
 
+*Assicurarsi di avere Docker avviato (docker deamon running) sulla propria macchina prima di eseguire lo script launcher.
 
 ## Istruzioni d'uso approfondite per developers
 0. Creare i file .env nelle stesse cartelle dei file `.env.placeholder` e inserire le proprie variabili di ambiente e i secret necessari
