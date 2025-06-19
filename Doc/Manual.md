@@ -56,40 +56,59 @@ per Unix
 ## Getting started
 ### Configurazione Metamask
 1. Installare l'estensione di Metamask sul browser [download](https://metamask.io/download)
-2. Aggiungere rete custom http://localhost:8545
-3. Inserire nel campo chain_id il valore 1338
-4. Importare il token nella rete con il simbolo CO2
-5. Inserire nel campo indirizzo contratto il valore presente nei log dello script di installazione
+2. Entrare in Metamask inserendo le proprie credenziali
+3. Premere il bottone `Add a custom network`
+4. Inserire un nome alla rete (`Besu`)
+5. Inserire nel campo Default RPC URL `http://localhost:8545`
+6. Inserire nel campo chain_id il valore 1338
+7. Inserire nel campo Simbolo moneta il valore crediti
+8. Premere il pulsante `salva`
+9. Aprire il menù dove troviamo le reti e selezionare la nuova rete `Besu`
+10. All'interno della schermata principale della rete, selezionare tokens
+11. Premere i 3 puntini, sulla schermata tokens, per importare il token nella rete con il simbolo CO2
+12. Selezionare la rete in cui importare il token, `Besu`
+13. Inserire nel campo `Indirizzo Contratto Token` il valore presente nei log dello script di installazione e premere `avanti`
 
 <img src="token.png" alt="Esempio di token" width="600px">
 
 ### Introduzione
 
 1. Scrivere http://localhost:5173 sul browser
-2. Registrarsi cliccando il bottone opportuno
-3. Inserire i propri dati personali
-4. Inserire il codice seriale ricevuto
-5. Inserire le proprie credenziali di accesso nella pagina login
-6. Inserire il codice OTP ricevuto sulla mail fittizia (console del browser)
+2. Per Registrarsi:
+3. Passare alla pagina `Registration`
+4. Inserire i propri dati personali
+5. Inserire il codice seriale ricevuto
+6. Premere il bottone `Registration`
+7. Per il Login:
+8. Inserire le proprie credenziali di accesso nella pagina login
+9. Aprire la console del browser e cliccare sul link presente in console
+10. Inserire il codice OTP ricevuto sulla mail fittizia e confermare
 
 ### Vedere il proprio saldo
 1. Dopo aver fatto il login si viene reindirizzati nella propria area personale.
 2. Si vedono il proprio saldo
-3. Si vedono le dichiarazioni di emissioni precedenti
+3. Si vedono le dichiarazioni delle ultime emissioni per ogni attore, rispetto alla loro soglia
 4. Si vedono gli utenti in debito
 
 ### Inviare una dichiarazione di emissioni
 1. Cliccare sul bottone `credit issuing`
-2. Inserire la quantità di emissioni da dichiarare
+2. Inserire la quantità di emissioni da dichiarare e premere `send`
+3. Si aprirà un pop up in cui confermare le emissioni
 
 ### Visualizzare storico emissioni
-1. CLiccare usl bottone `emissions log`
+1. Cliccare usl bottone `emissions log`
 
 ### Visualizzare storico scambio crediti
-1. CLiccare usl bottone `transactions log`
+1. Cliccare usl bottone `transactions log`
 
 ### Inviare dei crediti ad un altro utente
 1. Cliccare sull'utente in debito
-2. Selezionare la quantità
+2. Selezionare la quantità di crediti da inviare 
 3. Confermare operazione su Metamask
+
+### Modificare i dati utente
+1. Cliccare sul bottone `Settings`
+2. Modificare i dati
+3. Inserire le credenziali per confermare la modifica
+4. Premere sul bottone `Save changes`
 
